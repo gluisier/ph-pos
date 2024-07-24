@@ -71,6 +71,7 @@ app:
       heading: &items_heading Articles
       list: Lister
       event: Préparation
+      prices: Impression des prix
     users:
       heading: &users_heading Utilisateurs
     logout: Déconnexion
@@ -85,6 +86,9 @@ app:
       title: &title *items_heading
       heading: *title
       none: Pas de produit renseigné
+    print:
+      title: &title Liste des prix
+      heading: *title
 
   sales:
     title: *sales_heading

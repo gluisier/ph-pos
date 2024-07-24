@@ -117,4 +117,12 @@ class ItemController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/prices', name: 'prices', methods: ["GET"])]
+    public function print(Request $request, ItemRepository $itemRepository)
+    {
+        return $this->render('item/print.html.twig', [
+            'items' => $itemRepository->findSellable(),
+        ]);
+    }
 }

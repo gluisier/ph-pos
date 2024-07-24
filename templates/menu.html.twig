@@ -1,4 +1,4 @@
-<nav class="navbar navbar-toggleable-md navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-toggleable-md navbar-expand-lg navbar-dark bg-dark d-print-none">
 	<div class="container">
 		<a class="navbar-brand" href="{{ path('home') }}">{{ 'global.site_name'|trans }}</a>
 		<button type="button" class="navbar-toggler navbar-toggler-right" data-bs-toggle="collapse" data-bs-target="#Menu" aria-controls="Menu" aria-expanded="false">
@@ -19,6 +19,7 @@
 						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.menu.items.list'|trans }}</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.menu.items.event'|trans }}</a>
+						<a class="dropdown-item{% if 'item_prices' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_prices') }}">{{ 'app.menu.items.prices'|trans }}</a>
 					</div>
 				</li>
 				<li class="nav-item">
