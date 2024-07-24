@@ -14,6 +14,7 @@ class MassItemType extends AbstractType
     {
         $builder
             ->add('price', MoneyType::class, [
+                'required' => false,
                 'currency' => 'CHF',
                 'scale' => 0,
                 'input' => 'integer',
