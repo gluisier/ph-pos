@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.item.new.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h1>{{ 'app.item.new.heading'|trans }}</h1>
+
+	{{ include('item/_form.html.twig') }}
+
+	<a href="{{ path('item_index') }}">back to list</a>
+{% endblock %}

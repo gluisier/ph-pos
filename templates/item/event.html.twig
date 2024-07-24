@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.event.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h1>{{ 'app.event.heading'|trans }}</h1>
+
+	{{ form_start(form) }}
+	<table class="table">
+		<colgroup>
+			<col />
+			<col />
+			<col />
+			<col />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{{ 'app.fields.item.label.label'|trans }}</th>
+				<th>{{ 'app.fields.item.title.label'|trans }}</th>
+				<th>{{ 'app.fields.item.price.label'|trans }}</th>
+				<th>{{ 'app.fields.item.quantity.label'|trans }}</th>
+				<th><a href="{{ path('item_new') }}" class="btn 	btn-success">{{ 'global.action.new'|trans }}</a></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for item in form.items %}
+			{% set style = (item.vars.data.colour ? 'background-color: ' ~ item.vars.data.colour ~ ' !important; color: var(--bs-' ~ (is_dark(item.vars.data.colour) ? 'light' : 'dark') ~ ');' : '') %}
+			<tr>
+				<td class="text-center h1"{% if style %} style="{{ style}}"{% endif %}>{{ item.vars.value.label }}</td>
+				<td{% if style %} style="{{ style}}"{% endif %}>{{ item.vars.value.title }}{% if item.vars.data.ticket %}
+						🎟️
+					{%- endif %}</td>
+				<td{% if style %} style="{{ style}}"{% endif %}>{{ form_widget(item.children.price) }}</td>
+				<td{% if style %} style="{{ style}}"{% endif %}>{{ form_widget(item.children.quantity) }}</td>
+				<td{% if style %} style="{{ style}}"{% endif %}>
+					<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="5">no records found</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="5"><button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button></td>
+			</tr>
+		</tfoot>
+	</table>
+	{{ form_end(form) }}
+{% endblock %}

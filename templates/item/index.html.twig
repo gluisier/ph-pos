@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.item.index.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h1>{{ 'app.item.index.heading'|trans }}</h1>
+
+	<table class="table">
+		<colgroup>
+			<col />
+			<col class="col-2 col-xxl-1" />
+			<col class="col-2 col-xl-1" />
+			<col class="col-2 col-xl-1" />
+			<col class="col-1" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{{ 'app.fields.item.title.label'|trans }}</th>
+				<th>{{ 'app.fields.item.label.label'|trans }}</th>
+				<th>{{ 'app.fields.item.price.label'|trans }}</th>
+				<th>{{ 'app.fields.item.colour.label'|trans }}</th>
+				<th><a href="{{ path('item_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for item in items %}
+			<tr>
+				<td style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.title }}</td>
+				<td class="py-1 h2" style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.label }}</td>
+				<td class="text-end" style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{% if item.price -%}
+						{{ item.price|number_format(2, ',') }}
+					{%- else -%}
+						<i>{{ 'app.item.not_sold'|trans }}</i>
+					{%- endif -%}</td>
+				<td style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.colour }}</td>
+				<td style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">
+					<a href="{{ path('item_show', {'id': item.id}) }}" class="btn btn-sm btn-outline-info">{{ 'global.action.show'|trans }}</a>
+					<a href="{{ path('item_edit', {'id': item.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="6">no records found</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

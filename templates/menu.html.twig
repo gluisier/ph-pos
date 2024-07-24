@@ -1,0 +1,35 @@
+<nav class="navbar navbar-toggleable-md navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand" href="{{ path('home') }}">{{ 'global.site_name'|trans }}</a>
+		<button type="button" class="navbar-toggler navbar-toggler-right" data-bs-toggle="collapse" data-bs-target="#Menu" aria-controls="Menu" aria-expanded="false">
+			<span class="navbar-toggler-icon" title="{{ 'global.action.expand.menu'|trans }}" aria-hidden="true"></span><span class="visually-hidden-focusable">{{ 'global.action.expand.menu'|trans }}</span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="Menu">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('sales_index') }}">{{ 'app.menu.sales'|trans }}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('production_index') }}">{{ 'app.menu.production'|trans }}</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle{% if 'item' in app.current_route %} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
+					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Items">
+						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.menu.items.list'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.menu.items.event'|trans }}</a>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('user_index') }}">{{ 'app.menu.users.heading'|trans }}</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav d-flex">
+				<li class="nav-item">
+					<a href="{{ path('logout') }}" class="nav-link">⏻ {{ 'app.menu.logout'|trans }}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.sales.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block container_type %}container-fluid{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/grid.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+.has-ticket {
+	position: relative;
+}
+.has-ticket::before {
+	position: absolute;
+	content: '🎟️';
+    font-size: 1.5rem;
+	transform: rotate(-45deg);
+}
+</style>
+{% endblock %}
+
+{% block body %}
+	{{ form_start(form, {'attr': {'class': 'pt-3'}}) }}
+		{{ form_widget(form.lines, {'attr': {'data-layout-toggle': 'row row-cols-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 align-middle'}}) }}
+		<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
+			<hr />
+			<div class="col-5">
+				<div class="btn-group" role="group">
+					<input type="radio" checked="checked" name="direction" id="Adder" class="btn-check" value="1" /><label for="Adder" class="btn btn-outline-success">{{ 'global.action.new'|trans }}</label>
+					<input type="radio" name="direction" id="Remover" class="btn-check" value="-1" /><label for="Remover" class="btn btn-outline-warning">➖</label>
+
+					<div class="btn-group dropup" role="group">
+						<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
+						<ul class="dropdown-menu">
+							<li class="d-none d-sm-block" data-layout-toggle=""><button type="button" id="TextToggler" class="dropdown-item" data-content-toggle="🖼️&lt;span class=&quot;&quot;&gt; 〰️&lt;/span&gt;">🖼️<span class="d-none"> 〰️</span></button></li>
+							<li><button type="button" id="LayoutToggler" class="dropdown-item" data-content-toggle="▤">▦</button></li>
+							<li><button type="button" id="ModeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
+						</ul>
+					</div>
+					<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary">🧾</a>
+					<button type="reset" class="btn btn-danger">{{ 'global.action.reset'|trans }}</button>
+				</div>
+			</div>
+			<div class="col-3 text-end"><button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button>
+				{{ 'app.sales.total'|trans }}</div>
+			<output name="totalItems" id="totalItems" class="col-1 text-end">0</output>
+			<output name="totalPrice" id="totalPrice" class="col-3 text-end">0,00</output>
+		</div>
+	{{ form_end(form)}}
+{% endblock %}
+
+{% block javascripts %}
+	<script>//<![CDATA[
+	const channel = new BroadcastChannel('{{ app.user.token }}');
+	const order = {};
+	Array.from(document.querySelectorAll('[type="number"]')).forEach( input => {
+		const item = JSON.parse(input.dataset.item);
+		item.quantity = 0;
+		order[input.id] = item;
+	});
+
+	Array.from(document.getElementsByClassName('item')).forEach( element => {
+		element.addEventListener('click', event => {
+			const input = event.target.parentNode.querySelector('input[type="number"]');
+			switch (document.querySelector('input[name="direction"]:checked').value) {
+				case "-1":
+					input.stepDown();
+					break;
+				default:
+					input.stepUp();
+					break;
+			}
+			input.dispatchEvent(new Event('change'));
+			event.preventDefault();
+			return false;
+		});
+	});
+	Array.from(document.querySelectorAll('input[type="number"]')).forEach( element => {
+		element.addEventListener('change', event => {
+			const input = event.target;
+			order[input.id].quantity = parseInt(input.value, 10);
+			document.getElementById('_' + input.id).value = (order[input.id].quantity * order[input.id].price).toFixed(2).replace('.', ',');
+			const totals = {
+				quantity: 0,
+				amount: 0
+			};
+			for (const id in order) {
+				totals.quantity += order[id].quantity;
+				totals.amount += order[id].quantity * order[id].price;
+			};
+			document.getElementById('totalItems').value = totals.quantity;
+			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
+			debounceBroadcast('update', order);
+		});
+	});
+	document.getElementById('LayoutToggler').addEventListener('click', event => {
+		const button = event.target;
+		const tempContent = button.dataset.contentToggle;
+		button.dataset.contentToggle = button.innerText;
+		button.innerText = tempContent;
+		document.querySelectorAll('[data-layout-toggle]').forEach( element => {
+			const temp = element.className;
+			element.className = element.dataset.layoutToggle;
+			element.dataset.layoutToggle = temp;
+		});
+	});
+	document.getElementById('TextToggler').addEventListener('click', event => {
+		let element = event.target;
+		if (element.tagName === 'SPAN') {
+			element = element.parentNode;
+		}
+		const tempContent = element.dataset.contentToggle;
+		element.dataset.contentToggle = element.innerHTML;
+		element.innerHTML = tempContent;
+		document.querySelectorAll('.item-text').forEach( element => {
+			if (element.classList.contains('g-col-6')) {
+				element.classList.toggle('d-none');
+			} else {
+				element.classList.toggle('d-sm-block');
+			}
+		});
+	});
+
+	document.querySelector('[type="reset"]').addEventListener('click', event => {
+		for (id in order) {
+			order[id].quantity = 0;
+		}
+		debounceBroadcast('clear', {});
+	});
+
+	const setTheme = (theme) => {
+		document.documentElement.setAttribute('data-bs-theme', theme);
+		const themeSwitcher = document.getElementById('ModeToggler');
+		const contentPossible = JSON.parse(themeSwitcher.dataset.contentPossible);
+		themeSwitcher.innerText = contentPossible[theme];
+	}
+	
+	const getTheme = () => {
+		return document.documentElement.getAttribute('data-bs-theme');
+	}
+
+	const getPreferredTheme = () => {
+		const theme = getTheme();
+		if (['dark', 'light'].includes(theme)) {
+			return theme;
+		}
+
+		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+	}
+
+	setTheme(getPreferredTheme());
+
+	const toggleTheme = (themeSwitcher) => {
+		const tempContent = themeSwitcher.dataset.contentToggle;
+		themeSwitcher.dataset.contentToggle = themeSwitcher.innerText;
+		themeSwitcher.innerText = tempContent;
+
+		const newTheme = getTheme() === 'light'
+			? 'dark'
+			: 'light';
+
+		setTheme(newTheme);
+	}
+
+	document.getElementById('ModeToggler').addEventListener('click', event => {
+		toggleTheme(event.target);
+	});
+
+	const debounce = function(func, delay) {
+		let timeoutId;
+		return function(...args) {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(() => {
+				func(...args);
+			}, delay || 400);
+		}
+	}
+
+	const debounceBroadcast = debounce((type, order) => {
+		channel.postMessage({type, order});
+	}, 400);
+	//]]></script>
+{% endblock %}

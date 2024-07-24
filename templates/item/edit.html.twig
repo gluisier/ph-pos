@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ item.title }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h1>{{ item.title }}</h1>
+
+	{{ include('item/_form.html.twig') }}
+
+	<a href="{{ path('item_index') }}">back to list</a>
+
+	{{ include('item/_delete_form.html.twig') }}
+{% endblock %}

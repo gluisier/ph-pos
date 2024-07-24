@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.name }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h1>{{ (user.active ? 'global.on' : 'global.off')|trans }} {{ user.name }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>{{ 'app.fields.user.roles.label'|trans }}</th>
+                <td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'app.fields.user.token.label'|trans }}</th>
+                <td>{{ user.token }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'app.fields.user.created_at.label'|trans }}</th>
+                <td>{{ user.createdAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('user_index') }}" class="btn btn-secondary">back to list</a>
+
+    <a href="{{ path('user_edit', {'name': user.name}) }}" class="btn btn-warning>{{ 'global.action.edit'|trans }}</a>
+
+    {{ include('user/_delete_form.html.twig') }}
+{% endblock %}

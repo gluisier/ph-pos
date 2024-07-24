@@ -1,0 +1,104 @@
+global:
+  site_name: ᴾᴴPOS
+  "yes": Oui
+  "no": Non
+  "true": Vrai
+  "false": Faux
+  "on": ✔️
+  "off": ❌
+  action:
+    new: ➕
+    show: 👁️
+    edit: ✏️
+    validate: ✔️
+    list: Retour à la liste
+    delete: 🗑️
+    confirm_delete: Etes-vous certain de vouloir effectuer la suppression ?
+    reset: 🧹
+    expand:
+      menu: Dérouler le menu
+      list: Dérouler la liste
+    close: Fermer
+    page:
+      prev: Page précédente
+      next: Page suivante
+  info:
+    help: Informations
+    loading: Chargement
+  join:
+    end: " et "
+
+app:
+  fields:
+    id:
+    item:
+      title:
+        label: Titre
+      label:
+        label: Etiquette
+      price:
+        label: Prix
+      colour:
+        label: Couleur
+      quantity:
+        label: Quantité
+      ticket:
+        label: Contre ticket ?
+    user:
+      name:
+        label: Nom d'utilisateur
+      active:
+        label: Actif
+      roles:
+        label: Rôles
+      password:
+        label: Mot de passe
+      token:
+        label: Jeton
+      created_at:
+        label: Créé le
+
+  login:
+    title: &title Authentification
+    heading: *title
+    user: Utilisateur
+    password: Mot de passe
+  
+  menu:
+    sales: &sales_heading Ventes
+    production: &production_heading Production
+    items:
+      heading: &items_heading Articles
+      list: Lister
+      event: Préparation
+    users:
+      heading: &users_heading Utilisateurs
+    logout: Déconnexion
+
+  event:
+    title: Evénement
+    heading: Préparation d'un événement
+
+  item:
+    not_sold: Non vendu
+    index:
+      title: &title *items_heading
+      heading: *title
+      none: Pas de produit renseigné
+
+  sales:
+    title: *sales_heading
+    total: Total
+
+  production:
+    title: *production_heading
+    items:
+      sold: 🎟️
+      cooking: 🔥
+      prepared: ♨️⌛
+      served: 🍽️
+
+  user:
+    index:
+      title: &title *users_heading
+      heading: *title

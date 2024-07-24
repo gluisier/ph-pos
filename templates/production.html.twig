@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.production.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block container_type %}container-fluid{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block body %}
+	<table class="table align-middle">
+		<thead>
+			<tr>
+				<td> </td>
+				<td class="d-none d-md-table-cell"></td>
+				<td class="text-center">{{ 'app.production.items.sold'|trans }}</td>
+				<td class="text-center">{{ 'app.production.items.cooking'|trans }}</td>
+				<td class="text-center">{{ 'app.production.items.prepared'|trans }}</td>
+				<td class="text-center">{{ 'app.production.items.served'|trans }}</td>
+			</tr>
+		</thead>
+		<tbody x-data="{
+				quantities: {},
+				init() {
+					document.querySelectorAll('input').forEach((input) => {
+						if (typeof this.quantities[input.dataset.id] === 'undefined') {
+							this.quantities[input.dataset.id] = {};
+						}
+						this.quantities[input.dataset.id][input.dataset.position] = 0;
+					});
+					document.querySelectorAll('button.operator').forEach((button) => {
+						button.addEventListener('click', (e) => {
+							const button = e.target;
+							this.quantities[button.dataset.id][button.dataset.add]++;
+							this.quantities[button.dataset.id][button.dataset.substract]--;
+						});
+					});
+					const eventSource = new EventSource('{{ url('production_events') }}');
+					eventSource.onmessage = function(e) {
+						const orders = JSON.parse(e.data);
+						for (const item of orders) {
+							const input = document.querySelector('input[data-id=&quot;' + item.item_id + '&quot;][data-position=&quot;sold&quot;]');
+							input.stepUp(item.quantity);
+							input.dispatchEvent(new Event('input'));
+						}
+					};
+				}
+			}">
+{% for item in items %}
+{% set style = item[0].colour ~ ' !important; color: var(--bs-' ~ (item[0].colour ? (is_dark(item[0].colour) ? 'light' : 'dark') : 'body-color') ~ ');' %}
+			<tr>
+				<td class="text-center h1 py-0" style="background-color: {{ style }} min-width: 3.25em !important">{{ item[0].label }}</td>
+				<td class="d-none d-md-table-cell" style="background-color: {{ style }}">{{ item[0].title }}</td>
+				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 5em !important;"><input type="number" readonly="readonly" x-model.number="quantities[{{ item[0].id }}].sold" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="sold" /><button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="sold" data-substract="producing" data-id="{{ item[0].id }}">◣</button></span></td>
+				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 7em !important;"><button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="producing" data-substract="sold" data-id="{{ item[0].id }}">◥</button><input type="number" x-model.number="quantities[{{ item[0].id }}].producing" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="producing" /><button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="producing" data-substract="produced" data-id="{{ item[0].id }}">◣</button></span></td>
+				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 7em !important;"><button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="produced" data-substract="producing" data-id="{{ item[0].id }}">◥</button><input type="number" x-model.number="quantities[{{ item[0].id }}].produced" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="produced" /><button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="produced" data-substract="out" data-id="{{ item[0].id }}">◣</button></span></td>
+				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 5em !important;"><button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="out" data-substract="produced" data-id="{{ item[0].id }}">◥</button><input type="number" x-model.number="quantities[{{ item[0].id }}].out" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="out" /></span></td>
+			</tr>
+{% else %}
+			<tr>
+				<td colspan="6">{{ 'app.item.index.none'|trans }}</td>
+			</tr>
+{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" integrity="sha512-ytM6hP1K9BkRTjUQZpxZKFjJ2TvE4QXaK7phVymsm7NimaI5H09TWWW6f2JMbonLp4ftYU6xfwQGoe3C8jta9A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}

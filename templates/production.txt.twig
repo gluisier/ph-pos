@@ -1,0 +1,4 @@
+id: {{ quantities[0].lastOrder|default('now')|date_modify('+1 second')|date('Y-m-d\\TH:i:s.u') }}
+data: {{ quantities|json_encode }}
+retry: {{ retry }}000
+
