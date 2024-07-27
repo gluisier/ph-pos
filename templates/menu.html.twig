@@ -10,6 +10,7 @@
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('sales_index') }}">{{ 'app.menu.sales'|trans }}</a>
 				</li>
+				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('production_index') }}">{{ 'app.menu.production'|trans }}</a>
 				</li>
@@ -25,11 +26,18 @@
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('user_index') }}">{{ 'app.menu.users.heading'|trans }}</a>
 				</li>
+				{% endif ~%}
 			</ul>
 			<ul class="navbar-nav d-flex">
+				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
 				<li class="nav-item">
 					<a href="{{ path('logout') }}" class="nav-link">⏻ {{ 'app.menu.logout'|trans }}</a>
 				</li>
+				{% else ~%}
+				<li class="nav-item">
+					<a href="{{ path('login') }}" class="nav-link">{{ 'app.menu.login'|trans }}</a>
+				</li>
+				{% endif ~%}
 			</ul>
 		</div>
 	</div>

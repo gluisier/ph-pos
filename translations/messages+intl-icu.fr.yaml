@@ -63,6 +63,7 @@ app:
     heading: *title
     user: Utilisateur
     password: Mot de passe
+    register: Pas d'accès ? <a href="{url}">S'enregistrer</a>
   
   menu:
     sales: &sales_heading Ventes
@@ -74,6 +75,8 @@ app:
       prices: Impression des prix
     users:
       heading: &users_heading Utilisateurs
+    login: Connexion
+    register: Enregistrement
     logout: Déconnexion
 
   event:

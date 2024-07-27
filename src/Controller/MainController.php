@@ -23,12 +23,19 @@ class MainController extends AbstractController
         foreach ($entityManager->getRepository(Item::class)->findSellable() as $item) {
             $order->addLine(new OrderLine($order, $item));
         }
-        $orderForm = $this->createForm(OrderSimpleType::class, $order);
+        $formParameters = [];
+        if (!$this->isGranted('ROLE_USER')) {
+            $formParameters['action'] = '#';
+        }
+        $orderForm = $this->createForm(OrderSimpleType::class, $order, $formParameters);
         $orderForm->handleRequest($request);
+
         if ($orderForm->isSubmitted() && $orderForm->isValid()) {
-            $order->setCreatedAt(new \DateTime());
-            $entityManager->persist($order);
-            $entityManager->flush();
+            if ($this->isGranted('ROLE_USER')) {
+                $order->setCreatedAt(new \DateTime());
+                $entityManager->persist($order);
+                $entityManager->flush();
+            }
             return $this->redirectToRoute('sales_index', status: Response::HTTP_SEE_OTHER);
         }
 

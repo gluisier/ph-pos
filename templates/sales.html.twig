@@ -23,7 +23,7 @@
 
 {% block body %}
 	{{ form_start(form, {'attr': {'class': 'pt-3'}}) }}
-		{{ form_widget(form.lines, {'attr': {'data-layout-toggle': 'row row-cols-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 align-middle'}}) }}
+		{{ form_widget(form.lines, {'attr': {'data-layout-toggle': 'row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 align-middle'}}) }}
 		<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
 			<hr />
 			<div class="col-5">
@@ -39,21 +39,23 @@
 							<li><button type="button" id="ModeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
 						</ul>
 					</div>
-					<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary">🧾</a>
+					{% if is_granted('IS_AUTHENTICATED_FULLY') %}<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary">🧾</a>{% endif %}
 					<button type="reset" class="btn btn-danger">{{ 'global.action.reset'|trans }}</button>
 				</div>
 			</div>
-			<div class="col-3 text-end"><button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button>
-				{{ 'app.sales.total'|trans }}</div>
+			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}<button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button>
+				{% endif %}{{ 'app.sales.total'|trans }}</div>
 			<output name="totalItems" id="totalItems" class="col-1 text-end">0</output>
 			<output name="totalPrice" id="totalPrice" class="col-3 text-end">0,00</output>
 		</div>
-	{{ form_end(form)}}
+	{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
 	<script>//<![CDATA[
+	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 	const channel = new BroadcastChannel('{{ app.user.token }}');
+	{% endif -%}
 	const order = {};
 	Array.from(document.querySelectorAll('[type="number"]')).forEach( input => {
 		const item = JSON.parse(input.dataset.item);
@@ -92,7 +94,9 @@
 			};
 			document.getElementById('totalItems').value = totals.quantity;
 			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
+			{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 			debounceBroadcast('update', order);
+			{%- endif ~%}
 		});
 	});
 	document.getElementById('LayoutToggler').addEventListener('click', event => {
@@ -127,7 +131,9 @@
 		for (id in order) {
 			order[id].quantity = 0;
 		}
+		{%- if is_granted('IS_AUTHENTICATED_FULLY') -%}
 		debounceBroadcast('clear', {});
+		{%- endif ~%}
 	});
 
 	const setTheme = (theme) => {
@@ -167,6 +173,7 @@
 	document.getElementById('ModeToggler').addEventListener('click', event => {
 		toggleTheme(event.target);
 	});
+	{%- if is_granted('IS_AUTHENTICATED_FULLY') %}
 
 	const debounce = function(func, delay) {
 		let timeoutId;
@@ -181,5 +188,6 @@
 	const debounceBroadcast = debounce((type, order) => {
 		channel.postMessage({type, order});
 	}, 400);
+	{%- endif ~%}
 	//]]></script>
 {% endblock %}
