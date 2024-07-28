@@ -2,24 +2,9 @@
 
 {% block title %}{{ 'app.sales.title'|trans }} | {{ parent() }}{% endblock %}
 
-{% block container_type %}container-fluid{% endblock %}
+{% block container_type %}container-fluid pt-2{% endblock %}
 
 {% block menu %}{% endblock %}
-
-{% block stylesheets %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/grid.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-.has-ticket {
-	position: relative;
-}
-.has-ticket::before {
-	position: absolute;
-	content: '🎟️';
-    font-size: 1.5rem;
-	transform: rotate(-45deg);
-}
-</style>
-{% endblock %}
 
 {% block body %}
 	{{ form_start(form, {'attr': {'class': 'pt-3'}}) }}
@@ -119,11 +104,7 @@
 		element.dataset.contentToggle = element.innerHTML;
 		element.innerHTML = tempContent;
 		document.querySelectorAll('.item-text').forEach( element => {
-			if (element.classList.contains('g-col-6')) {
-				element.classList.toggle('d-none');
-			} else {
-				element.classList.toggle('d-sm-block');
-			}
+			element.classList.toggle('visually-hidden');
 		});
 	});
 

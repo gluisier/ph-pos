@@ -1,17 +1,24 @@
 {% block _order_simple_lines_entry_row %}
             <div data-layout-toggle="item col">
-				<div style="{% if form.vars.data.item.colour %}background-color: {{ form.vars.data.item.colour }} !important; {% endif %}color: var(--bs-{{ form.vars.data.item.colour ? (is_dark(form.vars.data.item.colour) ? 'light' : 'dark') : 'body-color' }});" title="{{ form.vars.data.item.title }}" data-layout-toggle="card h-100{{ form.vars.data.item.ticket ? ' has-ticket" class="has-ticket' }}">
-					<div class="row" data-layout-toggle="card-body grid" style="--bs-columns: 6; --bs-gap: 0.5rem">
-						<label for="{{ form.quantity.vars.id }}" class="col-4 col-sm-3 col-md-2 h1 text-center item" data-layout-toggle="card-title g-col-6 h1 w-100 text-center item">{{ form.vars.data.item.label }}</label>
-						<div class="item-text col-sm-3 col-md-4 d-none d-sm-block item d-flex align-self-center" data-layout-toggle="item-text g-col-6 text-center item">{{ form.vars.data.item.title }}</div>
-						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text g-col-3 g-col-md-2 text-end item item-amount align-self-center">{{ form.vars.data.item.price|number_format(2, ',') }}</div>
-						<div class="col-2 px-0 d-flex align-items-center" data-layout-toggle="card-text g-col-3 g-col-md-2">
-                            {{- form_widget(form.quantity, {'attr': {
+				<div style="{% if form.vars.data.item.colour %}background-color: {{ form.vars.data.item.colour }} !important; {% endif %}color: var(--bs-{{ form.vars.data.item.colour ? (is_dark(form.vars.data.item.colour) ? 'light' : 'dark') : 'body-color' }});" title="{{ form.vars.data.item.title }}" data-layout-toggle="card h-100">
+					<div class="row" data-layout-toggle="card-body grid">
+						<label for="{{ form.quantity.vars.id }}" class="col-4 col-sm-3 col-md-2 h1 text-center item" data-layout-toggle="card-title h1 w-100 text-center item">{{ form.vars.data.item.label }}</label>
+						<div class="item-text col-sm-3 col-md-4 d-none d-sm-block item d-flex align-self-center" data-layout-toggle="item-text text-center item">{{ form.vars.data.item.title }}</div>
+						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text col-4 text-end item align-self-center float-start pe-1 py-1">{{ form.vars.data.item.price|number_format(2, ',') }}</div>
+						<div class="col-2 px-0 d-flex align-items-center" data-layout-toggle="card-text col-8 ps-0 float-end ps-1">
+							{% if form.vars.data.item.ticket %}
+							<div class="input-group input-group-sm">
+							{% endif %}
+							{{- form_widget(form.quantity, {'attr': {
 								'class': 'form-control-sm text-end',
 								'style': 'background-color: inherit; color: ' ~ (is_dark(form.vars.data.item.colour) ? '#ffffff' : 'inherit') ~ '; min-width: 3em;',
 								'data-item': form.vars.data.item|json_encode}}) -}}
+							{% if form.vars.data.item.ticket %}
+								<span class="input-group-text border-4 py-0 p-1" style="{% if form.vars.data.item.colour %}background-color: {{ form.vars.data.item.colour }} !important; {% endif %}color: var(--bs-{{ form.vars.data.item.colour ? (is_dark(form.vars.data.item.colour) ? 'light' : 'dark') : 'body-color' }});">🎟️</span>
+							</div>
+							{% endif %}
 						</div>
-						<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="col-3 col-sm-2 text-end item item-total align-self-center" data-layout-toggle="card-text g-col-6 g-col-md-2 text-end item item-total align-self-center">0,00</output>
+						<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="col-3 col-sm-2 text-end item item-total align-self-center" data-layout-toggle="card-text text-end item item-total w-100 align-self-center pe-2">0,00</output>
 					</div>
 				</div>
 			</div>
