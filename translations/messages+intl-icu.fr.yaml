@@ -86,16 +86,15 @@ app:
     register: Enregistrement
     logout: Déconnexion
 
-  event:
-    title: Evénement
-    heading: Préparation d'un événement
-
   item:
     not_sold: Non vendu
     index:
       title: &title *items_heading
       heading: *title
       none: Pas de produit renseigné
+    event:
+      title: Evénement
+      heading: Préparation d'un événement
     print:
       title: &title Liste des prix
       heading: *title
