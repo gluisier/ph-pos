@@ -1,0 +1,4 @@
+user:
+  plain_password:
+    blank: Veuillez saisir un mot de passe
+    length: Le mot de passe ne peut être plus court que {limit} caractères

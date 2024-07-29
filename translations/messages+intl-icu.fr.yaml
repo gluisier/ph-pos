@@ -46,13 +46,15 @@ app:
         label: Contre ticket ?
     user:
       name:
-        label: Nom d'utilisateur
+        label: Prénom
       active:
         label: Actif
       roles:
         label: Rôles
       password:
-        label: Mot de passe
+        label: &password Mot de passe
+      plainPassword:
+        label: *password
       token:
         label: Jeton
       created_at:
@@ -64,6 +66,11 @@ app:
     user: Utilisateur
     password: Mot de passe
     register: Pas d'accès ? <a href="{url}">S'enregistrer</a>
+
+  register:
+    title: &title Enregistrement
+    heading: *title
+    success: Votre accès est enregistré. Contactez le responsable pour l'activer, pouvoir vous connecter et avoir accès à toutes les fonctionnalités
   
   menu:
     sales: &sales_heading Ventes
