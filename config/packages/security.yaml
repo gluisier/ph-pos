@@ -16,6 +16,7 @@ security:
     main:
       lazy: true
       provider: users_database
+      user_checker: App\Security\ActiveUserChecker
       logout:
         path: logout
         # where to redirect after logout
