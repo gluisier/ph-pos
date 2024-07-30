@@ -3,7 +3,8 @@
 {% block title %}{{ user.name }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h1>{{ (user.active ? 'global.on' : 'global.off')|trans }} {{ user.name }}</h1>
+    <h2>{{ (user.active ? 'global.on' : 'global.off')|trans }}
+        {{ user.name }}</h2>
 
     <table class="table">
         <tbody>
@@ -22,7 +23,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('user_index') }}" class="btn btn-secondary">back to list</a>
+    <a href="{{ path('user_index') }}" class="btn btn-secondary">{{ 'global.action.list'|trans }}</a>
 
     <a href="{{ path('user_edit', {'name': user.name}) }}" class="btn btn-warning>{{ 'global.action.edit'|trans }}</a>
 

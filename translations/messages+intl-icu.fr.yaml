@@ -30,7 +30,7 @@ global:
 
 app:
   fields:
-    id:
+    id: ID
     item:
       title:
         label: Titre
@@ -59,6 +59,16 @@ app:
         label: Jeton
       created_at:
         label: Créé le
+    order:
+      lines:
+        label: Produits
+      created_at:
+        label: Créée le
+    order_line:
+      quantity:
+        label: Quantité
+      item:
+        label: Produit
 
   login:
     title: &title Authentification
@@ -80,6 +90,8 @@ app:
       list: Lister
       event: Préparation
       prices: Impression des prix
+    orders:
+      heading: &orders_heading Commandes
     users:
       heading: &users_heading Utilisateurs
     login: Connexion
@@ -91,10 +103,14 @@ app:
     index:
       title: &title *items_heading
       heading: *title
-      none: Pas de produit renseigné
+      none: &product_none Pas de produit renseigné
+    new:
+      title: &title Nouveau produit
+      heading: *title
     event:
       title: Evénement
       heading: Préparation d'un événement
+      none: *product_none
     print:
       title: &title Liste des prix
       heading: *title
@@ -114,4 +130,22 @@ app:
   user:
     index:
       title: &title *users_heading
+      heading: *title
+    new:
+      title: &title Nouvel utilisateur
+      heading: *title
+
+  order:
+    index:
+      title: &title *orders_heading
+      heading: *title
+      none: Pas de commande enregistrée
+    new:
+      title: &title Nouvelle commande
+      heading: *title
+    show:
+      title: &title Commande {id}
+      heading: *title
+    edit:
+      title: &title Commande {id}
       heading: *title

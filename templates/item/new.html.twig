@@ -3,9 +3,9 @@
 {% block title %}{{ 'app.item.new.title'|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h1>{{ 'app.item.new.heading'|trans }}</h1>
+	<h2>{{ 'app.item.new.heading'|trans }}</h2>
 
 	{{ include('item/_form.html.twig') }}
 
-	<a href="{{ path('item_index') }}">back to list</a>
+	<a href="{{ path('item_index') }}">{{ 'global.action.list'|trans }}</a>
 {% endblock %}

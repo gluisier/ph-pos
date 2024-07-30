@@ -3,7 +3,7 @@
 {% block title %}{{ 'app.user.index.title'|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'app.user.index.heading'|trans }}</h1>
+    <h2>{{ 'app.user.index.heading'|trans }}</h2>
 
     <table class="table">
         <thead>
@@ -29,7 +29,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">{{ 'app.user.index.none'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>

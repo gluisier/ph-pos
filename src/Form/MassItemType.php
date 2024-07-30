@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Item;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,12 +13,8 @@ class MassItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('price', MoneyType::class, [
+            ->add('price', IntegerType::class, [
                 'required' => false,
-                'currency' => 'CHF',
-                'scale' => 0,
-                'input' => 'integer',
-                'html5' => true,
             ])
             ->add('quantity')
         ;

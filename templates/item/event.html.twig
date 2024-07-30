@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'app.event.title'|trans }} | {{ parent() }}{% endblock %}
+{% block title %}{{ 'app.item.event.title'|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h1>{{ 'app.event.heading'|trans }}</h1>
+	<h2>{{ 'app.item.event.heading'|trans }}</h2>
 
 	{{ form_start(form) }}
 	<table class="table">
@@ -38,7 +38,7 @@
 			</tr>
 		{% else %}
 			<tr>
-				<td colspan="5">no records found</td>
+				<td colspan="5">{{ 'app.item.event.none'|trans }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

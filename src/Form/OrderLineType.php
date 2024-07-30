@@ -15,14 +15,15 @@ class OrderLineType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('quantity')
-            ->add('order', EntityType::class, [
-                'class' => Order::class,
-'choice_label' => 'id',
+            ->add('quantity', null, [
+                'label_format' => 'app.fields.order_line.%name%.label',
             ])
             ->add('item', EntityType::class, [
                 'class' => Item::class,
-'choice_label' => 'id',
+                'choice_label' => function(Item $item): string {
+                    return $item->getTitle() . ' ' . ($item->getPrice() ? number_format($item->getPrice(), 2, ',') : '(non vendu)');
+                },
+                'label_format' => 'app.fields.order_line.%name%.label',
             ])
         ;
     }

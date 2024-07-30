@@ -16,7 +16,7 @@ class OrderType extends AbstractType
         $builder
             ->add('lines', CollectionType::class, [
                 'entry_type' => OrderLineType::class,
-                'label' => false,
+                'label_format' => 'app.fields.order.%name%.label',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
