@@ -9,30 +9,24 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
-class Item implements \JsonSerializable
+class Item extends DisplayableItem implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
-
-    #[ORM\Column(length: 7)]
-    private ?string $label = null;
-
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $price = null;
-
-    #[ORM\Column(length: 7, nullable: true)]
-    private ?string $colour = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $quantity = null;
 
     #[ORM\Column]
     private ?bool $ticket = null;
+
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
+    private ?Category $category = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subItems')]
     private ?self $packedIn = null;
@@ -54,30 +48,6 @@ class Item implements \JsonSerializable
         return $this->id;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getLabel(): ?string
-    {
-        return $this->label;
-    }
-
-    public function setLabel(string $label): static
-    {
-        $this->label = $label;
-
-        return $this;
-    }
-
     public function getPrice(): ?int
     {
         return $this->price;
@@ -86,18 +56,6 @@ class Item implements \JsonSerializable
     public function setPrice(?int $price): static
     {
         $this->price = $price;
-
-        return $this;
-    }
-
-    public function getColour(): ?string
-    {
-        return $this->colour;
-    }
-
-    public function setColour(?string $colour): static
-    {
-        $this->colour = $colour;
 
         return $this;
     }
@@ -122,6 +80,18 @@ class Item implements \JsonSerializable
     public function setTicket(bool $ticket): static
     {
         $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

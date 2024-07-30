@@ -15,9 +15,10 @@
 					<a class="nav-link" href="{{ path('production_index') }}">{{ 'app.menu.production'|trans }}</a>
 				</li>
 				<li class="nav-item dropdown">
-					<a href="#" class="nav-link dropdown-toggle{% if 'item' in app.current_route %} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
+					<a href="#" class="nav-link dropdown-toggle{% if 'item' in app.current_route or 'category' in app.current_route %} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
 					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Items">
 						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.menu.items.list'|trans }}</a>
+						<a class="dropdown-item{% if 'category_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('category_index') }}">{{ 'app.menu.items.categories'|trans }}</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.menu.items.event'|trans }}</a>
 						<a class="dropdown-item{% if 'item_prices' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_prices') }}">{{ 'app.menu.items.prices'|trans }}</a>

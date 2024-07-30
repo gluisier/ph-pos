@@ -3,33 +3,30 @@
 namespace App\Form;
 
 use App\Entity\Item;
-use App\Form\Type\NullableColorType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ItemType extends AbstractType
+class ItemType extends CategoryType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
         $builder
-            ->add('title')
-            ->add('label', null, [
-                'attr' => [
-                    'class' => 'form-control-lg',
-                ],
+            ->add('price', null, [
+                'label_format' => 'app.fields.item.%name%.label',
             ])
-            ->add('price', MoneyType::class, [
-                'currency' => 'CHF',
-                'scale' => 0,
-                'input' => 'integer',
-                'html5' => true,
+            ->add('quantity', null, [
+                'label_format' => 'app.fields.item.%name%.label',
             ])
-            ->add('colour', NullableColorType::class)
-            ->add('quantity')
-            ->add('ticket')
-            //->add('packedIn')
+            ->add('ticket', null, [
+                'label_format' => 'app.fields.item.%name%.label',
+            ])
+            ->add('category', null, [
+                'label_format' => 'app.fields.item.%name%.label',
+                'choice_label' => 'title',
+            ])
         ;
     }
 

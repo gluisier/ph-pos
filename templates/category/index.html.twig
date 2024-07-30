@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.category.index.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h2>{{ 'app.category.index.heading'|trans }}</h2>
+
+	<table class="table">
+		<colgroup>
+			<col />
+			<col />
+			<col />
+			<col class="col-1" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{{ 'app.fields.category.title.label'|trans }}</th>
+				<th>{{ 'app.fields.category.label.label'|trans }}</th>
+				<th>{{ 'app.fields.category.colour.label'|trans }}</th>
+				<th><a href="{{ path('category_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for category in categories %}
+			<tr>
+				<td style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});">{{ category.title }}</td>
+				<td class="py-1 h2" style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});">{{ category.label }}</td>
+				<td style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});">{{ category.colour }}</td>
+				<td style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});">
+					<a href="{{ path('category_show', {'id': category.id}) }}" class="btn btn-sm btn-outline-info">{{ 'global.action.show'|trans }}</a>
+					<a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="5">{{ 'app.category.index.none'|trans }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

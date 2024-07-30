@@ -31,19 +31,22 @@ global:
 app:
   fields:
     id: ID
-    item:
+    category:
       title:
         label: Titre
       label:
         label: Etiquette
-      price:
-        label: Prix
       colour:
         label: Couleur
+    item:
+      price:
+        label: Prix
       quantity:
         label: Quantité
       ticket:
         label: Contre ticket ?
+      category:
+        label: Catégorie
     user:
       name:
         label: Prénom
@@ -88,6 +91,7 @@ app:
     items:
       heading: &items_heading Articles
       list: Lister
+      categories: &categories_heading Catégories d'articles
       event: Préparation
       prices: Impression des prix
     orders:
@@ -113,6 +117,15 @@ app:
       none: *product_none
     print:
       title: &title Liste des prix
+      heading: *title
+
+  category:
+    index:
+      title: &title *categories_heading
+      heading: *title
+      none: Pas de catégorie renseignée
+    new:
+      title: &title Nouvelle catégorie
       heading: *title
 
   sales:

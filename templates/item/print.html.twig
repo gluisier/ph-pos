@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'app.item.print.title'|trans }} | {{ parent() }}{% endblock %}
-{% block stylesheets %}<style media="print">
-        .container {
-            padding: 3rem !important;
-        }}</style>{% endblock %}
 
 {% block body %}
 	<h2 class="d-print-none">{{ 'app.item.print.heading'|trans }}</h2>
@@ -15,11 +11,18 @@
 			<col class="col-1" />
 		</colgroup>
 		<tbody>
+		{% set previousCategoryId = null %}
 		{% for item in items %}
+			{% if item.category and (item.category.id != previousCategoryId) %}
+			<tr>
+				<th class="h1" colspan="2">{{ item.category.title }}</th>
+			</tr>
+			{% endif %}
 			<tr>
 				<td>{{ item.title }}</td>
 				<td class="text-end">{{ item.price|number_format(2, ',') }}</td>
 			</tr>
+			{%- set previousCategoryId = (item.category ? item.category.id : null) -%}
 		{% else %}
 			<tr>
 				<td colspan="5">{{ 'app.item.print.none'|trans }}</td>
