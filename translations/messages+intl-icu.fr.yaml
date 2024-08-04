@@ -31,7 +31,7 @@ global:
 app:
   fields:
     id: ID
-    category:
+    category: &category
       title:
         label: Titre
       label:
@@ -39,6 +39,7 @@ app:
       colour:
         label: Couleur
     item:
+      <<: *category
       price:
         label: Prix
       quantity:
