@@ -1,6 +1,6 @@
 # 🎪 ᴾᴴPOS
 
-A web PHP/Symfony mix Point Of Sales (POS) / ERP application.
+A web PHP/Symfony mix Point Of Service (POS) / ERP application.
 
 This was created after many local events, where selling various items such as beverages and usual dishes led to a wish of statistics.
 
@@ -17,7 +17,7 @@ As web pages, the application is aimed to be responsive.
 #### PHP
 
 Dig through [composer.json](./composer.json) for PHP version and extension requirements.  
-For PHP server settings, this was tested with 30 seconds maximum execution time and 128 Mo of maximal execution memory.
+For PHP server settings, this was tested with 30 seconds maximum execution time and 128 Mo of maximal execution memory, with an Apache 2.4 server.
 
 #### Database
 
@@ -28,13 +28,15 @@ The application relies on a database to work, to save items and users to the lea
 If using a common and up-to-date browser, nothing should cause problems. Yet, if you want to be sure, you may check the points below.  
 Instead of an icon library, Unicode emojis are used and encouraged for item labels. _Please note that therefore, their design differs between OSes and even browsers._
 
+Libraries are loaded through [&lt;cdnjs&gt;](https://cdnjs.com/).
+
 ##### JavaScript
 For the full application to work, your browser should support :
 
-- BroadcastChannel object, on the sales page, for sales summary functionnality ;
+- BroadcastChannel object, on the sales page, for sales summary functionnality (authenticated access only) ;
 - EventSource object, on the production page, to get sales updates.
 
-The application also uses [Alpine.js](//alpinejs.dev/) to better handle dynamic updates on various pages.
+The application also uses [Alpine.js](//alpinejs.dev/) to better handle dynamic updates on various pages and some layout drawings.
 
 ##### CSS
 The application uses Bootstrap 5.3, which contains code, workarounds or shims to have everything working on up-to-date browsers.
