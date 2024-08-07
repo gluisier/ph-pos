@@ -7,12 +7,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<meta http-equiv="Content-Language" content="{{ app.request.locale }}" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-		{% block stylesheets %}<style>
-		input[type="number"] {
-			text-align: right !important;
-			appearance: searchfield;
-		}
-		</style>{% endblock %}
+		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+		{% block stylesheets %}{% endblock %}
 	</head>
 	<body>
 		{% block menu %}{{ include('menu.html.twig') }}{% endblock %}
