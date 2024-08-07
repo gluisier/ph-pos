@@ -1,7 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'app.sales.title'|trans }} | {{ parent() }}{% endblock %}
-
+{% block stylesheets %}{{ parent() }}
+		<style>
+		.item {
+			user-select: none;
+		}
+		</style>{% endblock %}
 {% block container_type %}container-fluid{% endblock %}
 
 {% block menu %}{% endblock %}
