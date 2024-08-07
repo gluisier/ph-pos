@@ -173,11 +173,12 @@
 		});
 	});
 
-	document.querySelector('[type="reset"]').addEventListener('click', event => {
+	document.querySelector('form').addEventListener('reset', event => {
 		for (id in order) {
 			order[id].quantity = 0;
 		}
-		{%- if is_granted('IS_AUTHENTICATED_FULLY') -%}
+		document.querySelector('.categories :default').dispatchEvent(new Event('change'));
+		{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 		debounceBroadcast('clear', {});
 		{%- endif ~%}
 	});
