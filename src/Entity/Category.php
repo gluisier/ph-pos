@@ -51,7 +51,7 @@ class Category extends DisplayableItem
     {
         if ($this->items->removeElement($item)) {
             // set the owning side to null (unless already changed)
-            if ($item->getPackedIn() === $this) {
+            if ($item->getCategory() === $this) {
                 $item->setCategory(null);
             }
         }
