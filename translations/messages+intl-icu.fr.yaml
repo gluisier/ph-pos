@@ -35,19 +35,42 @@ app:
       title:
         label: Titre
       label:
-        label: Etiquette
+        label:
+          short: 🏷️
+          long: Etiquette
       colour:
         label: Couleur
+      public:
+        label:
+          short: 📖
+          long: Sur la carte
     item:
       <<: *category
       price:
         label: Prix
       quantity:
-        label: Quantité
+        label: Quantité à disposition
       ticket:
-        label: Contre ticket ?
+        label:
+          short: 🎟️
+          long: Contre ticket
+      available:
+        label:
+          short: 💸
+          long: Disponible à la vente
+      separatelySellable:
+        label: Peut être vendu séparément
       category:
-        label: Catégorie
+        placeholder: Aucune
+        label:
+          short: 📊
+          long: Catégorie
+      variantOf:
+        label: Variante de
+      attributes:
+        label: Attributs
+      composedOf:
+        label: Composé de
     user:
       name:
         label: Prénom
@@ -79,12 +102,12 @@ app:
     heading: *title
     user: Utilisateur
     password: Mot de passe
-    register: Pas d'accès ? <a href="{url}">S'enregistrer</a>
+    register: Pas d’accès ? <a href="{url}">S’enregistrer</a>
 
   register:
     title: &title Enregistrement
     heading: *title
-    success: Votre accès est enregistré. Contactez le responsable pour l'activer, pouvoir vous connecter et avoir accès à toutes les fonctionnalités
+    success: Votre accès est enregistré. Contactez le responsable pour l’activer, pouvoir vous connecter et avoir accès à toutes les fonctionnalités
   
   menu:
     sales: &sales_heading Ventes
@@ -92,7 +115,7 @@ app:
     items:
       heading: &items_heading Articles
       list: Lister
-      categories: &categories_heading Catégories d'articles
+      categories: &categories_heading Catégories d’articles
       event: Préparation
       prices: Impression des prix
     orders:
@@ -114,11 +137,12 @@ app:
       heading: *title
     event:
       title: Evénement
-      heading: Préparation d'un événement
+      heading: Préparation d’un événement
       none: *product_none
     print:
       title: &title Liste des prix
       heading: *title
+      with: 'avec {variator}'
 
   category:
     index:

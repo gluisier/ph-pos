@@ -3,25 +3,59 @@
 {% block title %}{{ item.title }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ item.title }}</h2>
+	<h2>{{ item.label }}
+		{{ item.title }}</h2>
 
 	<table class="table">
 		<tbody>
+			{% if item.variantOf is not none %}
 			<tr>
-				<th>{{ 'app.fields.item.title.label'|trans }}</th>
-				<td>{{ item.title }}</td>
+				<th>{{ 'app.fields.item.variantOf.label'|trans }}</th>
+				<td>{{ item.variantOf.label ~ ' ' ~ item.variantOf.title }}
+					<a href="{{ path('item_show', {'id': item.variantOf.id}) }}" class="btn btn-sm btn-outline-info float-end">{{ 'global.action.show'|trans }}</a></td>
 			</tr>
-			<tr>
-				<th>{{ 'app.fields.item.label.label'|trans }}</th>
-				<td>{{ item.label }}</td>
-			</tr>
+			{% endif %}
 			<tr>
 				<th>{{ 'app.fields.item.price.label'|trans }}</th>
-				<td>{{ item.price }}</td>
+				<td>{{ item.price|number_format(2, ',') }}</td>
 			</tr>
+			{% for variant in item.variants %}
+			<tr>
+				<th>{{ variant.label ~ ' ' ~ variant.title }}</th>
+				<td>{{ variant.price|number_format(2, ',') }}
+					<a href="{{ path('item_show', {'id': variant.id}) }}" class="btn btn-sm btn-outline-info float-end">{{ 'global.action.show'|trans }}</a></td>
+			</tr>
+			{% endfor %}
+			{% if not item.composedOf.empty %}
+			<tr>
+				<th colspan="2">{{ 'app.fields.item.composedOf.label'|trans }}</th>
+			</tr>
+			{% for composant in item.composedOf %}
+			<tr>
+				<th>{{ composant.label ~ ' ' ~ composant.title }}</th>
+				<td>{{ composant.price|number_format(2, ',') }}</td>
+			</tr>
+			{% endfor %}
+			{% endif %}
 			<tr>
 				<th>{{ 'app.fields.item.colour.label'|trans }}</th>
-				<td>{{ item.colour }}</td>
+				<td style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ item.colour }}</code></td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.item.ticket.label.long'|trans }} ({{ 'app.fields.item.ticket.label.short'|trans }})</th>
+				<td>{{ ('global.' ~ (item.ticket ? 'on' : 'off'))|trans }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.item.available.label.long'|trans }} ({{ 'app.fields.item.available.label.short'|trans }})</th>
+				<td>{{ ('global.' ~ (item.available ? 'on' : 'off'))|trans }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.item.public.label.long'|trans }} ({{ 'app.fields.item.public.label.short'|trans }})</th>
+				<td>{{ ('global.' ~ (item.public ? 'on' : 'off'))|trans }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.item.separatelySellable.label'|trans }}</th>
+				<td>{{ ('global.' ~ (item.separatelySellable ? 'on' : 'off'))|trans }}</td>
 			</tr>
 		</tbody>
 	</table>

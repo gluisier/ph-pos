@@ -9,3 +9,7 @@
 
 	<a href="{{ path('item_index') }}">{{ 'global.action.list'|trans }}</a>
 {% endblock %}
+
+{% block javascripts %}
+		<script src="{{ asset('js/collection_handler.js')}}"></script>
+{% endblock %}

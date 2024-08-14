@@ -18,13 +18,16 @@ class CategoryType extends AbstractType
                 'label_format' => 'app.fields.category.%name%.label',
             ])
             ->add('label', null, [
-                'label_format' => 'app.fields.category.%name%.label',
+                'label_format' => 'app.fields.category.%name%.label.long',
                 'attr' => [
                     'class' => 'form-control-lg',
                 ],
             ])
             ->add('colour', ColorType::class, [
                 'label_format' => 'app.fields.category.%name%.label',
+            ])
+            ->add('public', null, [
+                'label_format' => 'app.fields.item.%name%.label.long',
             ])
         ;
     }

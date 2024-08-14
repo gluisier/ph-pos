@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +20,25 @@ class CategoryRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Category::class);
+    }
+
+    public function findForPrices()
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb ->leftJoin('i.item', 'i', Join::WITH, $qb->expr()->andX(
+                $qb->expr()->eq('i.public', $qb->expr()->literal(true))),
+                $qb->expr()->isNull('i.variantOf')
+            )->addSelect('c')
+            ->leftJoin('i.composedOf', 'packed')->addSelect('packed')
+            ->leftJoin('i.variants', 'variant', Join::WITH, $qb->expr()->andX(
+                $qb->expr()->eq('variant.available', $qb->expr()->literal(true)),
+                $qb->expr()->eq('variant.separatelySellable', $qb->expr()->literal(true))
+            ))->addSelect('variant')
+            ->where($qb->expr()->eq('c.public', $qb->expr()->literal(true)))
+            ->orderBy('c.position')
+            ->addOrderBy('i.position');
+
+        return $qb->getQuery()->getResult();
     }
 
 //    /**

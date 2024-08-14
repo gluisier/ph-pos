@@ -25,22 +25,58 @@ class Item extends DisplayableItem implements \JsonSerializable
     #[ORM\Column]
     private ?bool $ticket = null;
 
+    #[ORM\Column]
+    private ?bool $available = null;
+
+    #[ORM\Column]
+    private ?bool $separatelySellable = null;
+
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
     private ?Category $category = null;
-
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subItems')]
-    private ?self $packedIn = null;
-
-    #[ORM\OneToMany(mappedBy: 'packedIn', targetEntity: self::class)]
-    private Collection $subItems;
-
+    
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'variants')]
+    private ?self $variantOf = null;
+    
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'variantOf', indexBy: 'id')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $variants;
+    
     #[ORM\OneToMany(mappedBy: 'item', targetEntity: OrderLine::class)]
     private Collection $orders;
+    
+    /**
+     * @var Collection<int, Category>
+     */
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'variants')]
+    #[ORM\JoinTable('item_attribute')]
+    #[ORM\JoinColumn(name: 'item_id')]
+    #[ORM\InverseJoinColumn(name: 'attribute_id')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $attributes;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'composing', indexBy: 'id')]
+    #[ORM\JoinTable('composition')]
+    #[ORM\JoinColumn(name: 'compound_id')]
+    #[ORM\InverseJoinColumn(name: 'component_id')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $composedOf;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'composedOf')]
+    private Collection $composing;
 
     public function __construct()
     {
-        $this->subItems = new ArrayCollection();
+        $this->variants = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->composedOf = new ArrayCollection();
+        $this->composing = new ArrayCollection();
+        $this->attributes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,6 +120,30 @@ class Item extends DisplayableItem implements \JsonSerializable
         return $this;
     }
 
+    public function isAvailable(): ?bool
+    {
+        return $this->available;
+    }
+
+    public function setAvailable(bool $available): static
+    {
+        $this->available = $available;
+
+        return $this;
+    }
+
+    public function isSeparatelySellable(): ?bool
+    {
+        return $this->separatelySellable;
+    }
+
+    public function setSeparatelySellable(bool $separatelySellable): static
+    {
+        $this->separatelySellable = $separatelySellable;
+
+        return $this;
+    }
+
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -96,14 +156,14 @@ class Item extends DisplayableItem implements \JsonSerializable
         return $this;
     }
 
-    public function getPackedIn(): ?self
+    public function getVariantOf(): ?self
     {
-        return $this->packedIn;
+        return $this->variantOf;
     }
 
-    public function setPackedIn(?self $packedIn): static
+    public function setVariantOf(?self $variantOf): static
     {
-        $this->packedIn = $packedIn;
+        $this->variantOf = $variantOf;
 
         return $this;
     }
@@ -111,27 +171,27 @@ class Item extends DisplayableItem implements \JsonSerializable
     /**
      * @return Collection<int, self>
      */
-    public function getSubItems(): Collection
+    public function getVariants(): Collection
     {
-        return $this->subItems;
+        return $this->variants;
     }
 
-    public function addSubItem(self $subItem): static
+    public function addVariant(self $subItem): static
     {
-        if (!$this->subItems->contains($subItem)) {
-            $this->subItems->add($subItem);
-            $subItem->setPackedIn($this);
+        if (!$this->variants->contains($subItem)) {
+            $this->variants->add($subItem);
+            $subItem->setVariantOf($this);
         }
 
         return $this;
     }
 
-    public function removeSubItem(self $subItem): static
+    public function removeVariant(self $subItem): static
     {
-        if ($this->subItems->removeElement($subItem)) {
+        if ($this->variants->removeElement($subItem)) {
             // set the owning side to null (unless already changed)
-            if ($subItem->getPackedIn() === $this) {
-                $subItem->setPackedIn(null);
+            if ($subItem->getVariantOf() === $this) {
+                $subItem->setVariantOf(null);
             }
         }
 
@@ -166,6 +226,95 @@ class Item extends DisplayableItem implements \JsonSerializable
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    public function addAttribute(Category $attribute): static
+    {
+        if (!$this->attributes->contains($attribute)) {
+            $this->attributes->add($attribute);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribute(Category $attribute): static
+    {
+        $this->attributes->removeElement($attribute);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getComposedOf(): Collection
+    {
+        return $this->composedOf;
+    }
+
+    public function addComposedOf(self $composedOf): static
+    {
+        if (!$this->composedOf->contains($composedOf)) {
+            $this->composedOf->add($composedOf);
+        }
+
+        return $this;
+    }
+
+    public function removeComposedOf(self $composedOf): static
+    {
+        $this->composedOf->removeElement($composedOf);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getComposing(): Collection
+    {
+        return $this->composing;
+    }
+
+    public function addComposing(self $composing): static
+    {
+        if (!$this->composing->contains($composing)) {
+            $this->composing->add($composing);
+            $composing->addComposedOf($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComposing(self $composing): static
+    {
+        if ($this->composing->removeElement($composing)) {
+            $composing->removeComposedOf($this);
+        }
+
+        return $this;
+    }
+
+    public function areVariantsPriceImmutable(): bool
+    {
+        if ($this->variants->isEmpty()) {
+            return true;
+        }
+
+        $firstPrice = $this->variants->first()->getPrice();
+        $result = $this->variants->findFirst(function (mixed $key, Item $item) use ($firstPrice) {
+            return $item->getPrice() != $firstPrice;
+        });
+
+        return empty($result);
     }
 
     public function jsonSerialize(): mixed

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\MappedSuperclass;
 
@@ -16,6 +17,12 @@ abstract class DisplayableItem
 
     #[ORM\Column(length: 7, nullable: true)]
     protected ?string $colour = null;
+
+    #[ORM\Column]
+    private ?bool $public = null;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $position = null;
 
 
     public function getTitle(): ?string
@@ -50,6 +57,30 @@ abstract class DisplayableItem
     public function setColour(?string $colour): static
     {
         $this->colour = $colour;
+
+        return $this;
+    }
+
+    public function isPublic(): ?bool
+    {
+        return $this->public;
+    }
+
+    public function setPublic(bool $public): static
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
 
         return $this;
     }

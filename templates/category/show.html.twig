@@ -3,7 +3,8 @@
 {% block title %}{{ category.title }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ category.title }}</h2>
+	<h2>{{ category.label }}
+		{{ category.title }}</h2>
 
 	<table class="table">
 		<tbody>
@@ -12,12 +13,16 @@
 				<td>{{ category.title }}</td>
 			</tr>
 			<tr>
-				<th>{{ 'app.fields.category.label.label'|trans }}</th>
+				<th>{{ 'app.fields.category.label.label.long'|trans }}</th>
 				<td>{{ category.label }}</td>
 			</tr>
 			<tr>
 				<th>{{ 'app.fields.category.colour.label'|trans }}</th>
-				<td>{{ category.colour }}</td>
+				<td style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ category.colour }}</code></td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.category.public.label.long'|trans }} ({{ 'app.fields.category.public.label.short'|trans }})</th>
+				<td>{{ ('global.' ~ (category.public ? 'on' : 'off'))|trans }}</td>
 			</tr>
 		</tbody>
 	</table>

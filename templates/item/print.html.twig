@@ -2,32 +2,94 @@
 
 {% block title %}{{ 'app.item.print.title'|trans }} | {{ parent() }}{% endblock %}
 
+{% block stylesheets %}
+		<style media="all">
+		caption {
+			caption-side: top;
+		}
+		</style>
+		<style media="print">
+		table {
+			page-break-inside: avoid;
+		}
+		</style>
+{% endblock %}
+
 {% block body %}
 	<h2 class="d-print-none">{{ 'app.item.print.heading'|trans }}</h2>
 
 	<table class="table table-borderless">
+		{%- set previousItem = {'id': null, 'price': null, 'category': {'id': null}, 'variantOf': {'id': null}} -%}
+		{%- for item in items -%}
+			{%- if (item.category and previousItem.category and (item.category.id != previousItem.category.id))
+				or	(item.category is none and previousItem.category is not none)
+				or	(item.category is not none and previousItem.category is none) %}
+				{% if not loop.first %}
+		</tbody>
+	</table>
+	<table class="table table-borderless">
+				{% endif %}
+				{%- if item.category %}
+		<caption class="h1 text-center">{{ item.category.title }}</caption>
+				{%~ endif %}
 		<colgroup>
+			<col class="col-1" />
 			<col />
 			<col class="col-1" />
 		</colgroup>
 		<tbody>
-		{% set previousCategoryId = null %}
-		{% for item in items %}
-			{% if item.category and (item.category.id != previousCategoryId) %}
+			{%- endif -%}
+			{%- if item.variants.count == 1 and not item.separatelySellable -%}
+				{%- set item = item.variants.first -%}
+			{%- endif %}
 			<tr>
-				<th class="h1" colspan="2">{{ item.category.title }}</th>
-			</tr>
-			{% endif %}
-			<tr>
-				<td>{{ item.title }}</td>
+			{% if item.areVariantsPriceImmutable -%}
+				<td colspan="2">{{ item.title }}</td>
 				<td class="text-end">{{ item.price|number_format(2, ',') }}</td>
+			{% else -%}
+				<td colspan="3">{{ item.title }}</td>
+			{% endif -%}
 			</tr>
-			{%- set previousCategoryId = (item.category ? item.category.id : null) -%}
-		{% else %}
+			{% for i,attribute in item.attributes %}
+			<!-- Attribute {{ i }}, {{ attribute.title }} -->
 			<tr>
-				<td colspan="5">{{ 'app.item.print.none'|trans }}</td>
+				{% if attribute.items.count == 1 %}
+					<!-- single variator -->
+					{% if attribute.items.first.price == item.price %}
+					<!-- same price -->
+				<td colspan="3" class="fst-italic pt-0">(
+					{{- attribute.items.first.title -}}
+				)</td>
+					{% endif %}
+				{% elseif attribute.items.count > 1 %}<!-- multiple variators -->
+					{% if attribute.areItemsPriceImmutable %}
+				<td colspan="3" class="fst-italic pt-0">(
+						{%- for variator in attribute.items -%}
+							{{- variator.title }}{% if not loop.last %}, {% endif -%}
+						{% endfor -%}
+				)</td>
+					{% else %}
+						{%- for variator in attribute.items -%}
+							{% if not loop.first %}
 			</tr>
-		{% endfor %}
+			<tr>
+							{% endif %}
+						<td class="pt-0"></td>
+						<td class="pt-0">{{ 'app.item.print.with'|trans({'variator': variator.title|lower }) }}</td>
+						<td class="text-end pt-0">{{ (item.price + variator.price)|number_format(2, ',') }}</td>
+						{% endfor -%}
+					{% endif %}
+				{% endif %}
+			</tr>
+			{% endfor %}
+			{% if loop.last -%}
 		</tbody>
+			{%- endif %}
+			{% set previousItem = item %}
+		{% else %}
+		<tr>
+			<td colspan="2">{{ 'app.item.print.none'|trans }}</td>
+		</tr>
+		{% endfor %}
 	</table>
 {% endblock %}

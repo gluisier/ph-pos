@@ -122,7 +122,7 @@ class ItemController extends AbstractController
     public function print(Request $request, ItemRepository $itemRepository)
     {
         return $this->render('item/print.html.twig', [
-            'items' => $itemRepository->findSellable(),
+            'items' => $itemRepository->findForPrices(),
         ]);
     }
 }
