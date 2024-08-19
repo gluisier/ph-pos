@@ -20,7 +20,7 @@ class MainController extends AbstractController
     public function sales(Request $request, EntityManagerInterface $entityManager): Response
     {
         $order = new Order();
-        foreach ($entityManager->getRepository(Item::class)->findSellable() as $item) {
+        foreach ($entityManager->getRepository(Item::class)->findForSales() as $item) {
             $order->addLine(new OrderLine($order, $item));
         }
         $formParameters = [];

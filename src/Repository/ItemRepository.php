@@ -25,13 +25,12 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[] Returns an array of Item objects
      */
-    public function findSellable(): array
+    public function findForSales(): array
     {
         $qb = $this->createQueryBuilder('i');
         $qb ->where($qb->expr()->eq('i.available', $qb->expr()->literal(true)))
             ->andWhere($qb->expr()->eq('i.separatelySellable', $qb->expr()->literal(true)))
-            ->orderBy('i.category')
-            ->addOrderBy('i.id');
+            ->addOrderBy('i.position');
 
         return $qb->getQuery()->getResult();
     }
@@ -54,17 +53,6 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[] Returns an array of Item objects
      */
-    public function findPubliclyAvailable(): array
-    {
-        $qb = $this->createQueryBuilder('i');
-        $qb ->where($qb->expr()->eq('i.public', $qb->expr()->literal(true)))
-            ->andWhere($qb->expr()->eq('i.available', $qb->expr()->literal(true)))
-            ->orderBy('i.category')
-            ->addOrderBy('i.id');
-
-        return $qb->getQuery()->getResult();
-    }
-
     public function findForPrices()
     {
         $qb = $this->createQueryBuilder('i');
