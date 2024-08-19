@@ -13,14 +13,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class MainController extends AbstractController
 {
     #[Route('/sales', name: 'sales_index', methods: ['GET', 'POST'])]
-    public function sales(Request $request, EntityManagerInterface $entityManager): Response
+    public function sales(Request $request, EntityManagerInterface $entityManager, ?UserInterface $user): Response
     {
         $order = new Order();
-        foreach ($entityManager->getRepository(Item::class)->findForSales() as $item) {
+        foreach ($entityManager->getRepository(Item::class)->findForSales($user !== null) as $item) {
             $order->addLine(new OrderLine($order, $item));
         }
         $formParameters = [];

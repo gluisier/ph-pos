@@ -25,12 +25,19 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[] Returns an array of Item objects
      */
-    public function findForSales(): array
+    public function findForSales(bool $authenticated): array
     {
         $qb = $this->createQueryBuilder('i');
-        $qb ->where($qb->expr()->eq('i.available', $qb->expr()->literal(true)))
+        $qb ->leftJoin('i.attributes', 'a')->addSelect('a')
+            ->leftJoin('i.composedOf', 'p')->addSelect('p')
+            ->leftJoin('i.variants', 'v')->addSelect('v')
+            ->where($qb->expr()->eq('i.available', $qb->expr()->literal(true)))
             ->andWhere($qb->expr()->eq('i.separatelySellable', $qb->expr()->literal(true)))
             ->addOrderBy('i.position');
+
+        if (!$authenticated) {
+            $qb->andWhere($qb->expr()->eq('i.public', $qb->expr()->literal(true)));
+        }
 
         return $qb->getQuery()->getResult();
     }

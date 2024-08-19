@@ -1,37 +1,52 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'app.sales.title'|trans }} | {{ parent() }}{% endblock %}
+
 {% block stylesheets %}{{ parent() }}
 		<style>
 		.item {
 			user-select: none;
 		}
-		</style>{% endblock %}
+		</style>
+{%- endblock %}
+
 {% block container_type %}container-fluid{% endblock %}
 
 {% block menu %}{% endblock %}
 
 {% block _order_simple_lines_entry_row %}
-            <div data-layout-toggle="item col" data-category-id="{{ form.vars.data.item.category ? form.vars.data.item.category.id }}">
-				<div style="{% if form.vars.data.item.colour %}background-color: {{ form.vars.data.item.colour }} !important; {% endif %}color: var(--bs-{{ form.vars.data.item.colour ? (is_dark(form.vars.data.item.colour) ? 'light' : 'dark') : 'body-color' }});" title="{{ form.vars.data.item.title }}" data-layout-toggle="card h-100">
-					<div class="row" data-layout-toggle="card-body grid">
-						<label for="{{ form.quantity.vars.id }}" class="col-4 col-sm-3 col-md-2 h1 text-center item" data-layout-toggle="card-title h1 w-100 text-center item">{{ form.vars.data.item.label }}</label>
-						<div class="item-text col-sm-3 col-md-4 d-none d-sm-block item d-flex align-self-center" data-layout-toggle="item-text text-center item">{{ form.vars.data.item.title }}</div>
-						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text col-4 text-end item align-self-center float-start pe-1 py-1">{{ form.vars.data.item.price|number_format(2, ',') }}</div>
+{%- set item = form.vars.data.item %}
+            <div class="item-root
+					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none" data-is-variant="true
+					{%- elseif item.variants.count > 1 -%}
+						" data-has-variants="true
+					{%- endif -%}
+				" data-id="{{ item.id }}" data-layout-toggle="item-root col
+					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none{% endif -%}
+				" data-category-id="
+					{{- ((item.isVariant ? item.variantOf.id) ~ ' ' ~ (item.category and item.attributes.empty ? item.category.id))|trim -}}
+			">
+				<div style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}{% if item.isPack %}{{ pack_gradient(item.composedOf) }}; {% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});" title="{{ item.title }}" data-layout-toggle="card h-100">
+					<div class="row" data-layout-toggle="card-body">
+						<label for="{{ form.quantity.vars.id }}" class="col-4 col-sm-3 col-md-2 h1 text-center item" data-layout-toggle="card-title h1 w-100 text-center item">{{ item.label }}</label>
+						<div class="item-text col-sm-3 col-md-4 d-none d-sm-block item d-flex align-self-center" data-layout-toggle="item-text text-center item mb-2" {% if item.isPack or item.variants.count > 1 %} style="text-shadow: 0 0 3px var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'dark' : 'light') : 'body-color' }})"{% endif %}>{{ item.title }}</div>
+						{% if item.attributes.empty or item.variants.empty %}
+						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text col-4 text-end item align-self-center float-start pe-1 py-1">{{ item.price|number_format(2, ',') }}</div>
 						<div class="col-2 px-0 d-flex align-items-center" data-layout-toggle="card-text col-8 ps-0 float-end ps-1">
-							{% if form.vars.data.item.ticket %}
+							{% if item.ticket %}
 							<div class="input-group input-group-sm">
 							{% endif %}
 							{{- form_widget(form.quantity, {'attr': {
 								'class': 'form-control-sm text-end',
-								'style': 'background-color: inherit; color: ' ~ (is_dark(form.vars.data.item.colour) ? '#ffffff' : 'inherit') ~ '; min-width: 3em;',
-								'data-item': form.vars.data.item|json_encode}}) -}}
-							{% if form.vars.data.item.ticket %}
-								<span class="input-group-text border-4 py-0 p-1" style="{% if form.vars.data.item.colour %}background-color: {{ form.vars.data.item.colour }} !important; {% endif %}color: var(--bs-{{ form.vars.data.item.colour ? (is_dark(form.vars.data.item.colour) ? 'light' : 'dark') : 'body-color' }});">🎟️</span>
+								'style': 'background-color: inherit; color: ' ~ (is_dark(item.colour) ? '#ffffff' : 'inherit') ~ '; min-width: 3em;',
+								'data-item': item|json_encode}}) -}}
+							{% if item.ticket %}
+								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">🎟️</span>
 							</div>
 							{% endif %}
 						</div>
 						<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="col-3 col-sm-2 text-end item item-total align-self-center" data-layout-toggle="card-text text-end item item-total w-100 align-self-center pe-2">0,00</output>
+						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -75,8 +90,8 @@
 			</div>
 			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}<button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button>
 				{% endif %}{{ 'app.sales.total'|trans }}</div>
-			<output name="totalItems" id="totalItems" class="col-1 text-end">0</output>
-			<output name="totalPrice" id="totalPrice" class="col-3 text-end">0,00</output>
+			<output name="totalItems" id="totalItems" class="col-2 text-end">0</output>
+			<output name="totalPrice" id="totalPrice" class="col-2 text-end">0,00</output>
 		</div>
 	{{ form_end(form) }}
 {% endblock %}
@@ -88,48 +103,84 @@
 	{% endif -%}
 	let previousCategory = document.querySelectorAll('.categories select, .categories [type="checkbox"]:checked, .categories [type="radio"]:checked').value;
 	const order = {};
-	Array.from(document.querySelectorAll('[type="number"]')).forEach( input => {
+	document.querySelectorAll('[type="number"]').forEach( input => {
 		const item = JSON.parse(input.dataset.item);
 		item.quantity = 0;
 		order[input.id] = item;
 	});
 
+	const categoryChangeListener = function (event) {
+		if (event.target.value) {
+			document.querySelectorAll('[data-category-id]:not([data-category-id~="' + event.target.value +'"])').forEach( item => {
+				item.classList.add('d-none');
+			});
+			document.querySelectorAll('[data-category-id~="' + event.target.value +'"]').forEach( item => {
+				item.classList.remove('d-none');
+			});
+		} else {
+			document.querySelectorAll('.item-root:not([data-variant-of])').forEach( item => {
+				item.classList.remove('d-none');
+			});
+			document.querySelectorAll('.item-root[data-is-variant]').forEach( item => {
+				item.classList.add('d-none');
+			});
+			document.querySelectorAll('.categories .reset-remove').forEach( toRemove => {
+				toRemove.remove();
+			})
+		}
+		if (!event.target.closest('.reset-remove')) {
+			document.querySelectorAll('.reset-remove').forEach( toRemove => {
+				toRemove.remove();
+			})
+		}
+	}
+
 	Array.from(document.getElementsByClassName('categories')).forEach( container => {
 		container.querySelectorAll('select, [type="checkbox"], [type="radio"]').forEach( input => {
-			input.addEventListener('change', event => {
-				if (event.target.value) {
-					document.querySelectorAll('[data-category-id]:not([data-category-id="' + event.target.value +'"])').forEach( item => {
-						item.classList.add('d-none');
-					});
-					document.querySelectorAll('[data-category-id="' + event.target.value +'"]').forEach( item => {
-						item.classList.remove('d-none');
-					});
-				} else {
-					document.querySelectorAll('[data-category-id]').forEach( item => {
-						item.classList.remove('d-none');
-					});
-				}
-			});
+			input.addEventListener('change', categoryChangeListener);
 		});
 	});
 
 	Array.from(document.getElementsByClassName('item')).forEach( element => {
 		element.addEventListener('click', event => {
-			const input = event.target.parentNode.querySelector('input[type="number"]');
-			switch (document.querySelector('input[name="direction"]:checked').value) {
-				case "-1":
-					input.stepDown();
-					break;
-				default:
-					input.stepUp();
-					break;
+			const itemRoot = event.target.closest('.item-root');
+			const input = itemRoot.querySelector('input[type="number"]');
+			if (input) {
+				switch (document.querySelector('input[name="direction"]:checked').value) {
+					case "-1":
+						input.stepDown();
+						break;
+					default:
+						input.stepUp();
+						break;
+				}
+				input.dispatchEvent(new Event('change'));
+				event.preventDefault();
+			} else {
+				const id = itemRoot.dataset.id;
+				const style = itemRoot.querySelector('[style]').style;
+				const backgroundColor = style.backgroundColor;
+				const backgroundImage = style.backgroundImage;
+				Array.from(document.getElementsByClassName('categories')).forEach( categoriesContainer => {
+					const template = categoriesContainer.firstChild.cloneNode(true);
+					template.classList.add('reset-remove');
+					const input = template.querySelector('select, [type="checkbox"], [type="radio"]');
+					template.querySelector('label').innerText = itemRoot.querySelector('label').innerText;
+					template.querySelector('[value]').value = id;
+					input.value = id;
+					input.checked = true;
+					template.style.backgroundImage = backgroundImage;
+					template.classList.add('rounded');
+					categoriesContainer.append(template);
+					input.style.backgroundColor = backgroundColor;
+					input.addEventListener('change', categoryChangeListener);
+					input.dispatchEvent(new Event('change'));
+				});
 			}
-			input.dispatchEvent(new Event('change'));
-			event.preventDefault();
 			return false;
 		});
 	});
-	Array.from(document.querySelectorAll('input[type="number"]')).forEach( element => {
+	document.querySelectorAll('input[type="number"]').forEach( element => {
 		element.addEventListener('change', event => {
 			const input = event.target;
 			order[input.id].quantity = parseInt(input.value, 10);
