@@ -51,17 +51,14 @@
 			{% endif -%}
 			</tr>
 			{% for i,attribute in item.attributes %}
-			<!-- Attribute {{ i }}, {{ attribute.title }} -->
 			<tr>
 				{% if attribute.items.count == 1 %}
-					<!-- single variator -->
 					{% if attribute.items.first.price == item.price %}
-					<!-- same price -->
 				<td colspan="3" class="fst-italic pt-0">(
 					{{- attribute.items.first.title -}}
 				)</td>
 					{% endif %}
-				{% elseif attribute.items.count > 1 %}<!-- multiple variators -->
+				{% elseif attribute.items.count > 1 %}
 					{% if attribute.areItemsPriceImmutable %}
 				<td colspan="3" class="fst-italic pt-0">(
 						{%- for variator in attribute.items -%}
