@@ -31,6 +31,9 @@ class Item extends DisplayableItem implements \JsonSerializable
     #[ORM\Column]
     private ?bool $separatelySellable = null;
 
+    /** NOT A PERSISTER PROPERTY */
+    private ?bool $pack = null;
+
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
     private ?Category $category = null;
     
@@ -315,6 +318,32 @@ class Item extends DisplayableItem implements \JsonSerializable
         });
 
         return empty($result);
+    }
+
+    public function isVariant(): bool
+    {
+        return (bool)$this->variantOf;
+    }
+
+    public function isPack(): bool
+    {
+        if ($this->pack !== null) {
+            return $this->pack;
+        }
+
+        if ($this->composedOf->isEmpty()) {
+            $this->pack = false;
+
+            return $this->pack;
+        }
+
+        $result = $this->composedOf->filter(function (Item $item) {
+            return $item->separatelySellable;
+        });
+
+        $this->pack = !$result->isEmpty();
+
+        return $this->pack;
     }
 
     public function jsonSerialize(): mixed
