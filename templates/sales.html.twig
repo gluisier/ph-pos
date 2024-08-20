@@ -18,13 +18,11 @@
 {%- set item = form.vars.data.item %}
             <div class="item-root
 					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none" data-is-variant="true
-					{%- elseif item.variants.count > 1 -%}
-						" data-has-variants="true
 					{%- endif -%}
 				" data-id="{{ item.id }}" data-layout-toggle="item-root col
 					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none{% endif -%}
 				" data-category-id="
-					{{- ((item.isVariant ? item.variantOf.id) ~ ' ' ~ (item.category and item.attributes.empty ? item.category.id))|trim -}}
+					{{- ((item.isVariant ? item.variantOf.id) ~ ' ' ~ (item.category and (item.attributes.empty or item.variants.empty) ? item.category.id))|trim -}}
 			">
 				<div style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}{% if item.isPack %}{{ pack_gradient(item.composedOf) }}; {% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});" title="{{ item.title }}" data-layout-toggle="card h-100">
 					<div class="row" data-layout-toggle="card-body">
