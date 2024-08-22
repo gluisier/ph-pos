@@ -139,8 +139,13 @@
 		});
 	});
 
-	Array.from(document.getElementsByClassName('item')).forEach( element => {
+	Array.from(document.getElementsByClassName('item-root')).forEach( element => {
 		element.addEventListener('click', event => {
+			// Handles bubbling from inner elements. From input, dismiss
+			if (event.target.tagName == 'INPUT') {
+				event.stopPropagation();
+				return;
+			}
 			const itemRoot = event.target.closest('.item-root');
 			const input = itemRoot.querySelector('input[type="number"]');
 			if (input) {
