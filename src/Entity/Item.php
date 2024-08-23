@@ -349,12 +349,14 @@ class Item extends DisplayableItem implements \JsonSerializable
     public function jsonSerialize(): mixed
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'label' => $this->label,
             'price' => $this->price,
             'colour' => $this->colour,
             'quantity' => $this->quantity,
             'ticket' => $this->ticket,
+            'pack' => $this->isPack(),
         ];
     }
 }

@@ -19,7 +19,7 @@
             <div class="item-root
 					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none" data-is-variant="true
 					{%- endif -%}
-				" data-id="{{ item.id }}" data-layout-toggle="item-root col
+				" data-id="{{ item.id }}" data-content-ids="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}" data-layout-toggle="item-root col
 					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none{% endif -%}
 				" data-category-id="
 					{{- ((item.isVariant ? item.variantOf.id) ~ ' ' ~ (item.category and (item.attributes.empty or item.variants.empty) ? item.category.id))|trim -}}
@@ -69,7 +69,7 @@
 			'help': '<hr class="row mt-3 mb-0" />',
 			'help_html': true,
 		}) }}
-		{{ form_widget(form.lines, {'attr': {'data-layout-toggle': 'row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 align-middle'}}) }}
+		{{ form_widget(form.lines, {'attr': {'data-layout-toggle': 'row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2'}}) }}
 		<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
 			<hr />
 			<div class="col-5">
@@ -164,6 +164,12 @@
 				}
 				input.dispatchEvent(new Event('change'));
 				event.preventDefault();
+				const composedOf = Object.values(JSON.parse(itemRoot.dataset.contentIds));
+				if (composedOf.length > 1) {
+					document.querySelectorAll('[data-id="' + composedOf.join('"], [data-id="') + '"]').forEach( element => {
+						element.dispatchEvent(new Event('click'));
+					});
+				}
 			} else {
 				const id = itemRoot.dataset.id;
 				const style = itemRoot.querySelector('[style]').style;
@@ -198,8 +204,10 @@
 				amount: 0
 			};
 			for (const id in order) {
-				totals.quantity += order[id].quantity;
-				totals.amount += order[id].quantity * order[id].price;
+				if (!order[id].pack) {
+					totals.quantity += order[id].quantity;
+					totals.amount += order[id].quantity * order[id].price;
+				}
 			};
 			document.getElementById('totalItems').value = totals.quantity;
 			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
