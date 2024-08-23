@@ -107,7 +107,7 @@
 		order[input.id] = item;
 	});
 
-	const categoryChangeListener = function (event) {
+	const categoryChangeListener = (event) => {
 		if (event.target.value) {
 			document.querySelectorAll('[data-category-id]:not([data-category-id~="' + event.target.value +'"])').forEach( item => {
 				item.classList.add('d-none');
@@ -276,9 +276,9 @@
 	});
 	{%- if is_granted('IS_AUTHENTICATED_FULLY') %}
 
-	const debounce = function(func, delay) {
+	const debounce = (func, delay) => {
 		let timeoutId;
-		return function(...args) {
+		return (...args) => {
 			clearTimeout(timeoutId);
 			timeoutId = setTimeout(() => {
 				func(...args);
