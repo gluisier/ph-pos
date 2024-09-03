@@ -14,7 +14,7 @@ final class Version20240814095001 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Packs and variants';
     }
 
     public function up(Schema $schema): void
