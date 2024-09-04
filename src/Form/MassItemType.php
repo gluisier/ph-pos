@@ -23,7 +23,7 @@ class MassItemType extends AbstractType
             ->add('price', IntegerType::class, [
                 'required' => false,
             ])
-            ->add('quantity')
+            ->add('stock')
         ;
     }
 

@@ -20,7 +20,7 @@ class Item extends DisplayableItem implements \JsonSerializable
     private ?int $price = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $quantity = null;
+    private ?int $stock = null;
 
     #[ORM\Column]
     private ?bool $ticket = null;
@@ -99,14 +99,14 @@ class Item extends DisplayableItem implements \JsonSerializable
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getStock(): ?int
     {
-        return $this->quantity;
+        return $this->stock;
     }
 
-    public function setQuantity(?int $quantity): static
+    public function setStock(?int $stock): static
     {
-        $this->quantity = $quantity;
+        $this->stock = $stock;
 
         return $this;
     }
@@ -354,7 +354,7 @@ class Item extends DisplayableItem implements \JsonSerializable
             'label' => $this->label,
             'price' => $this->price,
             'colour' => $this->colour,
-            'quantity' => $this->quantity,
+            'stock' => $this->stock,
             'ticket' => $this->ticket,
             'pack' => $this->isPack(),
         ];

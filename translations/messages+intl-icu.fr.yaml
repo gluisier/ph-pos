@@ -48,8 +48,8 @@ app:
       <<: *category
       price:
         label: Prix
-      quantity:
-        label: Quantité à disposition
+      stock:
+        label: Stock
       ticket:
         label:
           short: 🎟️

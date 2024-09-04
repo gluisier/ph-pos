@@ -23,7 +23,7 @@
 				<th>{{ 'app.fields.item.title.label'|trans }}</th>
 				<th><abbr title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
 				<th>{{ 'app.fields.item.price.label'|trans }}</th>
-				<th>{{ 'app.fields.item.quantity.label'|trans }}</th>
+				<th>{{ 'app.fields.item.stock.label'|trans }}</th>
 				<th><a href="{{ path('item_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
 			</tr>
 		</thead>
@@ -38,7 +38,7 @@
 					{%- endif %}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.available) }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.price) }}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.quantity) }}</td>
+				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.stock) }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>
 					<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
 				</td>

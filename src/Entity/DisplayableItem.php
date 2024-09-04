@@ -21,7 +21,7 @@ abstract class DisplayableItem
     #[ORM\Column]
     private ?bool $public = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $position = null;
 
 

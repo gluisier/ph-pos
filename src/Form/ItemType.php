@@ -25,7 +25,7 @@ class ItemType extends CategoryType
             ->add('price', null, [
                 'label_format' => 'app.fields.item.%name%.label',
             ])
-            ->add('quantity', null, [
+            ->add('stock', null, [
                 'label_format' => 'app.fields.item.%name%.label',
             ])
             ->add('ticket', null, [
