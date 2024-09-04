@@ -36,7 +36,7 @@
 							{% endif %}
 							{{- form_widget(form.quantity, {'attr': {
 								'class': 'form-control-sm text-end',
-								'style': 'background-color: inherit; color: ' ~ (is_dark(item.colour) ? '#ffffff' : 'inherit') ~ '; min-width: 3em;',
+								'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
 								'data-item': item|json_encode}}) -}}
 							{% if item.ticket %}
 								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">🎟️</span>

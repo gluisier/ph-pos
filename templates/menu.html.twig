@@ -8,9 +8,12 @@
 		<div class="collapse navbar-collapse" id="Menu">
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 				<li class="nav-item">
-					<a class="nav-link" href="{{ path('sales_index') }}">{{ 'app.menu.sales'|trans }}</a>
+					<a class="nav-link{% if 'item_prices' in app.current_route %} active{% endif %}" href="{{ path('item_prices') }}">{{ 'app.menu.prices'|trans }}</a>
 				</li>
 				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('sales_index') }}">{{ 'app.menu.sales'|trans }}</a>
+				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{{ path('production_index') }}">{{ 'app.menu.production'|trans }}</a>
 				</li>
@@ -18,17 +21,19 @@
 					<a href="#" class="nav-link dropdown-toggle{% if 'item' in app.current_route or 'category' in app.current_route %} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
 					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Items">
 						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.menu.items.list'|trans }}</a>
-						<a class="dropdown-item{% if 'category_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('category_index') }}">{{ 'app.menu.items.categories'|trans }}</a>
-						<div class="dropdown-divider"></div>
 						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.menu.items.event'|trans }}</a>
-						<a class="dropdown-item{% if 'item_prices' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_prices') }}">{{ 'app.menu.items.prices'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'category_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('category_index') }}">{{ 'app.menu.items.categories'|trans }}</a>
 					</div>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ path('order_index') }}">{{ 'app.menu.orders.heading'|trans }}</a>
+					<a class="nav-link{% if 'payment_method' in app.current_route %} active{% endif %}" href="{{ path('payment_method_index') }}">{{ 'app.menu.payment_methods.heading'|trans }}</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ path('user_index') }}">{{ 'app.menu.users.heading'|trans }}</a>
+					<a class="nav-link{% if 'order' in app.current_route %} active{% endif %}" href="{{ path('order_index') }}">{{ 'app.menu.orders.heading'|trans }}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link{% if 'user' in app.current_route %} active{% endif %}" href="{{ path('user_index') }}">{{ 'app.menu.users.heading'|trans }}</a>
 				</li>
 				{% endif ~%}
 			</ul>

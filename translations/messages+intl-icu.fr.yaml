@@ -110,6 +110,7 @@ app:
     success: Votre accès est enregistré. Contactez le responsable pour l’activer, pouvoir vous connecter et avoir accès à toutes les fonctionnalités
   
   menu:
+    prices: &prices Liste de prix
     sales: &sales_heading Ventes
     production: &production_heading Production
     items:
@@ -117,7 +118,7 @@ app:
       list: Lister
       categories: &categories_heading Catégories d’articles
       event: Préparation
-      prices: Impression des prix
+      prices: *prices
     orders:
       heading: &orders_heading Commandes
     users:
