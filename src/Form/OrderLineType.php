@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Item;
-use App\Entity\Order;
 use App\Entity\OrderLine;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
