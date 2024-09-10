@@ -15,7 +15,7 @@ class OrderLine
     #[ORM\ManyToOne(inversedBy: 'lines')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
-    
+
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]

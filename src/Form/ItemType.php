@@ -66,7 +66,7 @@ class ItemType extends CategoryType
                     $qb = $repo->createQueryBuilder('a');
                     $qb ->innerJoin('a.items', 'v', \Doctrine\ORM\Query\Expr\Join::WITH, $qb->expr()->eq('v.separatelySellable', $qb->expr()->literal(false)))
                         ->where($qb->expr()->eq('a.public', $qb->expr()->literal(false)));
-                    
+
                     return $qb;
                 },
                 'choice_label' => function (Category $item): string {

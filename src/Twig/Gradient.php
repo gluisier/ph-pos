@@ -53,7 +53,7 @@ class Gradient extends AbstractExtension
             $steps[] = implode(' ', [$colour, $i * self::STEP_WIDTH . self::STEP_WIDTH_UNIT]);
         }
         $steps[] = implode(' ', [$colours[0], count($colours) * self::STEP_WIDTH . self::STEP_WIDTH_UNIT]);
-        
+
         return 'background: repeating-linear-gradient(-45deg, ' . implode(', ', $steps) . ')';
     }
 

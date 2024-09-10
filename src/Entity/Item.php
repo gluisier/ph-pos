@@ -36,17 +36,17 @@ class Item extends DisplayableItem implements \JsonSerializable
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
     private ?Category $category = null;
-    
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'variants')]
     private ?self $variantOf = null;
-    
+
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'variantOf', indexBy: 'id')]
     #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $variants;
-    
+
     #[ORM\OneToMany(mappedBy: 'item', targetEntity: OrderLine::class)]
     private Collection $orders;
-    
+
     /**
      * @var Collection<int, Category>
      */
