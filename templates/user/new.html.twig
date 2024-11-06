@@ -3,13 +3,13 @@
 {% block title %}{{ 'app.user.new.title'|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h2>{{ 'app.user.new.heading'|trans }}</h2>
+	<h2>{{ 'app.user.new.heading'|trans }}</h2>
 
-    {{ include('user/_form.html.twig') }}
+	{{ include('user/_form.html.twig') }}
 
 	<ul class="list-inline float-end">
 		<li class="list-inline-item">
 			<a href="{{ path('user_index') }}" class="btn btn-secondary">{{ 'global.action.list'|trans }}</a>
 		</li>
-    </ul>
+	</ul>
 {% endblock %}

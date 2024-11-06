@@ -16,7 +16,7 @@
 
 {% block _order_simple_lines_entry_row %}
 {%- set item = form.vars.data.item %}
-            <div class="item-root
+			<div class="item-root
 					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none" data-is-variant="true
 					{%- endif -%}
 				" data-id="{{ item.id }}" data-content-ids="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}" data-layout-toggle="item-root col

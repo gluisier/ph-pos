@@ -3,37 +3,37 @@
 {% block title %}{{ 'app.order.index.title'|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-    <h2>{{ 'app.order.index.heading'|trans }}</h2>
+	<h2>{{ 'app.order.index.heading'|trans }}</h2>
 
-    <table class="table">
-        <colgroup>
-            <col />
-            <col />
+	<table class="table">
+		<colgroup>
+			<col />
+			<col />
 			<col class="col-1" />
-        </colgroup>
-        <thead>
-            <tr>
-                <th>{{ 'app.fields.id'|trans }}</th>
-                <th>{{ 'app.fields.order.created_at.label'|trans }}</th>
-                <th><a href="{{ path('order_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('order_show', {'id': order.id}) }}" class="btn btn-sm btn-outline-info">{{ 'global.action.show'|trans }}</a>
-                    <a href="{{ path('order_edit', {'id': order.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">{{ 'app.order.index.none'|trans }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{{ 'app.fields.id'|trans }}</th>
+				<th>{{ 'app.fields.order.created_at.label'|trans }}</th>
+				<th><a href="{{ path('order_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for order in orders %}
+			<tr>
+				<td>{{ order.id }}</td>
+				<td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+				<td>
+					<a href="{{ path('order_show', {'id': order.id}) }}" class="btn btn-sm btn-outline-info">{{ 'global.action.show'|trans }}</a>
+					<a href="{{ path('order_edit', {'id': order.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="3">{{ 'app.order.index.none'|trans }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
 
 {% endblock %}
