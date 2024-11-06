@@ -13,9 +13,18 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('active')
-            ->add('roles', CollectionType::class)
+            ->add('name', null, [
+                'label_format' => 'app.fields.user.%name%.label',
+            ])
+            ->add('active', null, [
+                'label_format' => 'app.fields.user.%name%.label',
+            ])
+            ->add('roles', CollectionType::class, [
+                'label_format' => 'app.fields.user.%name%.label',
+                'entry_options' => [
+                    'label' => false,
+                ],
+            ])
         ;
     }
 
