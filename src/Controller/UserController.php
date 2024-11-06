@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +44,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{name}', name: 'show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(#[MapEntity(id: 'name')] User $user): Response
     {
         return $this->render('user/show.html.twig', [
             'user' => $user,
@@ -51,7 +52,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{name}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, #[MapEntity(id: 'name')] User $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -69,7 +70,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{name}', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, #[MapEntity(id: 'name')] User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getName(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);

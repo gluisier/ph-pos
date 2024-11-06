@@ -7,6 +7,7 @@ use App\Form\ItemType;
 use App\Form\MassItemType;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -47,7 +48,7 @@ class ItemController extends AbstractController
     }
 
     #[Route('/item/{id<\d+>}', name: 'show', methods: ['GET'])]
-    public function show(Item $item): Response
+    public function show(#[MapEntity] Item $item): Response
     {
         return $this->render('item/show.html.twig', [
             'item' => $item,
@@ -55,7 +56,7 @@ class ItemController extends AbstractController
     }
 
     #[Route('/item/{id<\d+>}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Item $item, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, #[MapEntity] Item $item, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
@@ -73,7 +74,7 @@ class ItemController extends AbstractController
     }
 
     #[Route('/item/{id<\d+>}', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Item $item, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, #[MapEntity] Item $item, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$item->getId(), $request->request->get('_token'))) {
             $entityManager->remove($item);

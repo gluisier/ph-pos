@@ -6,6 +6,7 @@ use App\Entity\Order;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +44,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(Order $order): Response
+    public function show(#[MapEntity] Order $order): Response
     {
         return $this->render('order/show.html.twig', [
             'order' => $order,
@@ -51,7 +52,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, #[MapEntity] Order $order, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
@@ -69,7 +70,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, #[MapEntity] Order $order, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($order);
