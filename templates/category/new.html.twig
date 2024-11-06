@@ -7,5 +7,9 @@
 
 	{{ include('category/_form.html.twig') }}
 
-	<a href="{{ path('category_index') }}">{{ 'global.action.list'|trans }}</a>
+	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<a href="{{ path('category_index') }}" class="btn btn-secondary">{{ 'global.action.list'|trans }}</a>
+		</li>
+	</ul>
 {% endblock %}

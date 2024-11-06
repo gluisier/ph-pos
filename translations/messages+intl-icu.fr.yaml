@@ -11,7 +11,7 @@ global:
     show: 👁️
     edit: ✏️
     validate: ✔️
-    list: Retour à la liste
+    list: 📃
     delete: 🗑️
     confirm_delete: Etes-vous certain de vouloir effectuer la suppression ?
     reset: 🧹

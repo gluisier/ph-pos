@@ -7,9 +7,12 @@
 
 	{{ include('item/_form.html.twig') }}
 
-	<a href="{{ path('item_index') }}">{{ 'global.action.list'|trans }}</a>
+	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<a href="{{ path('item_index') }}" class="btn btn-secondary">{{ 'global.action.list'|trans }}</a>
+		</li>
+	</ul>
 {% endblock %}
-
 {% block javascripts %}
 		<script src="{{ asset('js/collection_handler.js')}}"></script>
 {% endblock %}
