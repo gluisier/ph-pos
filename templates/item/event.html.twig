@@ -34,7 +34,7 @@
 				<td class="text-center h2" title="{{ item.vars.data.category.title }}"{% if style %} style="{{ style}}"{% endif %}>{{ item.vars.data.category.label }}</td>
 				<td class="text-center h2"{% if style %} style="{{ style}}"{% endif %}>{{ item.vars.data.label }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.value.title }}{% if item.vars.data.ticket %}
-						🎟️
+						{{ 'app.fields.item.ticket.label.short'|trans }}
 					{%- endif %}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.available) }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.price) }}</td>

@@ -39,7 +39,7 @@
 								'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
 								'data-item': item|json_encode}}) -}}
 							{% if item.ticket %}
-								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">🎟️</span>
+								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
 							</div>
 							{% endif %}
 						</div>
