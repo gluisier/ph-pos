@@ -1,5 +1,8 @@
 # 🎪 ᴾᴴPOS
 
+> [!NOTE]
+> [Version française disponible](README.fr.md)
+
 A web PHP/Symfony mix Point Of Service (POS) / ERP application.
 
 This was created after many local events, where selling various items such as beverages and usual dishes led to a wish of statistics.
