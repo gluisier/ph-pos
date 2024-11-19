@@ -15,6 +15,7 @@ global:
     delete: 🗑️
     confirm_delete: Etes-vous certain de vouloir effectuer la suppression ?
     reset: 🧹
+    filter: 🔎
     expand:
       menu: Dérouler le menu
       list: Dérouler la liste
@@ -84,13 +85,15 @@ app:
         label: *password
       token:
         label: Jeton
-      created_at:
+      createdAt:
         label: Créé le
     order:
       lines:
         label: Produits
-      created_at:
+      createdAt:
         label: Créée le
+        from: De
+        to: A
     order_line:
       quantity:
         label: Quantité
@@ -108,7 +111,7 @@ app:
     title: &title Enregistrement
     heading: *title
     success: Votre accès est enregistré. Contactez le responsable pour l’activer, pouvoir vous connecter et avoir accès à toutes les fonctionnalités
-  
+
   menu:
     prices: &prices Liste de prix
     sales: &sales_heading Ventes
