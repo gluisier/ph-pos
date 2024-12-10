@@ -14,8 +14,8 @@
 		<thead>
 			<tr>
 				<th>{{ 'app.fields.id'|trans }}</th>
-					<th>{{ 'app.fields.order.createdAt.label'|trans }}</th>
-				<th><a href="{{ path('order_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
+				<th>{{ 'app.fields.order.createdAt.label'|trans }}</th>
+				<th><a href="{{ path('order_new') }}" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -24,8 +24,8 @@
 				<td>{{ order.id }}</td>
 				<td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
 				<td>
-					<a href="{{ path('order_show', {'id': order.id}) }}" class="btn btn-sm btn-outline-info">{{ 'global.action.show'|trans }}</a>
-					<a href="{{ path('order_edit', {'id': order.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
+					<a href="{{ path('order_show', {'id': order.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
+					<a href="{{ path('order_edit', {'id': order.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
 				</td>
 			</tr>
 		{% else %}

@@ -24,7 +24,7 @@
 				<th><abbr title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
 				<th>{{ 'app.fields.item.price.label'|trans }}</th>
 				<th>{{ 'app.fields.item.stock.label'|trans }}</th>
-				<th><a href="{{ path('item_new') }}" class="btn btn-success">{{ 'global.action.new'|trans }}</a></th>
+				<th><a href="{{ path('item_new') }}" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -40,18 +40,18 @@
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.price) }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.stock) }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>
-					<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-sm btn-outline-warning">{{ 'global.action.edit'|trans }}</a>
+					<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
 				</td>
 			</tr>
 		{% else %}
 			<tr>
-				<td colspan="6">{{ 'app.item.event.none'|trans }}</td>
+				<td colspan="7">{{ 'app.item.event.none'|trans }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="6"><button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button></td>
+				<td colspan="7"><button type="submit" class="btn btn-primary" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button></td>
 			</tr>
 		</tfoot>
 	</table>

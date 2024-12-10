@@ -86,11 +86,11 @@
 						</ul>
 					</div>
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary">🧾</a>{% endif %}
-					<button type="reset" class="btn btn-danger">{{ 'global.action.reset'|trans }}</button>
+					<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
 				</div>
 			</div>
-			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}<button type="submit" class="btn btn-primary">{{ 'global.action.validate'|trans }}</button>
-				{% endif %}{{ 'app.sales.total'|trans }}</div>
+			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}<button type="submit" class="btn btn-primary float-start" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
+				{% endif %} {{ 'app.sales.total'|trans }}</div>
 			<output name="totalItems" id="totalItems" class="col-2 text-end">0</output>
 			<output name="totalPrice" id="totalPrice" class="col-2 text-end">0,00</output>
 		</div>

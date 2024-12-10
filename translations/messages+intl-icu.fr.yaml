@@ -7,15 +7,15 @@ global:
   "on": ✔️
   "off": ❌
   action:
-    new: ➕
-    show: 👁️
-    edit: ✏️
-    validate: ✔️
-    list: 📃
-    delete: 🗑️
+    new: Nouveau
+    show: Détails
+    edit: Éditer
+    validate: Valider
+    list: Lister
+    delete: Supprimer
     confirm_delete: Etes-vous certain de vouloir effectuer la suppression ?
-    reset: 🧹
-    filter: 🔎
+    reset: Réinitialiser
+    filter: Filtrer
     expand:
       menu: Dérouler le menu
       list: Dérouler la liste

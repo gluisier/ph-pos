@@ -17,5 +17,5 @@
 	</div>
 	{{ form_row(form.attributes, {'label_attr': {'class': 'checkbox-inline'}}) }}
 	{{ form_row(form.composedOf) }}
-	<button class="btn btn-primary float-start">{{ 'global.action.validate'|trans }}</button>
+	<button class="btn btn-primary float-start" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
 {{ form_end(form) }}

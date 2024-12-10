@@ -28,10 +28,10 @@
 	</table>
 	<ul class="list-inline float-end">
 		<li class="list-inline-item">
-			<a href="{{ path('category_index') }}" class="btn btn-secondary">{{ 'global.action.list'|trans }}</a>
+			<a href="{{ path('category_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
 		</li>
 		<li class="list-inline-item">
-			<a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-warning">{{ 'global.action.edit'|trans }}</a>
+			<a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
 		</li>
 		<li class="list-inline-item">
 			{{ include('category/_delete_form.html.twig') }}

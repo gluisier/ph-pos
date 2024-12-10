@@ -12,7 +12,7 @@
 			<tr>
 				<th>{{ 'app.fields.item.variantOf.label'|trans }}</th>
 				<td>{{ item.variantOf.label ~ ' ' ~ item.variantOf.title }}
-					<a href="{{ path('item_show', {'id': item.variantOf.id}) }}" class="btn btn-sm btn-outline-info float-end">{{ 'global.action.show'|trans }}</a></td>
+					<a href="{{ path('item_show', {'id': item.variantOf.id}) }}" class="btn btn-sm btn-outline-info float-end" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a></td>
 			</tr>
 			{% endif %}
 			<tr>
@@ -23,7 +23,7 @@
 			<tr>
 				<th>{{ variant.label ~ ' ' ~ variant.title }}</th>
 				<td>{{ variant.price|number_format(2, ',') }}
-					<a href="{{ path('item_show', {'id': variant.id}) }}" class="btn btn-sm btn-outline-info float-end">{{ 'global.action.show'|trans }}</a></td>
+					<a href="{{ path('item_show', {'id': variant.id}) }}" class="btn btn-sm btn-outline-info float-end" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a></td>
 			</tr>
 			{% endfor %}
 			{% if not item.composedOf.empty %}
@@ -61,10 +61,10 @@
 	</table>
 	<ul class="list-inline float-end">
 		<li class="list-inline-item">
-			<a href="{{ path('item_index') }}" class="btn btn-secondary">{{ 'global.action.list'|trans }}</a>
+			<a href="{{ path('item_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
 		</li>
 		<li class="list-inline-item">
-			<a href="{{ path('item_edit', {'id': item.id}) }}" class="btn btn-warning">{{ 'global.action.edit'|trans }}</a>
+			<a href="{{ path('item_edit', {'id': item.id}) }}" class="btn btn-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
 		</li>
 		<li class="list-inline-item">
 			{{ include('item/_delete_form.html.twig') }}
