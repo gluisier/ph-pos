@@ -40,7 +40,7 @@
 			<ul class="navbar-nav d-flex">
 				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
 				<li class="nav-item">
-					<a href="{{ path('logout') }}" class="nav-link">⏻ {{ 'app.menu.logout'|trans }}</a>
+					<a href="{{ path('logout') }}" class="nav-link"><span class="text-danger" style="font-family: power_symbols">⏻</span> {{ 'app.menu.logout'|trans }}</a>
 				</li>
 				{% else ~%}
 				<li class="nav-item">
