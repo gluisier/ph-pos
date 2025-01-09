@@ -23,6 +23,10 @@ class Order
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class, cascade: ["persist"], indexBy: 'item_id')]
     private Collection $lines;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PaymentMethod $paymentMethod = null;
+
     public function __construct()
     {
         $this->lines = new ArrayCollection();
@@ -79,6 +83,18 @@ class Order
     public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getPaymentMethod(): ?PaymentMethod
+    {
+        return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(?PaymentMethod $paymentMethod): static
+    {
+        $this->paymentMethod = $paymentMethod;
 
         return $this;
     }

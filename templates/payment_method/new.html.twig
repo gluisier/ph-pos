@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.payment_method.new.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h2>{{ 'app.payment_method.new.heading'|trans }}</h2>
+
+	{{ include('payment_method/_form.html.twig') }}
+
+	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<a href="{{ path('payment_method_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
+		</li>
+	</ul>
+{% endblock %}

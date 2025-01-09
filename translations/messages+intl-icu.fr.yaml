@@ -32,7 +32,7 @@ global:
 app:
   fields:
     id: ID
-    category: &category
+    base: &base
       title:
         label: Titre
       label:
@@ -45,8 +45,10 @@ app:
         label:
           short: 📖
           long: Sur la carte
+    category:
+      <<: *base
     item:
-      <<: *category
+      <<: *base
       price:
         label: Prix
       stock:
@@ -55,7 +57,7 @@ app:
         label:
           short: 🎟️
           long: Contre ticket
-      available:
+      available: &available
         label:
           short: 💸
           long: Disponible à la vente
@@ -99,6 +101,11 @@ app:
         label: Quantité
       item:
         label: Produit
+    payment_method:
+      <<: *base
+      id:
+        help: Ne peut contenir que des lettres minuscules, des chiffres et le sous-tiret <q><code>_</code></q>
+      available: *available
 
   login:
     title: &title Authentification
@@ -122,6 +129,8 @@ app:
       categories: &categories_heading Catégories d’articles
       event: Préparation
       prices: *prices
+    payment_methods:
+      heading: &payment_method_heading Moyens de paiement
     orders:
       heading: &orders_heading Commandes
     users:
@@ -190,4 +199,12 @@ app:
       heading: *title
     edit:
       title: &title Commande {id}
+      heading: *title
+
+  payment_method:
+    index:
+      title: &title *payment_method_heading
+      heading: *title
+    new:
+      title: &title Nouveau moyen de paiement
       heading: *title
