@@ -5,7 +5,9 @@ namespace App\Form;
 use App\Entity\Category;
 use App\Entity\Order;
 use App\Entity\OrderLine;
+use App\Entity\PaymentMethod;
 use App\Repository\CategoryRepository;
+use App\Repository\PaymentMethodRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -54,6 +56,29 @@ class OrderSimpleType extends AbstractType
                 'entry_options' => [
                     'label' => false,
                 ],
+            ])
+            ->add('paymentMethod', EntityType::class, [
+                'class' => PaymentMethod::class,
+                'expanded' => true,
+                'multiple' => false,
+                'label' => false,
+                'choice_label' => function (PaymentMethod $paymentMethod): string {
+                    return $paymentMethod->getLabel() . ' ' . $paymentMethod->getTitle();
+                },
+                'query_builder' => function (PaymentMethodRepository $repo) {
+                    $qb = $repo->createQueryBuilder('pm');
+                    $qb ->where($qb->expr()->eq('pm.available', $qb->expr()->literal(true)))
+                        ->addOrderBy($qb->expr()->asc('pm.position'));
+
+                    return $qb;
+                },
+                'choice_attr' => function (PaymentMethod $choice) {
+                    return [
+                        // label_attr is not dynamic as of 7.1.3
+                        'style' => 'background-color: ' . $choice->getColour()
+                    ];
+                },
+                'translation_domain' => false,
             ])
         ;
     }

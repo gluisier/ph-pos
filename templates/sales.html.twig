@@ -89,7 +89,23 @@
 					<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
 				</div>
 			</div>
-			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}<button type="submit" class="btn btn-primary float-start" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
+			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+				{%- if form.paymentMethod.children|length == 1 -%}
+					<button type="submit" class="btn btn-primary float-start validator" name="{{ form.paymentMethod.vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" disabled="disabled">{{ 'global.action.validate'|trans }}</button>
+					{%- do form.paymentMethod.children[0].setRendered(true) -%}
+				{%- else -%}
+					<div class="btn-group dropup" role="group">
+						<button type="button" class="btn btn-outline-primary dropdown-toggle validator" disabled="disabled" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
+						<ul class="dropdown-menu">
+							{% for i,child in form.paymentMethod.children %}
+							<li><button type="submit" class="dropdown-item display-6 validator" name="{{ form.paymentMethod.vars.full_name }}" value="{{ child.vars.value }}" style="{% if child.vars.attr.style|length > 18 %}{{ child.vars.attr.style }} !important; {% endif %}color: var(--bs-{{ child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color' }});">{{ child.vars.label }}</button></li>
+							{% do child.setRendered(true) %}
+							{% endfor %}
+						</ul>
+					</div>
+				{%- endif %}
+				{%- else %}
+					{%- do form.paymentMethod.setRendered(true) -%}
 				{% endif %} {{ 'app.sales.total'|trans }}</div>
 			<output name="totalItems" id="totalItems" class="col-2 text-end">0</output>
 			<output name="totalPrice" id="totalPrice" class="col-2 text-end">0,00</output>
@@ -111,6 +127,12 @@
 		item.quantity = 0;
 		order[input.id] = item;
 	});
+
+	const submitDisabler = (disabled) => {
+		Array.from(document.getElementsByClassName('validator')).forEach( submitter => {
+			submitter.disabled = disabled;
+		});
+	}
 
 	const categoryChangeListener = (event) => {
 		if (event.target.value) {
@@ -211,6 +233,7 @@
 			};
 			document.getElementById('totalItems').value = totals.quantity;
 			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
+			submitDisabler(totals.quantity == 0);
 			{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 			debounceBroadcast('update', order);
 			{%- endif ~%}
@@ -222,6 +245,7 @@
 			order[id].quantity = 0;
 		}
 		document.querySelector('.categories :default').dispatchEvent(new Event('change'));
+		submitDisabler(true);
 		{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 		debounceBroadcast('clear', {});
 		{%- endif ~%}

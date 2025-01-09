@@ -90,6 +90,8 @@ app:
       createdAt:
         label: Créé le
     order:
+      paymentMethod:
+        label: Moyen de paiement
       lines:
         label: Produits
       createdAt:

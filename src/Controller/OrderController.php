@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Form\OrderSearchType;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,10 +17,26 @@ use Symfony\Component\Routing\Attribute\Route;
 class OrderController extends AbstractController
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(OrderRepository $orderRepository): Response
+    public function index(Request $request, OrderRepository $orderRepository): Response
     {
+        $searchForm = $this->createForm(OrderSearchType::class, null, [
+            'method' => Request::METHOD_GET,
+            'csrf_protection' => false,
+        ]);
+        $searchForm->handleRequest($request);
+        $query = $searchForm->getData();
+
+        $orders = $orderRepository
+            ->searchBy(
+                $query ?? [],
+                [
+                    $query['field'] ?? 'o.id' => $query['direction'] ?? 'asc',
+                ]
+            );
+
         return $this->render('order/index.html.twig', [
-            'orders' => $orderRepository->findAll(),
+            'orders' => $orders,
+            'searchForm' => $searchForm,
         ]);
     }
 
