@@ -54,12 +54,12 @@ class MainController extends AbstractController
     }
 
     #[Route('/production/events', name: 'production_events', methods: ['GET'])]
-    public function productionEvents(Request $request, OrderLineRepository $orderLineRepository): Response
+    public function productionEvents(Request $request, ItemRepository $orderLineRepository): Response
     {
         $lastUpdate = new \DateTimeImmutable($request->headers->get('last-event-id', 'now'));
         $retry = $this->getParameter('production_sse_frequency');
         $response = new Response(headers: ['Content-Type' => 'text/event-stream']);
-        $quantities = $orderLineRepository->getToProduceQuantity($lastUpdate->modify('+1 second'));
+        $quantities = $orderLineRepository->findForProduction($lastUpdate->modify('+1 second'));
         return $this->render('production.txt.twig', [
             'quantities' => $quantities,
             'retry' => $retry

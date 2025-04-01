@@ -20,20 +20,4 @@ class OrderLineRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, OrderLine::class);
     }
-
-    public function getToProduceQuantity(\DateTimeInterface $since)
-    {
-        $qb = $this->createQueryBuilder('ol');
-        $qb ->select('PARTIAL ol.{order,item}, sum(ol.quantity) AS quantity, max(o.createdAt) AS lastOrder')
-            ->innerJoin('ol.order', 'o')
-            ->innerJoin('ol.item', 'i')
-            ->where($qb->expr()->eq('i.ticket', $qb->expr()->literal(true)))
-            ->andWhere($qb->expr()->between('o.createdAt', ':since', ':now'))
-            ->groupBy('ol.item')
-            ->setParameter(':since', $since)
-            ->setParameter(':now', new \DateTime())
-        ;
-
-        return $qb->getQuery()->getArrayResult();
-    }
 }

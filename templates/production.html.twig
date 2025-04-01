@@ -27,20 +27,26 @@
 						if (typeof this.quantities[input.dataset.id] === 'undefined') {
 							this.quantities[input.dataset.id] = {};
 						}
-						this.quantities[input.dataset.id][input.dataset.position] = 0;
+						this.quantities[input.dataset.id][input.dataset.position] = input.valueAsNumber || 0;
 					});
 					document.querySelectorAll('button.operator').forEach((button) => {
 						button.addEventListener('click', (e) => {
 							const button = e.target;
 							this.quantities[button.dataset.id][button.dataset.add]++;
-							this.quantities[button.dataset.id][button.dataset.substract]--;
+							this.quantities[button.dataset.id][button.dataset.subtract]--;
+							if (button.dataset.targets) {
+								const targets = JSON.parse(button.dataset.targets);
+								for (const target in targets) {
+									this.quantities[target][targets[target]]--;
+								}
+							}
 						});
 					});
 					const eventSource = new EventSource('{{ url('production_events') }}');
 					eventSource.onmessage = function(e) {
 						const orders = JSON.parse(e.data);
 						for (const item of orders) {
-							const input = document.querySelector('input[data-id=&quot;' + item.item_id + '&quot;][data-position=&quot;sold&quot;]');
+							const input = document.querySelector('input[data-id=&quot;' + item[0].id + '&quot;][data-position=&quot;sold&quot;]');
 							input.stepUp(item.quantity);
 							input.dispatchEvent(new Event('input'));
 						}
@@ -52,10 +58,42 @@
 			<tr>
 				<td class="text-center h1 py-0" style="background-color: {{ style }} min-width: 3.25em !important">{{ item[0].label }}</td>
 				<td class="d-none d-md-table-cell" style="background-color: {{ style }}">{{ item[0].title }}</td>
-				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 5em !important;"><input type="number" readonly="readonly" x-model.number="quantities[{{ item[0].id }}].sold" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="sold" /><button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="sold" data-substract="producing" data-id="{{ item[0].id }}">◣</button></span></td>
-				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 7em !important;"><button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="producing" data-substract="sold" data-id="{{ item[0].id }}">◥</button><input type="number" x-model.number="quantities[{{ item[0].id }}].producing" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="producing" /><button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="producing" data-substract="produced" data-id="{{ item[0].id }}">◣</button></span></td>
-				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 7em !important;"><button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="produced" data-substract="producing" data-id="{{ item[0].id }}">◥</button><input type="number" x-model.number="quantities[{{ item[0].id }}].produced" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="produced" /><button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="produced" data-substract="out" data-id="{{ item[0].id }}">◣</button></span></td>
-				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 5em !important;"><button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="out" data-substract="produced" data-id="{{ item[0].id }}">◥</button><input type="number" x-model.number="quantities[{{ item[0].id }}].out" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="out" /></span></td>
+				<td style="background-color: {{ style }}"><span class="input-group mx-auto" style="width: 5em !important;">
+					{%- apply spaceless -%}
+						<input type="number" readonly="readonly" value="{{ item.quantity }}" x-model.number="quantities[{{ item[0].id }}].sold" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="sold" />
+						<button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="sold" data-subtract="{{ item[0].composedOf.empty ? 'producing' : 'out' }}" data-id="{{ item[0].id }}" data-targets="{{ item[0].composedOf|map(c => 'producing')|json_encode }}">◤</button>
+					{% endapply %}</span></td>
+				<td style="background-color: {{ style }}">
+					{%- apply spaceless -%}
+					{% if item[0].composedOf.empty %}
+					<span class="input-group mx-auto" style="width: 7em !important;">
+						<button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="producing" data-subtract="sold" data-id="{{ item[0].id }}">◥</button>
+						<input type="number" x-model.number="quantities[{{ item[0].id }}].producing" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="producing" />
+						<button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="producing" data-subtract="produced" data-id="{{ item[0].id }}">◤</button>
+					</span>
+					{% endif %}
+					{% endapply %}</td>
+				<td style="background-color: {{ style }}">
+					{%- apply spaceless -%}
+					{% if item[0].composedOf.empty %}
+					<span class="input-group mx-auto" style="width: {{ item[0].separatelySellable ? 7 : 5 }}em !important;">
+						<button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="produced" data-subtract="producing" data-id="{{ item[0].id }}">◥</button>
+						<input type="number" x-model.number="quantities[{{ item[0].id }}].produced" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="produced" />
+						{% if item[0].separatelySellable %}
+						<button type="button" class="btn btn-warning px-1 px-lg-2 operator" data-add="produced" data-subtract="out" data-id="{{ item[0].id }}">◤</button>
+						{% endif %}
+					</span>
+					{% endif %}
+					{% endapply %}</td>
+				<td style="background-color: {{ style }}">
+					{%- apply spaceless -%}
+					{% if item[0].separatelySellable %}
+					<span class="input-group mx-auto" style="width: 5em !important;">
+						<button type="button" class="btn btn-success px-1 px-lg-2 operator" data-add="out" data-subtract="{{ item[0].composedOf.empty ? 'produced' : 'sold' }}" data-id="{{ item[0].id }}" data-targets="{{ item[0].composedOf|map(c => 'produced')|json_encode }}">◥</button>
+						<input type="number" x-model.number="quantities[{{ item[0].id }}].out" class="form-control text-center px-0" data-id="{{ item[0].id }}" data-position="out" />
+					</span>
+					{% endif %}
+					{% endapply %}</td>
 			</tr>
 {% else %}
 			<tr>

@@ -45,14 +45,34 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[] Returns an array of Item objects
      */
-    public function findForProduction(): array
+    public function findForProduction(?\DateTimeInterface $since = null): array
     {
         $qb = $this->createQueryBuilder('i');
-        $qb ->leftJoin('i.orders', 'o')
-            ->addSelect('SUM(o.quantity) AS quantity')
-            ->where($qb->expr()->isNotNull('i.price'))
-            ->andWhere($qb->expr()->eq('i.ticket', $qb->expr()->literal(true)))
-            ->groupBy('i.id');
+        $qb ->leftJoin('i.orders', 'o1')
+            ->leftJoin('i.composing', 'cmp')
+            ->leftJoin('cmp.orders', 'o2')
+            ->addSelect('SUM(COALESCE(o2.quantity, o1.quantity, 0)) AS quantity')
+            ->where($qb->expr()->eq('i.available', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->eq('i.ticket', $qb->expr()->literal(true)),
+                $qb->expr()->eq('cmp.ticket', $qb->expr()->literal(true))
+            ))
+            ->andWhere($qb->expr()->not($qb->expr()->exists(
+                $this->createQueryBuilder('sub')->where($qb->expr()->eq('sub.variantOf', 'i.id'))
+            )))
+            ->groupBy('i.id')
+            ->orderBy($qb->expr()->desc('i.category'))
+            ->addOrderBy($qb->expr()->asc('i.position'));
+
+        if ($since) {
+            $qb ->leftJoin('o1.order', 'ro1')
+                ->leftJoin('o2.order', 'ro2')
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->gte('ro1.createdAt', ':since'),
+                    $qb->expr()->gte('ro2.createdAt', ':since')
+                ))
+                ->setParameter(':since', $since);
+        }
 
         return $qb->getQuery()->getResult();
     }
