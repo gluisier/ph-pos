@@ -199,6 +199,7 @@ app:
     show:
       title: &title Commande {id}
       heading: *title
+      total: Total
     edit:
       title: &title Commande {id}
       heading: *title

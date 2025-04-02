@@ -8,13 +8,22 @@
 	<table class="table">
 		<tbody>
 			<tr>
-				<th>{{ 'app.fields.id'|trans }}</th>
-				<td>{{ order.id }}</td>
-			</tr>
-			<tr>
 				<th>{{ 'app.fields.order.createdAt.label'|trans }}</th>
-				<td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+				<td colspan="2">{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
 			</tr>
+			{%- set total = 0 -%}
+			{% for line in order.lines %}
+			<tr>
+				<td>{{ line.item.title }}</td>
+				<td>{{ line.quantity }}</td>
+				<td>{{ line.item.price|number_format(2, ',') -}}
+					{%- set total = total + line.item.price %}</td>
+			</tr>
+			{% endfor %}
+			<tr>
+				<th>{{ 'app.order.show.total'|trans }}</th>
+				<td>{{ order.paymentMethod.title }}</td>
+				<td>{{ total|number_format(2, ',') }}</td>
 		</tbody>
 	</table>
 
