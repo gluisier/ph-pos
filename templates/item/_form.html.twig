@@ -1,20 +1,35 @@
 {{ form_start(form) }}
 	{{ form_row(form.title) }}
-	{{ form_row(form.label) }}
-	{{ form_row(form.category, {'label_attr': {'class': 'radio-inline'}}) }}
-	{{ form_row(form.stock) }}
-	{{ form_row(form.variantOf) }}
-	<div class="mb-3">
-		{{ form_label(form.price) }}
-		<div class="input-group">
-			{{ form_widget(form.price) }}
-			{{ form_row(form.available, {'row_attr': {'class' : 'input-group-text'}}) }}
-			{{ form_row(form.public, {'row_attr': {'class' : 'input-group-text'}}) }}
-			{{ form_row(form.separatelySellable, {'row_attr': {'class' : 'input-group-text'}}) }}
-			{{ form_widget(form.colour) }}
-			{{ form_row(form.ticket, {'row_attr': {'class' : 'input-group-text'}}) }}
+	<div class="row mb-3">
+		<div class="col-md-5 col-lg-4 col-xxl-3">
+			{{ form_label(form.label) }}
+			<div class="input-group input-group-lg">
+				{{ form_widget(form.label) }}
+				{{ form_widget(form.colour, {'attr': {'class': 'form-control-lg'}}) }}
+			</div>
+			{{ form_help(form.label) }}
+			{{ form_help(form.colour) }}
+			{{ form_errors(form.label) }}
+			{{ form_errors(form.colour) }}
+		</div>
+		<div class="col-md-7 col-lg-8 col-xxl-9 pt-3 pt-md-0">
+			{{ form_label(form.price) }}
+			<div class="input-group">
+				{{ form_widget(form.price) }}
+				{{ form_row(form.available, {'row_attr': {'class' : 'input-group-text'}}) }}
+				{{ form_row(form.public, {'label': 'app.fields.item.public.label.short', 'label_attr': {'title': 'app.fields.item.public.label.long'}, 'row_attr': {'class' : 'input-group-text'}}) }}
+				{{ form_row(form.separatelySellable, {'label': 'app.fields.item.separatelySellable.label.short', 'label_attr': {'title': 'app.fields.item.separatelySellable.label.long'}, 'row_attr': {'class' : 'input-group-text'}}) }}
+				{{ form_row(form.ticket, {'label': 'app.fields.item.ticket.label.short', 'label_attr': {'title': 'app.fields.item.ticket.label.long'}, 'row_attr': {'class' : 'input-group-text'}}) }}
+			</div>
+			{{ form_help(form.price) }}
+			{{ form_errors(form.price) }}
 		</div>
 	</div>
+	<div class="row mb-3">
+		{{ form_row(form.category, {'row_attr': {'class': 'col-sm-6'}}) }}
+		{{ form_row(form.stock, {'row_attr': {'class': 'col-sm-6 pt-3 pt-sm-0'}}) }}
+	</div>
+	{{ form_row(form.variantOf) }}
 	{{ form_row(form.attributes, {'label_attr': {'class': 'checkbox-inline'}}) }}
 	{{ form_row(form.composedOf) }}
 	<button class="btn btn-primary float-start" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
