@@ -24,7 +24,7 @@ class OrderSimpleType extends AbstractType
                 'class' => Category::class,
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => '📋', // Cannot be translated!?
+                'placeholder' => '📖', // Cannot be translated!?
                 'expanded' => true,
                 'multiple' => false,
                 'label' => false,
