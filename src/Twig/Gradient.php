@@ -7,7 +7,7 @@ use Twig\Extension\AbstractExtension;
 
 class Gradient extends AbstractExtension
 {
-    const STEP_WIDTH = 2;
+    const STEP_WIDTH = 1.5;
 
     const STEP_WIDTH_UNIT = 'rem';
 
