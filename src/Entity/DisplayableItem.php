@@ -5,17 +5,23 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\MappedSuperclass;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[MappedSuperclass]
 abstract class DisplayableItem
 {
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\NoSuspiciousCharacters]
     protected ?string $title = null;
 
     #[ORM\Column(length: 7)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 7)]
     protected ?string $label = null;
 
     #[ORM\Column(length: 7, nullable: true)]
+    #[Assert\CssColor(formats: Assert\CssColor::HEX_LONG)]
     protected ?string $colour = null;
 
     #[ORM\Column]

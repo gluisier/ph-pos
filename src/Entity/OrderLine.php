@@ -6,6 +6,7 @@ use App\Repository\OrderLineRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderLineRepository::class)]
 #[UniqueEntity(fields: ['order', 'item'], message: 'app.order_line.not_unique')]
@@ -14,14 +15,18 @@ class OrderLine
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'lines')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Order $order = null;
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?Item $item = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Type('int')]
+    #[Assert\GreaterThanOrEqual(1)]
     private ?int $quantity = null;
 
     public function __construct(Order $order, Item $item, int $quantity = 0)

@@ -14,6 +14,7 @@ class PaymentMethod extends DisplayableItem
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[ORM\Column]
+    #[Assert\NotBlank]
     #[Assert\Regex('`^[a-z0-9_]+$`')]
     private ?string $id = null;
 

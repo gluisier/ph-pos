@@ -5,8 +5,8 @@ namespace App\Entity;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -21,10 +21,12 @@ class Order
     private ?\DateTime $createdAt = null;
 
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class, cascade: ["persist"], indexBy: 'item_id')]
+    #[Assert\Count(min: 1)]
     private Collection $lines;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
     private ?PaymentMethod $paymentMethod = null;
 
     public function __construct()

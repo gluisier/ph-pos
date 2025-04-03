@@ -31,7 +31,7 @@ class Item extends DisplayableItem implements \JsonSerializable
     #[ORM\Column]
     private ?bool $separatelySellable = null;
 
-    /** NOT A PERSISTER PROPERTY */
+    /** NOT A PERSISTED PROPERTY */
     private ?bool $pack = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'items')]
