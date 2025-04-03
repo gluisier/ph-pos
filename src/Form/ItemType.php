@@ -85,6 +85,12 @@ class ItemType extends CategoryType
                         return $item->getTitle() . ' ' . $item->getLabel() . ' ' . ($item->isAvailable() ? number_format($item->getPrice(), 2, ',') : '(non vendu)');
                     },
                     'label' => false,
+                    'choice_attr' => function (Item $item): array {
+                        return [
+                            'data-price' => $item->getPrice(),
+                            'data-colour' => $item->getColour(),
+                        ];
+                    },
                 ],
                 'label_format' => 'app.fields.item.%name%.label',
             ])

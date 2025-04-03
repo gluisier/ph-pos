@@ -3,7 +3,8 @@
 {% block title %}{{ item.title }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ item.title }}</h2>
+	<h2>{{ item.title }}
+		<span class="badge px-1" style="{% if item.isPack %}{{ pack_gradient(item.composedOf) }}{% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}{% elseif item.colour %}background-color: {{ item.colour }} !important{% endif %};">{{ item.label }}</span></h2>
 
 	{{ include('item/_form.html.twig') }}
 
@@ -19,4 +20,5 @@
 
 {% block javascripts %}
 		<script src="{{ asset('js/collection_handler.js')}}"></script>
+		<script src="{{ asset('js/coloured_label.js')}}"></script>
 {% endblock %}

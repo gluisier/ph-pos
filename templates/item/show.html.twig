@@ -3,8 +3,8 @@
 {% block title %}{{ item.title }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ item.label }}
-		{{ item.title }}</h2>
+	<h2>{{ item.title }}
+		<span class="badge px-1" style="{% if item.isPack %}{{ pack_gradient(item.composedOf) }}{% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}{% elseif item.colour %}background-color: {{ item.colour }} !important{% endif %};">{{ item.label }}</span></h2>
 
 	<table class="table">
 		<tbody>
@@ -37,10 +37,6 @@
 			</tr>
 			{% endfor %}
 			{% endif %}
-			<tr>
-				<th>{{ 'app.fields.item.colour.label'|trans }}</th>
-				<td style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ item.colour }}</code></td>
-			</tr>
 			<tr>
 				<th>{{ 'app.fields.item.ticket.label.long'|trans }} ({{ 'app.fields.item.ticket.label.short'|trans }})</th>
 				<td>{{ ('global.' ~ (item.ticket ? 'on' : 'off'))|trans }}</td>

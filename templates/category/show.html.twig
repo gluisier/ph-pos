@@ -3,8 +3,8 @@
 {% block title %}{{ category.title }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ category.label }}
-		{{ category.title }}</h2>
+	<h2>{{ category.title }}{% if category.colour %}
+		<span class="badge px-1" style="background-color: {{ category.colour }} !important;">{{ category.label }}</span>{% endif %}</h2>
 
 	<table class="table">
 		<tbody>

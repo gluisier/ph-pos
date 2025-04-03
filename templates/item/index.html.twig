@@ -29,7 +29,7 @@
 			<tr>
 				<td style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.title }}</td>
 				<td class="py-1 h2 text-center" style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.category ? item.category.label }}</td>
-				<td class="py-1 h2 text-center" style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.label }}</td>
+				<td class="py-1 h2 text-center" style="{% if item.isPack %}{{ pack_gradient(item.composedOf) }}{% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}{% elseif item.colour %}background-color: {{ item.colour }} !important{% endif %}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.label }}</td>
 				<td class="text-end" style="background-color: {{ item.colour }}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">
 					{%- if item.available -%}
 						{{ item.price|number_format(2, ',') }}
