@@ -62,7 +62,9 @@ app:
           short: 💸
           long: Disponible à la vente
       separatelySellable:
-        label: Peut être vendu séparément
+        label:
+          short: ⛓️‍💥
+          long: Peut être vendu séparément
       category:
         placeholder: Aucune
         label:
@@ -177,7 +179,7 @@ app:
     items:
       sold: 🎟️
       cooking: 🔥
-      prepared: ♨️⌛
+      prepared: ♨️⏳
       served: 🍽️
 
   user:
@@ -211,3 +213,7 @@ app:
     new:
       title: &title Nouveau moyen de paiement
       heading: *title
+    _form:
+      id_from_title:
+        short: 🪄
+        long: ID depuis le titre

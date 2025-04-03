@@ -109,7 +109,7 @@ Les articles contiennent donc les mêmes informations que les catégories mentio
 6. **`stock`**: la quantité disponible à la vente. Vous pouvez laisser vide si vous n'avez pas l'information ou qu'elle ne vous semble pas pertinente.
 7. **`ticket`** (🎟️): à activer quand l'article n'est pas vendu là où l'on encaisse, mais qu'un ticket est délivré à faire valoir à un autre emplacement.
 8. **`available`** (💸): à comprendre comme _disponible à la vente_. De fait, si non coché, l'article ne s'affichera ni dans la liste de prix, ni sur la page de vente.
-9. **`separately sellable`**: un élément technique dont l'utilité est expliquée ci-après.
+9. **`separately sellable`** (⛓️‍💥): un élément technique dont l'utilité est expliquée ci-après.
 
 ##### Packs
 Créer des packs packs est une manière d'accélérer le processus de vente. Vous avez de la vaisselle réutilisable et consignée ? Un pack vous permet de vendre une boisson avec un verre, un plat avec assiette-couteau-fourchette et comptabiliser le tout simplement.

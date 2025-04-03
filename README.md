@@ -109,7 +109,7 @@ Items contains the same data as categories above, but also one below as an usefu
 6. **`stock`**: the amount at disposal to be sold. You can leave it empty if you simply don't care or have no idea.
 7. **`ticket`** (🎟️): to check in case the item is not sold directly where cashing is done, but a ticket is provided for the stand.
 8. **`available`** (💸): to be read as _available for sales_. Therefore, if unchecked, such an item will not display on the price list nor on the sales page.
-9. **`separately sellable`**: this is a technical element for variants explained below.
+9. **`separately sellable`** (⛓️‍💥): this is a technical element for variants explained below.
 
 ##### Packs
 Creating packs is a way to speed up sales. You have reusable cutlery, dishes and glasses with deposit? This means that you may sell beverages along cashing those deposits. Therefore, you may create packs with beverage with glass deposit, T-bone steak + fries with dish and cutlery deposit, etc.

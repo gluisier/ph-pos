@@ -41,7 +41,7 @@ class ItemType extends CategoryType
                 ],
             ])
             ->add('separatelySellable', null, [
-                'label_format' => 'app.fields.item.%name%.label',
+                'label_format' => 'app.fields.item.%name%.label.long',
             ])
             ->add('category', null, [
                 'placeholder' => 'app.fields.item.category.placeholder',
