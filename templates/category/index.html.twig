@@ -30,8 +30,8 @@
 				<td class="py-1 h2 text-center" style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});">{{ category.label }}</td>
 				<td style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ category.colour }}</code></td>
 				<td style="background-color: {{ category.colour }}; color: var(--bs-{{ category.colour ? (is_dark(category.colour) ? 'light' : 'dark') : 'body-color' }});">
-					<a href="{{ path('category_show', {'id': category.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
 					<a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+					{{ include('category/_delete_form.html.twig') }}
 				</td>
 			</tr>
 		{% else %}
