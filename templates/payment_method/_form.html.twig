@@ -1,4 +1,26 @@
 {{ form_start(form) }}
-	{{ form_widget(form) }}
+	<div class="row mb-3">
+		{{ form_label(form.title) }}
+		<div class="input-group">
+			{{ form_widget(form.title) }}
+			{{ form_row(form.available, {'label': 'app.fields.payment_method.available.label.short', 'label_attr': {'title': 'app.fields.payment_method.available.label.long'}, 'row_attr': {'class': 'input-group-text'}}) }}
+			{{ form_row(form.public, {'label': 'app.fields.payment_method.public.label.short', 'label_attr': {'title': 'app.fields.payment_method.public.label.long'}, 'row_attr': {'class': 'input-group-text'}}) }}
+		</div>
+		{{ form_help(form.title) }}
+		{{ form_errors(form.title) }}
+	</div>
+	<div class="row mb-3">
+		<div class="col-md-7">
+			{{ form_label(form.id) }}
+			<div class="input-group">
+				<button type="button" class="btn btn-success slugger" title="{{ 'app.payment_method._form.id_from_title.long'|trans }}" data-source="#{{ form.title.vars.id }}" data-target="{{ form.id.vars.id }}">{{ 'app.payment_method._form.id_from_title.short'|trans }}</button>
+				{{ form_widget(form.id) }}
+			</div>
+			{{ form_help(form.id) }}
+			{{ form_errors(form.id) }}
+		</div>
+		{{ form_row(form.label, {'row_attr': {'class': 'col-4 col-md-3 col-lg-2 pt-3 pt-md-0'}}) }}
+		{{ form_row(form.colour, {'row_attr': {'class': 'col-2 col-lg-1 pt-3 pt-md-0'}}) }}
+	</div>
 	<button class="btn btn-primary float-start" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
 {{ form_end(form) }}
