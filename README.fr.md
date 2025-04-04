@@ -1,7 +1,7 @@
 # 🎪 ᴾᴴPOS
 
 > [!NOTE]
-> [English version available](README.fr.md)
+> [English version available](README.md)
 
 Une application de caisse (en anglais Point Of Service ou POS) et de gestion de production (ERP) en PHP/Symfony.
 
@@ -90,11 +90,11 @@ Au plus simple, vous vendez des **articles**, qui peuvent être regroupés en **
 
 Ces trois « concepts » reposent sur une structure de données commune, formé par les informations suivantes.
 
-1. **`title`** (〰️): sert de représentation _textuelle_ d'un concept.
-2. **`label`** (🏷️): sert de représentation _graphique_ d'un concept – c'est là que les emojis sont pratiques.
-3. **`colour`**: aide à retrouver un concept dans les listes — mais n'est pas utilisé sur la liste de prix.
+1. **`title`** (〰️) : sert de représentation _textuelle_ d'un concept.
+2. **`label`** (🏷️) : sert de représentation _graphique_ d'un concept – c'est là que les emojis sont pratiques.
+3. **`colour`** : aide à retrouver un concept dans les listes — mais n'est pas utilisé sur la liste de prix.
    Cette couleur peut aussi être correlée à celle de tickets physiques.
-4. **`public`** (📖): détermine si le concept est public, donc s'il apparaît dans la liste de prix.
+4. **`public`** (📖) : détermine si le concept est public, donc s'il apparaît dans la liste de prix.
 
 #### Catégories
 
@@ -105,11 +105,11 @@ Avec elles, vous pouvez regrouper les articles dans la liste de prix, mais aussi
 Ce sont vos articles. Que vous vendiez des hot-dogs ou des boissons en bouteilles ou canettes, tout cela sera enregistré comme article dans l'application. Tout ce qui est expressément vendu sera donc un article.
 Les articles contiennent donc les mêmes informations que les catégories mentionnées ci-avant, mais aussi d'autres expliquées ci-dessous.
 
-5. **`price`**: le prix auquel l'article sera vendu.
-6. **`stock`**: la quantité disponible à la vente. Vous pouvez laisser vide si vous n'avez pas l'information ou qu'elle ne vous semble pas pertinente.
-7. **`ticket`** (🎟️): à activer quand l'article n'est pas vendu là où l'on encaisse, mais qu'un ticket est délivré à faire valoir à un autre emplacement.
-8. **`available`** (💸): à comprendre comme _disponible à la vente_. De fait, si non coché, l'article ne s'affichera ni dans la liste de prix, ni sur la page de vente.
-9. **`separately sellable`** (⛓️‍💥): un élément technique dont l'utilité est expliquée ci-après.
+5. **`price`** : le prix auquel l'article sera vendu.
+6. **`stock`** : la quantité disponible à la vente. Vous pouvez laisser vide si vous n'avez pas l'information ou qu'elle ne vous semble pas pertinente.
+7. **`ticket`** (🎟️) : à activer quand l'article n'est pas vendu là où l'on encaisse, mais qu'un ticket est délivré à faire valoir à un autre emplacement.
+8. **`available`** (💸) : à comprendre comme _disponible à la vente_. De fait, si non coché, l'article ne s'affichera ni dans la liste de prix, ni sur la page de vente.
+9. **`separately sellable`** (⛓️‍💥) : un élément technique dont l'utilité est expliquée ci-après.
 
 ##### Packs
 Créer des packs packs est une manière d'accélérer le processus de vente. Vous avez de la vaisselle réutilisable et consignée ? Un pack vous permet de vendre une boisson avec un verre, un plat avec assiette-couteau-fourchette et comptabiliser le tout simplement.
