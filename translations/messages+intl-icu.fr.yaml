@@ -149,6 +149,10 @@ app:
       title: &title *items_heading
       heading: *title
       none: &product_none Pas de produit renseigné
+    _form:
+      labeliser: Etiquette depuis les composants
+      blender: Couleur depuis les composants
+      computer: Prix depuis les composants
     new:
       title: &title Nouveau produit
       heading: *title
@@ -210,10 +214,8 @@ app:
     index:
       title: &title *payment_method_heading
       heading: *title
+    _form:
+      slugger: ID depuis le titre
     new:
       title: &title Nouveau moyen de paiement
       heading: *title
-    _form:
-      id_from_title:
-        short: 🪄
-        long: ID depuis le titre

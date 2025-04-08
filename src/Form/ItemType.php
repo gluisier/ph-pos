@@ -57,6 +57,11 @@ class ItemType extends CategoryType
                 'choice_label' => function (Item $item): string {
                     return $item->getTitle() . ' ' . $item->getLabel() . ' ' . ($item->isAvailable() ? number_format($item->getPrice(), 2, ',') : '(non vendu)');
                 },
+                'choice_attr' => function (Item $item): array {
+                    return [
+                        'data-label' => $item->getLabel(),
+                    ];
+                },
                 'label_format' => 'app.fields.item.%name%.label',
             ])
             ->add('attributes', null, [
@@ -89,6 +94,7 @@ class ItemType extends CategoryType
                         return [
                             'data-price' => $item->getPrice(),
                             'data-colour' => $item->getColour(),
+                            'data-label' => $item->getLabel(),
                         ];
                     },
                 ],

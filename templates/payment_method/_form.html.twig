@@ -12,7 +12,10 @@
 	<div class="row mb-3">
 		<div class="col-md-7 col-lg-9">
 			{{ form_label(form.id) }}
-			{{ form_widget(form.id) }}
+			<div class="input-group">
+				<button type="button" class="btn btn-outline-success slugger" title="{{ 'app.payment_method._form.slugger'|trans }}" aria-label="{{ 'app.payment_method._form.slugger'|trans }}" data-source="#{{ form.title.vars.id }}" data-target="{{ form.id.vars.id }}">🪄</button>
+				{{ form_widget(form.id) }}
+			</div>
 			{{ form_help(form.id) }}
 			{{ form_errors(form.id) }}
 		</div>
