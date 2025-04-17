@@ -33,6 +33,7 @@ class ItemRepository extends ServiceEntityRepository
             ->leftJoin('i.variants', 'v')->addSelect('v')
             ->where($qb->expr()->eq('i.available', $qb->expr()->literal(true)))
             ->andWhere($qb->expr()->eq('i.separatelySellable', $qb->expr()->literal(true)))
+            ->orWhere($qb->expr()->eq('v.separatelySellable', $qb->expr()->literal(true)))
             ->addOrderBy('i.position');
 
         if (!$authenticated) {
