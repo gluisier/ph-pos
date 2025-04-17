@@ -87,7 +87,7 @@ class ItemController extends AbstractController
     #[Route('/item/event', name: 'event', methods: ["GET", "POST"])]
     public function event(Request $request, FormFactoryInterface $formFactory, EntityManagerInterface $entityManager)
     {
-        $items = $entityManager->getRepository(Item::class)->findBy(['separatelySellable' => true], ['category' => 'ASC', 'position' => 'ASC']);
+        $items = $entityManager->getRepository(Item::class)->findAll();
 
         $form = $formFactory->createNamedBuilder('event', FormType::class, ['items' => $items])
             ->add('items', CollectionType::class, [

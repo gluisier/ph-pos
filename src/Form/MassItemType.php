@@ -15,6 +15,7 @@ class MassItemType extends AbstractType
     {
         $builder
             ->add('available', CheckboxType::class, [
+                'required' => false,
                 'label_format' => 'app.fields.item.%name%.label.short',
                 'label_attr' => [
                     'title' => 'app.fields.item.available.label.long',
