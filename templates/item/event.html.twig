@@ -8,12 +8,12 @@
 	{{ form_start(form) }}
 	<table class="table align-middle">
 		<colgroup>
-			<col class="col-1" />
-			<col class="col-xl-2" />
+			<col class="col-1 pe-0 pe-lg-2" />
+			<col class="col-xl-2 ps-0 ps-lg-2" />
 			<col />
 			<col class="col-1" />
-			<col class="col-2 col-xl-1" />
-			<col class="col-2 col-xl-1" />
+			<col class="col-2 col-md-1" />
+			<col class="col-2 col-md-1" />
 			<col class="col-1" />
 		</colgroup>
 		<thead>
@@ -21,27 +21,35 @@
 				<th><abbr title="{{ 'app.fields.item.category.label.long'|trans }}">{{ 'app.fields.item.category.label.short'|trans }}</abbr></th>
 				<th>{{ 'app.fields.item.label.label.long'|trans }}</th>
 				<th>{{ 'app.fields.item.title.label'|trans }}</th>
-				<th><abbr title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
-				<th>{{ 'app.fields.item.price.label'|trans }}</th>
-				<th>{{ 'app.fields.item.stock.label'|trans }}</th>
-				<th><a href="{{ path('item_new') }}" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
+				<th><abbr id="AvailableLabel" title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
+				<th id="PriceLabel">{{ 'app.fields.item.price.label'|trans }}</th>
+				<th id="StockLabel">{{ 'app.fields.item.stock.label'|trans }}</th>
+				<th><a href="{{ path('item_new') }}" class="btn btn-success btn-sm" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
 			</tr>
 		</thead>
 		<tbody>
 		{% for item in form.items %}
 			{% set style = (item.vars.data.colour ? 'background-color: ' ~ item.vars.data.colour ~ ' !important; color: var(--bs-' ~ (is_dark(item.vars.data.colour) ? 'light' : 'dark') ~ ');' : '') %}
 			<tr>
-				<td class="text-center h2" title="{{ item.vars.data.category.title }}"{% if style %} style="{{ style}}"{% endif %}>{{ item.vars.data.category.label }}</td>
-				<td class="text-center h2"{% if style %} style="{{ style}}"{% endif %}>{{ item.vars.data.label }}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.value.title }}{% if item.vars.data.ticket %}
+				<td class="text-center h2 py-1 pe-0 pe-lg-2" title="{{ item.vars.data.category.title }}"{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.data.category.label }}</td>
+				<td class="text-center h2 py-1 ps-0 ps-lg-2" style="{% if item.vars.data.isPack %}{{ pack_gradient(item.vars.data.composedOf) }}{% elseif item.vars.data.variants.count > 1 %}{{ variants_gradient(item.vars.data.variants)}}{% elseif item.vars.data.colour %}background-color: {{ item.vars.data.colour }} !important{% endif %}; color: var(--bs-{{ item.vars.data.colour ? (is_dark(item.vars.data.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.vars.data.label }}</td>
+				<td{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.value.title }}
+					{%- if item.vars.data.ticket %}
+					{%- if item.vars.data.colour %}
+						<abbr title="{{ item.vars.data.colour }}">{{ 'app.fields.item.ticket.label.short'|trans }}</abbr>
+					{%- else %}
 						{{ 'app.fields.item.ticket.label.short'|trans }}
-					{%- endif %}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.available) }}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.price) }}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>{{ form_widget(item.children.stock) }}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>
-					<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
-				</td>
+					{%- endif -%}
+					{%- endif -%}</td>
+				<td colspan="4"{% if style %} style="{{ style }}"{% endif %}>
+					{%- apply spaceless %}
+					<span class="input-group input-group-sm">
+						{{ form_row(item.children.available, {'row_attr': {'class': 'input-group-text pt-1 pe-1 pb-0'}, 'label': false, 'attr': {'aria-labelledby': 'AvailableLabel'}}) }}
+						{{ form_widget(item.children.price, {'attr': {'aria-labelledby': 'PriceLabel'}|merge((not item.children.available.vars.data) ? {'readonly': 'readonly'} : {})}) }}
+						{{ form_widget(item.children.stock, {'attr': {'aria-labelledby': 'StockLabel'}|merge((not item.children.available.vars.data) ? {'readonly': 'readonly'} : {})}) }}
+						<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-outline-warning px-1" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+					</span>
+					{%- endapply %}</td>
 			</tr>
 		{% else %}
 			<tr>
@@ -56,4 +64,16 @@
 		</tfoot>
 	</table>
 	{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+	<script>//<![CDATA[
+	document.querySelectorAll('[name*="available"]').forEach(checkbox => {
+		checkbox.addEventListener('change', (e) => {
+			e.target.closest('.input-group').querySelectorAll('input:not([type="checkbox"])').forEach(field => {
+				field.readOnly = !checkbox.checked;
+			});
+		});
+	});
+	//]]></script>
 {% endblock %}

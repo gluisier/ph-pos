@@ -23,8 +23,15 @@ class MassItemType extends AbstractType
             ])
             ->add('price', IntegerType::class, [
                 'required' => false,
+                'attr' => [
+                    'placeholder' => 'app.fields.item.price.label'
+                ]
             ])
-            ->add('stock')
+            ->add('stock', IntegerType::class, [
+                'attr' => [
+                    'placeholder' => 'app.fields.item.stock.label'
+                ]
+            ])
         ;
     }
 
