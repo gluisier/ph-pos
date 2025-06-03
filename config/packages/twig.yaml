@@ -3,6 +3,8 @@ twig:
     - bootstrap_5_layout.html.twig
     - forms.html.twig
   default_path: '%kernel.project_dir%/templates'
+  globals:
+    assets_host: "%env(ASSETS_HOST)%"
 
 when@test:
   twig:
