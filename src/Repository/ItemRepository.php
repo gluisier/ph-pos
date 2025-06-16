@@ -81,7 +81,7 @@ class ItemRepository extends ServiceEntityRepository
     /**
      * @return Item[] Returns an array of Item objects
      */
-    public function findForPrices()
+    public function findForPrices(): array
     {
         $qb = $this->createQueryBuilder('i');
         $qb ->innerJoin('i.category', 'c', Join::WITH, $qb->expr()->eq('c.public', $qb->expr()->literal(true)))->addSelect('c')
@@ -102,6 +102,19 @@ class ItemRepository extends ServiceEntityRepository
             ->addOrderBy('i.position')
             ->addOrderBy('a.position')
             ->addOrderBy('d.position');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllComplete(): array
+    {
+        $qb = $this->createQueryBuilder('i')->indexBy('i', 'i.id');
+        $qb ->leftJoin('i.composedOf', 'co')->addSelect('co')
+            ->leftJoin('i.composing', 'cg')->addSelect('cg')
+            ->leftJoin('i.variants', 'v')->addSelect('v')
+            ->leftJoin('i.variantOf', 'vo')->addSelect('PARTIAL vo.{id}')
+            ->leftJoin('i.category', 'cat')->addSelect('cat')
+            ->orderBy('i.position');
 
         return $qb->getQuery()->getResult();
     }
