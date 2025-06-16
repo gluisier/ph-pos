@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\User as AppUser;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -11,7 +12,10 @@ class ActiveUserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user): void
     {
-        if (!$user instanceof AppUser) {
+        if (
+            $user instanceof InMemoryUser
+            || !$user instanceof AppUser
+        ) {
             return;
         }
 
