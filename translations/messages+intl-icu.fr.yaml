@@ -163,6 +163,7 @@ app:
     print:
       title: &title Liste des prix
       heading: *title
+      none: *product_none
       with: 'avec {variator}'
 
   category:
@@ -190,6 +191,7 @@ app:
     index:
       title: &title *users_heading
       heading: *title
+      none: Aucun utilisateur enregistré
     new:
       title: &title Nouvel utilisateur
       heading: *title
@@ -214,6 +216,7 @@ app:
     index:
       title: &title *payment_method_heading
       heading: *title
+      none: Pas de moyen de paiement renseigné
     _form:
       slugger: ID depuis le titre
     new:
