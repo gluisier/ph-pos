@@ -31,7 +31,7 @@
 		{% for item in form.items %}
 			{% set style = (item.vars.data.colour ? 'background-color: ' ~ item.vars.data.colour ~ ' !important; color: var(--bs-' ~ (is_dark(item.vars.data.colour) ? 'light' : 'dark') ~ ');' : '') %}
 			<tr>
-				<td class="text-center h2 py-1 pe-0 pe-lg-2" title="{{ item.vars.data.category.title }}"{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.data.category.label }}</td>
+				<td class="text-center h2 py-1 pe-0 pe-lg-2" title="{{ item.vars.data.category ? item.vars.data.category.title }}"{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.data.category ? item.vars.data.category.label }}</td>
 				<td class="text-center h2 py-1 ps-0 ps-lg-2" style="{% if item.vars.data.isPack %}{{ pack_gradient(item.vars.data.composedOf) }}{% elseif item.vars.data.variants.count > 1 %}{{ variants_gradient(item.vars.data.variants)}}{% elseif item.vars.data.colour %}background-color: {{ item.vars.data.colour }} !important{% endif %}; color: var(--bs-{{ item.vars.data.colour ? (is_dark(item.vars.data.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.vars.data.label }}</td>
 				<td{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.value.title }}
 					{%- if item.vars.data.ticket %}
@@ -51,17 +51,19 @@
 					</span>
 					{%- endapply %}</td>
 			</tr>
-		{% else %}
-			<tr>
-				<td colspan="7">{{ 'app.item.event.none'|trans }}</td>
-			</tr>
-		{% endfor %}
 		</tbody>
 		<tfoot>
 			<tr>
 				<td colspan="7"><button type="submit" class="btn btn-primary" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button></td>
 			</tr>
 		</tfoot>
+		{% else %}
+			{% do form.items.setRendered(true) %}
+			<tr>
+				<td colspan="7">{{ 'app.item.event.none'|trans }}</td>
+			</tr>
+		</tbody>
+		{% endfor %}
 	</table>
 	{{ form_end(form) }}
 {% endblock %}
