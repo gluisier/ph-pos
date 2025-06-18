@@ -51,19 +51,20 @@
 					</span>
 					{%- endapply %}</td>
 			</tr>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="7"><button type="submit" class="btn btn-primary" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button></td>
-			</tr>
-		</tfoot>
 		{% else %}
 			{% do form.items.setRendered(true) %}
 			<tr>
 				<td colspan="7">{{ 'app.item.event.none'|trans }}</td>
 			</tr>
-		</tbody>
 		{% endfor %}
+		</tbody>
+		{% if form.items|length %}
+		<tfoot>
+			<tr>
+				<td colspan="7"><button type="submit" class="btn btn-primary" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button></td>
+			</tr>
+		</tfoot>
+		{% endif %}
 	</table>
 	{{ form_end(form) }}
 {% endblock %}
