@@ -2,11 +2,20 @@
 
 {% block title %}{{ 'app.item.event.title'|trans }} | {{ parent() }}{% endblock %}
 
+{% block stylesheets %}
+	<style>
+	.form-control[readonly] {
+		background-color: var(--bs-secondary-bg);
+		opacity: 1;
+		cursor: not-allowed;
+	}
+	</style>
+{% endblock %}
+
 {% block body %}
 	<h2>{{ 'app.item.event.heading'|trans }}</h2>
 
 	{{ form_start(form) }}
-	<div class="table-responsive">
 		<table class="table align-middle">
 			<colgroup>
 				<col class="col-1 pe-0 pe-lg-2" />
@@ -30,8 +39,12 @@
 			</thead>
 			<tbody>
 			{% for item in form.items %}
+			{% set targets = item.vars.data.variants|map(e => e.id)|merge(item.vars.data.composing|map(e => e.id))
+				# |merge(...(item.vars.data.attributes|map(e => e.items|map(e => e.id))))
+			%}
+			{% set sources = ((item.vars.data.variantOf is not none) ? [item.vars.data.variantOf.id] : [])|merge(item.vars.data.composedOf|map(e => e.id)) %}
 				{% set style = (item.vars.data.colour ? 'background-color: ' ~ item.vars.data.colour ~ ' !important; color: var(--bs-' ~ (is_dark(item.vars.data.colour) ? 'light' : 'dark') ~ ');' : '') %}
-				<tr>
+				<tr id="I{{ item.vars.data.id }}">
 					<td class="text-center h2 py-1 pe-0 pe-lg-2" title="{{ item.vars.data.category ? item.vars.data.category.title }}"{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.data.category ? item.vars.data.category.label }}</td>
 					<td class="text-center h2 py-1 ps-0 ps-lg-2" style="{% if item.vars.data.isPack %}{{ pack_gradient(item.vars.data.composedOf) }}{% elseif item.vars.data.variants.count > 1 %}{{ variants_gradient(item.vars.data.variants)}}{% elseif item.vars.data.colour %}background-color: {{ item.vars.data.colour }} !important{% endif %}; color: var(--bs-{{ item.vars.data.colour ? (is_dark(item.vars.data.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.vars.data.label }}</td>
 					<td{% if style %} style="{{ style }}"{% endif %}>{{ item.vars.value.title }}
@@ -44,10 +57,15 @@
 						{%- endif -%}</td>
 					<td colspan="4"{% if style %} style="{{ style }}"{% endif %}>
 						{%- apply spaceless %}
-						<span class="input-group input-group-sm">
-							{{ form_row(item.children.available, {'row_attr': {'class': 'input-group-text pt-1 pe-1 pb-0'}, 'label': false, 'attr': {'aria-labelledby': 'AvailableLabel'}}) }}
-							{{ form_widget(item.children.price, {'attr': {'aria-labelledby': 'PriceLabel'}|merge((not item.children.available.vars.data) ? {'readonly': 'readonly'} : {})}) }}
-							{{ form_widget(item.children.stock, {'attr': {'aria-labelledby': 'StockLabel'}|merge((not item.children.available.vars.data) ? {'readonly': 'readonly'} : {})}) }}
+						<span class="input-group input-group-sm"
+							{%- if targets|length %} data-targets="{{ targets|json_encode }}"{% endif -%}
+							{%- if sources|length %} data-sources="{{ sources|json_encode }}"{% endif -%}
+						>
+							{{ form_row(item.children.available, {'row_attr': {'class': 'input-group-text pt-1 pe-1 pb-0'}, 'label': false, 'attr': {'aria-labelledby': 'AvailableLabel', 'class': 'has-magic'}}) }}
+						<button type="button" disabled="disabled" id="{{ item.vars.id }}_provider" class="btn btn-outline-secondary px-1 disabled" title="{{ 'app.item._form.provider'|trans }}" aria-label="{{ 'global.action.edit'|trans }}" data-target="{{ item.children.available.vars.id }}" data-operation="and">↢</button>
+							{{ form_widget(item.children.price, {'attr': {'aria-labelledby': 'PriceLabel', 'class': 'has-magic'}|merge((not item.children.available.vars.data) ? {'readonly': 'readonly', 'class': 'has-magic disabled'} : {})}) }}
+						<button type="button" disabled="disabled" id="{{ item.vars.id }}_computer" class="btn btn-outline-secondary px-1 disabled" title="{{ 'app.item._form.computer'|trans }}" aria-label="{{ 'global.action.edit'|trans }}" data-target="{{ item.children.price.vars.id }}" data-operation="addition">↢</button>
+							{{ form_widget(item.children.stock, {'attr': {'aria-labelledby': 'StockLabel'}|merge((not item.children.available.vars.data) ? {'readonly': 'readonly', 'class': 'disabled'} : {})}) }}
 							<a href="{{ path('item_edit', {'id': item.vars.value.id}) }}" class="btn btn-outline-warning px-1" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
 						</span>
 						{%- endapply %}</td>
@@ -67,18 +85,55 @@
 			</tfoot>
 			{% endif %}
 		</table>
-	</div>
 	{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
-	<script>//<![CDATA[
-	document.querySelectorAll('[name*="available"]').forEach(checkbox => {
-		checkbox.addEventListener('change', (e) => {
-			e.target.closest('.input-group').querySelectorAll('input:not([type="checkbox"])').forEach(field => {
-				field.readOnly = !checkbox.checked;
+		<script src="{{ asset('js/reducer.js') }}"></script>
+		<script>//<![CDATA[
+		document.querySelectorAll('[name*="available"]').forEach(checkbox => {
+			checkbox.addEventListener('change', (e) => {
+				e.target.closest('.input-group').querySelectorAll('input:not([type="checkbox"])').forEach(field => {
+					field.readOnly = !checkbox.checked;
+				});
 			});
 		});
-	});
-	//]]></script>
+		document.querySelectorAll('[data-sources] button').forEach(field => {
+			field.addEventListener('click', (e) => {
+				const button = e.target;
+				const target = document.getElementById(button.dataset.target);
+				const sourceIds = JSON.parse(button.closest('[data-sources]').dataset.sources);
+				const operation = button.dataset.operation || 'addition';
+				const values = [];
+				for (const sourceId of sourceIds) {
+					const source = document.getElementById(button.dataset.target.replace(/\d+/, sourceId));
+					if (source.matches('[type="radio"], [type="checkbox"]')) {
+						values.push(source.checked);
+					} else {
+						values.push(source.value);
+					}
+				}
+				const result = values.reduce((logical, current) => logical && current);
+				if (target.matches('[type="radio"], [type="checkbox"]')) {
+					target.checked = result;
+				} else {
+					target.value = result;
+				}
+				target.dispatchEvent(new Event('change'));
+			})
+		});
+		document.querySelectorAll('[data-targets] input.has-magic').forEach(field => {
+			field.addEventListener('change', (e) => {
+				const source = e.target.id;
+				const targetIds = JSON.parse(e.target.closest('[data-targets]').dataset.targets || "[]");
+				for (const targetId of targetIds) {
+					document.querySelectorAll('#I' + targetId + ' button').forEach(button => {
+						button.disabled = false;
+						button.classList.remove('disabled', 'btn-outline-secondary');
+						button.classList.add('btn-success');
+					});
+				}
+			});
+		});
+		//]]></script>
 {% endblock %}

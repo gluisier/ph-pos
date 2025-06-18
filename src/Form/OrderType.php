@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Order;
 use App\Entity\OrderLine;
+use App\Entity\PaymentMethod;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,6 +22,7 @@ class OrderType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
+                'by_reference' => false,
                 'delete_empty' => function(?OrderLine $line = null): bool {
                     return null === $line || $line->getQuantity() == 0;
                 },
@@ -27,6 +30,13 @@ class OrderType extends AbstractType
                     'label' => false,
                 ],
             ])
+            ->add('paymentMethod', EntityType::class, [
+                'class' => PaymentMethod::class,
+                'choice_label' => 'title',
+                'label_format' => 'app.fields.order_line.%name%.label',
+            ])
+            ->add('externalId')
+            ->add('printDate')
         ;
     }
 

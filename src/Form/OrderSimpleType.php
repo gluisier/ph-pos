@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 
 class OrderSimpleType extends AbstractType
 {
@@ -26,7 +27,7 @@ class OrderSimpleType extends AbstractType
                 'class' => Category::class,
                 'mapped' => false,
                 'required' => false,
-                'placeholder' => '📖', // Cannot be translated!?
+                'placeholder' => '📖', // either this hard-coded, or a missing translation for each choice
                 'expanded' => true,
                 'multiple' => false,
                 'label' => false,
@@ -38,7 +39,7 @@ class OrderSimpleType extends AbstractType
 
                     return $qb;
                 },
-                // label_attr is not dynamic as of 7.2.8
+                // label_attr is not dynamic as of 7.4.5
                 'choice_attr' => function (Category $choice) {
                     return [
                         'class' => 'btn-check',
@@ -82,7 +83,7 @@ class OrderSimpleType extends AbstractType
                 },
                 'choice_attr' => function (PaymentMethod $choice) {
                     return [
-                        // label_attr is not dynamic as of 7.1.3
+                        // label_attr is not dynamic as of 7.4.5
                         'style' => 'background-color: ' . $choice->getColour()
                     ];
                 },

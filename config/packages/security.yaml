@@ -60,6 +60,13 @@ security:
     - { path: ^/login, roles: PUBLIC_ACCESS }
     - { path: ^/register, roles: PUBLIC_ACCESS }
     - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+    - { path: ^/category/, roles: ROLE_ADMIN }
+    - { path: ^/item/, roles: ROLE_ADMIN }
+    - { path: ^/payment-method/, roles: ROLE_ADMIN }
+    - { path: ^/order/, roles: ROLE_ADMIN }
+    - { path: ^/user/, roles: ROLE_ADMIN }
+    - { path: ^/printer/, roles: ROLE_ADMIN }
+    - { path: ^/location/, roles: ROLE_ADMIN }
     - { path: ^/, roles: ROLE_USER }
 
 when@test:

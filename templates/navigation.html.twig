@@ -21,6 +21,7 @@
 						<a class="dropdown-item{% if 'production_index' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('production_index') }}">{{ 'app.navigation.operating.production'|trans }}</a>
 					</div>
 				</li>
+				{% if is_granted('ROLE_ADMIN') ~%}
 				<li class="nav-item dropdown">
 					<a href="#" class="nav-link dropdown-toggle{%
 							if 'item' in app.current_route
@@ -52,6 +53,7 @@
 						<a class="dropdown-item{% if 'payment_method' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('payment_method_index') }}">{{ 'app.navigation.admin.payment_methods.heading'|trans }}</a>
 					</div>
 				</li>
+				{% endif ~%}
 				{% endif ~%}
 			</ul>
 			<ul class="navbar-nav d-flex">

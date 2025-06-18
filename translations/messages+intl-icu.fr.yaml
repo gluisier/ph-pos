@@ -256,6 +256,7 @@ app:
       labeliser: Etiquette depuis les composants
       blender: Couleur depuis les composants
       computer: Prix depuis les composants
+      provider: Disponibilité depuis les composants
     new:
       title: &title Nouveau produit
       heading: *title
