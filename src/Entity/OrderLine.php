@@ -9,24 +9,24 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderLineRepository::class)]
-#[UniqueEntity(fields: ['order', 'item'], message: 'app.order_line.not_unique')]
+#[UniqueEntity(fields: ['order', 'item'], message: 'order_line.not_unique')]
 class OrderLine
 {
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'lines')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'order_line.order.null')]
     private ?Order $order = null;
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'order_line.item.null')]
     private ?Item $item = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\Type('int')]
-    #[Assert\GreaterThanOrEqual(1)]
+    #[Assert\GreaterThanOrEqual(1, message: 'order_line.quantity.zero')]
     private ?int $quantity = null;
 
     public function __construct(Order $order, Item $item, int $quantity = 0)

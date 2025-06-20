@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -11,19 +10,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['name'], message: 'app.user.not_unique')]
+#[UniqueEntity(fields: ['name'], message: 'user.not_unique')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(length: 180, unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\NoSuspiciousCharacters]
-    #[Assert\Length(min: 3)]
+    #[Assert\NotBlank(message: 'user.name.blank')]
+    #[Assert\NoSuspiciousCharacters(
+        restrictionLevelMessage: 'user.name.contains.restrictions_breaks',
+        invisibleMessage: 'user.name.contains.invisibles',
+        mixedNumbersMessage: 'user.name.contains.mixed_numbers',
+        hiddenOverlayMessage: 'user.name.contains.hidden_overlay_characters'
+    )]
+    #[Assert\Length(min: 3, minMessage: 'user.name.too_short')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Length(min: 8)]
-    #[Assert\PasswordStrength()]
     private ?string $password = null;
 
     #[ORM\Column]

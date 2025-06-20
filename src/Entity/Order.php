@@ -21,12 +21,12 @@ class Order
     private ?\DateTime $createdAt = null;
 
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class, cascade: ["persist"], indexBy: 'item_id')]
-    #[Assert\Count(min: 1)]
+    #[Assert\Count(min: 1, minMessage: 'order.lines.zero')]
     private Collection $lines;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'order.payment_method.null')]
     private ?PaymentMethod $paymentMethod = null;
 
     public function __construct()

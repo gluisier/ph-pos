@@ -6,16 +6,19 @@ use App\Repository\PaymentMethodRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PaymentMethodRepository::class)]
+#[UniqueEntity(fields: ['id'], message: 'payment_method.id.not_unique')]
+#[UniqueEntity(fields: ['title'], message: 'payment_method.title.not_unique')]
 class PaymentMethod extends DisplayableItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[ORM\Column]
-    #[Assert\NotBlank]
-    #[Assert\Regex('`^[a-z0-9_]+$`')]
+    #[Assert\NotBlank(message: 'payment_method.id.blank')]
+    #[Assert\Regex('`^[a-z0-9_]+$`', message: 'payment_method.id.regex_not_match')]
     private ?string $id = null;
 
     #[ORM\Column]

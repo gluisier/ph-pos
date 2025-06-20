@@ -11,17 +11,27 @@ use Symfony\Component\Validator\Constraints as Assert;
 abstract class DisplayableItem
 {
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\NoSuspiciousCharacters]
+    #[Assert\NotBlank(message: 'displayable_item.title.blank')]
+    #[Assert\NoSuspiciousCharacters(
+        restrictionLevelMessage: 'displayable_item.title.contains.restrictions_breaks',
+        invisibleMessage: 'displayable_item.title.contains.invisibles',
+        mixedNumbersMessage: 'displayable_item.title.contains.mixed_numbers',
+        hiddenOverlayMessage: 'displayable_item.title.contains.hidden_overlay_characters',
+        checks:
+            Assert\NoSuspiciousCharacters::CHECK_INVISIBLE
+            | Assert\NoSuspiciousCharacters::CHECK_MIXED_NUMBERS
+            | Assert\NoSuspiciousCharacters::CHECK_HIDDEN_OVERLAY
+            | Assert\NoSuspiciousCharacters::RESTRICTION_LEVEL_SINGLE_SCRIPT
+        )]
     protected ?string $title = null;
 
     #[ORM\Column(length: 7)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'displayable_item.label.blank')]
     #[Assert\Length(max: 7)]
     protected ?string $label = null;
 
     #[ORM\Column(length: 7, nullable: true)]
-    #[Assert\CssColor(formats: Assert\CssColor::HEX_LONG)]
+    #[Assert\CssColor(formats: Assert\CssColor::HEX_LONG, message: 'displayable_item.colour.not_hex_long')]
     protected ?string $colour = null;
 
     #[ORM\Column]

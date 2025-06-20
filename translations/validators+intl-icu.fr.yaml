@@ -1,5 +1,46 @@
+displayable_item:
+  title:
+    blank:
+    contains:
+      restrictions_breaks: &restrictions_breaks Certains caractères de la saisie ne sont pas acceptables. Retapez la valeur
+      invisibles: &invisibles Il y a des caractères invisibles. Retapez la valeur
+      mixed_numbers: &mixed_numbers Il y a des chiffres de différents scripts, n’en utilisez qu’une seule sorte
+      hidden_overlay_characters: &hidden_overlay_characters Il y a des caractères de contrôle ou de composition. Retapez la valeur
+  label:
+    blank: Une étiquette est obligatoire
+
+order:
+  lines:
+    zero: Cette commande n’a aucun article
+  payment_method:
+    "null": Spécifiez le moyen de paiement
+
+order_line:
+  not_unique: La commande contient déjà cet article
+  order:
+    order:
+      "null": Veuillez spécifier la commande
+    item:
+      "null": Veuillez spécifier l’article
+
+payment_method:
+  id:
+    not_unique: Cet ID est déjà utilisé
+    blank: Un ID est obligatoire
+    regex_not_match: Aucun accent, et au lieu des espaces, utilisez le tiret bas _
+  title:
+    not_unique: Ce nom est déjà utilisé
+
 user:
   not_unique: Ce prénom est déjà enregistré. Contactez un administrateur
+  name:
+    blank: Veuillez saisir un nom d’utilisateur
+    contains:
+      restrictions_breaks: *restrictions_breaks
+      invisibles: *invisibles
+      mixed_numbers: *mixed_numbers
+      hidden_overlay_characters: *hidden_overlay_characters
+    too_short: "{min} caractères minimum"
   plain_password:
     blank: Veuillez saisir un mot de passe
     length: Le mot de passe ne peut être plus court que {limit} caractères
