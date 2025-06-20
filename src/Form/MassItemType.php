@@ -28,6 +28,7 @@ class MassItemType extends AbstractType
                 ]
             ])
             ->add('stock', IntegerType::class, [
+                'required' => false,
                 'attr' => [
                     'placeholder' => 'app.fields.item.stock.label'
                 ]
