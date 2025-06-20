@@ -116,12 +116,12 @@ app:
     heading: *title
     user: Utilisateur
     password: Mot de passe
-    register: Pas d’accès ? <a href="{url}">S’enregistrer</a>
+    register: Pas de compte ? <a href="{url}">S’enregistrer</a>
 
   register:
     title: &title Enregistrement
     heading: *title
-    success: Votre accès est enregistré. Contactez le responsable pour l’activer, pouvoir vous connecter et avoir accès à toutes les fonctionnalités
+    success: Votre compte est enregistré. Contactez le responsable pour le faire activer et ainsi pouvoir vous connecter et avoir accès à toutes les fonctionnalités
 
   menu:
     prices: &prices Liste de prix
