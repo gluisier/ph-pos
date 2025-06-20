@@ -5,6 +5,7 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+/public/js/print_sdks/*_sdk.js
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
