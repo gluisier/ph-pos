@@ -101,6 +101,10 @@ app:
           label: Confirmation du nouveau mot de passe
       token:
         label: Jeton
+      printer:
+        label:
+          short: 🖨️
+          long: Imprimante
       createdAt:
         label: Créé le
     order:
@@ -122,6 +126,43 @@ app:
       id:
         help: Ne peut contenir que des lettres minuscules, des chiffres et le sous-tiret <q><code>_</code></q>
       available: *available
+    printer:
+      manufacturer:
+        label: Fabricant
+      model:
+        label: Modèle
+      ip:
+        label: Adresse IP
+      port:
+        label: Port
+      status:
+        label:
+          short: 🚥
+          long: Statut
+        stored:
+          label:
+            short: 🚫
+            long: Rangée
+        disabled:
+          label:
+            short: ⚪
+            long: Désactivée
+        ok:
+          label:
+            short: 🟢
+            long: OK
+        printing:
+          label:
+            short: 🟩
+            long: Impression
+        warning:
+          label:
+            short: 🟠
+            long:  Attention
+        error:
+          label:
+            short: 🔴
+            long: Erreur
 
   login:
     title: &title Authentification
@@ -146,11 +187,13 @@ app:
       event: Préparation
       prices: *prices
     payment_methods:
-      heading: &payment_method_heading Moyens de paiement
+      heading: &payment_methods_heading Moyens de paiement
     orders:
       heading: &orders_heading Commandes
     users:
       heading: &users_heading Utilisateurs
+    printers:
+      heading: &printers_heading Imprimantes
     login: Connexion
     register: Enregistrement
     logout: Déconnexion
@@ -190,6 +233,8 @@ app:
   sales:
     title: *sales_heading
     total: Total
+    statuses:
+
 
   production:
     title: *production_heading
@@ -231,11 +276,22 @@ app:
 
   payment_method:
     index:
-      title: &title *payment_method_heading
+      title: &title *payment_methods_heading
       heading: *title
       none: Pas de moyen de paiement renseigné
     _form:
       slugger: ID depuis le titre
     new:
       title: &title Nouveau moyen de paiement
+      heading: *title
+
+  printer:
+    index:
+      title: &title *printers_heading
+      heading: *title
+      none: Pas d'imprimante renseignée
+    _form:
+      slugger: ID depuis les données
+    new:
+      title: &title Nouvelle imprimante
       heading: *title

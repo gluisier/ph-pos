@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.printer.index.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h2>{{ 'app.printer.index.heading'|trans }}</h2>
+
+	<table class="table">
+		<colgroup>
+			<col />
+			<col />
+			<col />
+			<col class="col-1" />
+			<col class="col-1" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{{ 'app.fields.printer.manufacturer.label'|trans }}</th>
+				<th>{{ 'app.fields.printer.model.label'|trans }}</th>
+				<th>{{ 'app.fields.id'|trans }}</th>
+				<th><abbr title="{{ 'app.fields.printer.status.label.long'|trans }}">{{ 'app.fields.printer.status.label.short'|trans }}</abbr></th>
+				<th><a href="{{ path('printer_new') }}" class="btn btn-success" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for printer in printers %}
+			<tr>
+				<td>{{ printer.manufacturer.value|humanize }}</td>
+				<td>{{ printer.model }}</td>
+				<td>{{ printer.id }}</td>
+				<td>{{ printer.status|trans }}</td>
+				<td>
+					<a href="{{ path('printer_show', {'id': printer.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
+					<a href="{{ path('printer_edit', {'id': printer.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="5">{{ 'app.printer.index.none'|trans }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
