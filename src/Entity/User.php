@@ -40,6 +40,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Printer $printer = null;
+
     public function getName(): ?string
     {
         return $this->name;
@@ -116,6 +119,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $token = md5($this->name . $this->createdAt->format('c'));
         }
         $this->token = $token;
+
+        return $this;
+    }
+
+    public function getPrinter(): ?Printer
+    {
+        return $this->printer;
+    }
+
+    public function setPrinter(?Printer $printer): static
+    {
+        $this->printer = $printer;
 
         return $this;
     }

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ printer.manufacturer.value|humanize ~ ' ' ~ printer.model }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h2>{{ printer.status|trans ~ ' ' ~ printer.manufacturer.value|humanize ~ ' ' ~ printer.model }}</h2>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th colspan="2">{{ 'app.fields.printer.manufacturer.label'|trans }}</th>
+                <td colspan="2">{{ printer.manufacturer.value|humanize }}</td>
+            </tr>
+            <tr>
+                <th colspan="2">{{ 'app.fields.printer.model.label'|trans }}</th>
+                <td colspan="2">{{ printer.model }}</td>
+            </tr>
+            <tr>
+                <th colspan="2">{{ 'app.fields.id'|trans }}</th>
+                <td colspan="2">{{ printer.id }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'app.fields.printer.ip.label'|trans }}</th>
+				<td>{{ printer.ip|trans }}</td>
+                <th>{{ 'app.fields.printer.port.label'|trans }}</th>
+				<td>{{ printer.port|trans }}</td>
+            </tr>
+        </tbody>
+    </table>
+	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<a href="{{ path('printer_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
+		</li>
+		<li class="list-inline-item">
+			<a href="{{ path('printer_edit', {'id': printer.id}) }}" class="btn btn-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+		</li>
+		<li class="list-inline-item">
+			{{ include('printer/_delete_form.html.twig') }}
+		</li>
+	</ul>
+{% endblock %}
