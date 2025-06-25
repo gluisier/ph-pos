@@ -29,9 +29,7 @@ class UserType extends AbstractType
 
                     return $qb;
                 },
-                'choice_label' => function (\App\Entity\Printer $choice) {
-                    return $choice->getManufacturer()->value . ' ' . $choice->getModel();
-                },
+                'choice_label' => 'model',
                 'label_format' => 'app.fields.user.%name%.label.short',
             ])
             ->add('roles', CollectionType::class, [

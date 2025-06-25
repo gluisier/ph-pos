@@ -18,6 +18,19 @@
 					<td>{{ user.token }}</td>
 				</tr>
 				<tr>
+					<th>{{ 'app.fields.user.printer.label.long'|trans }}</th>
+					<td>
+						{%- if user.printer -%}
+							<a href="{{ path('printer_show', {'id': user.printer.id}) }}" title="
+									{{- user.printer.location ~ (user.printer.location ? ' ') -}}
+									{{- user.printer.ip }} | {{ user.printer.port -}}
+								">
+								{{- user.printer.model -}}
+							</a>
+						{%- endif -%}
+					</td>
+				</tr>
+				<tr>
 					<th>{{ 'app.fields.user.createdAt.label'|trans }}</th>
 					<td>{{ user.createdAt|date('Y-m-d H:i:s') }}</td>
 				</tr>
