@@ -163,6 +163,19 @@ app:
           label:
             short: 🔴
             long: Erreur
+      users:
+        label: Utilisateurs
+    location:
+      name:
+        label: Nom
+      description:
+        label: Description
+      users:
+        label: >-
+          {count, plural,
+            one {Utilisateur}
+            other {Utilisateurs}
+          }
 
   login:
     title: &title Authentification
@@ -294,4 +307,13 @@ app:
       slugger: ID depuis les données
     new:
       title: &title Nouvelle imprimante
+      heading: *title
+
+  location:
+    index:
+      title: &title Emplacements
+      heading: *title
+      none: Pas d'emplacement renseigné
+    new:
+      title: &title Nouvel emplacement
       heading: *title
