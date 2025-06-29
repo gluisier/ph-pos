@@ -46,6 +46,9 @@ class Printer
     #[Assert\NotNull(message: 'printer.manufacturer.null')]
     private ?Manufacturer $manufacturer = null;
 
+    #[ORM\ManyToOne(inversedBy: 'printers')]
+    private ?Location $location = null;
+
     /**
      * @var Collection<int, User>
      */
@@ -125,6 +128,18 @@ class Printer
     public function setManufacturer(Manufacturer $manufacturer): static
     {
         $this->manufacturer = $manufacturer;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

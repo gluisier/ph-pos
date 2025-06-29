@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.location.index.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h2>{{ 'app.location.index.heading'|trans }}</h2>
+
+	<table class="table">
+		<colgroup>
+			<col />
+			<col />
+			<col class="col-1" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>{{ 'app.fields.location.name.label'|trans }}</th>
+				<th>{{ 'app.fields.location.description.label'|trans }}</th>
+				<th><a href="{{ path('location_new') }}" class="btn btn-success btn-sm" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for location in locations %}
+			<tr>
+				<td>{{ location.name }}</td>
+				<td>{{ location.description }}</td>
+				<td>
+					<a href="{{ path('location_show', {'id': location.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
+					<a href="{{ path('location_edit', {'id': location.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="3">{{ 'app.location.index.none'|trans }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

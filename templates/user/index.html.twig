@@ -26,7 +26,7 @@
 					<td>
 						{%- if user.printer -%}
 							<a href="{{ path('printer_show', {'id': user.printer.id}) }}" title="
-									{{- user.printer.location ~ (user.printer.location ? ' ') -}}
+									{{- user.printer.location ? (user.printer.location.name ~ ', ') -}}
 									{{- user.printer.ip }} | {{ user.printer.port -}}
 								">
 								{{- user.printer.model -}}

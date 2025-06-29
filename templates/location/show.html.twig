@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ location.name }}| {{ parent() }}{% endblock %}
+
+{% block body %}
+	<h2>{{ location.name }}<br />
+		{{ location.description }}</h2>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th colspan="2" class="+h3">{{ 'app.fields.location.users.label'|trans({'count': location.printers.count}) }}</th>
+			</tr>
+			<tr>
+				{%- for printer in location.printers %}
+				{%- for user in printer.users %}
+				<th>{{ (user.active ? 'global.on' : 'global.off')|trans }}
+					<a href="{{ path('user_show', {'name': user.name}) }}">{{ user.name }}</a></th>
+				<td><a href="{{ path('printer_show', {'id': printer.id}) }}">{{ user.printer.model }}</a>
+					{%- if loop.parent.loop.first %}
+					<abbr title="{{ ('app.fields.printer.status.' ~ printer.status.value ~ '.label.long')|trans }}">{{ printer.status|trans }}</abbr>
+					<abbr title="
+						{{- printer.ip ~ ' | ' ~ printer.port -}}
+					">🌐</abbr>
+					{%- endif -%}
+				</td>
+				{% endfor -%}
+				{%- else -%}
+				<td colspan="2">{{ 'app.location.show.users.none'|trans }}</td>
+				{% endfor -%}
+			</tr>
+		</tbody>
+	</table>
+	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<a href="{{ path('location_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
+		</li>
+		<li class="list-inline-item">
+			<a href="{{ path('location_edit', {'id': location.id}) }}" class="btn btn-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+		</li>
+		<li class="list-inline-item">
+			{{ include('location/_delete_form.html.twig') }}
+		</li>
+	</ul>
+{% endblock %}
