@@ -1,0 +1,17 @@
+const printerConfig = {
+	user: '{{ user.userIdentifier }}',
+	ip: '{{ printer.ip }}',
+	port: {{ printer.port }},
+	id: '{{ printer.id }}',
+	"status": '{{ printer.status.value }}',
+	valid: function () {
+		return (Object.getOwnPropertyNames(this).length == 6)
+			&& (this.status !== 'stored');
+	}
+};
+var print = function (template, data, successfulCallback, errorCallback) {
+	if (typeof template != 'function') {
+		throw new Error('template parameter is not a function');
+	}
+	throw new Error('Not initialized')
+};

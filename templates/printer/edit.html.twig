@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ printer.manufacturer.value|humanize ~ ' ' ~ printer.model }} | {{ parent() }}{% endblock %}
+{% block title %}{{ printer.model ~ ' (' ~ printer.api.value|humanize ~ ')' }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ printer.status|trans ~ ' ' ~ printer.manufacturer.value|humanize ~ ' ' ~ printer.model }}</h2>
+	<h2><abbr title="{{ ('app.fields.printer.status.' ~ printer.status.value ~ '.label.long')|trans }}">{{ printer.status|trans }}</abbr>
+		{{ printer.model ~ ' (' ~ printer.api.value|humanize ~ ')' }}</h2>
 
-    {{ include('printer/_form.html.twig') }}
+	{{ include('printer/_form.html.twig') }}
 
 	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<button type="button" class="btn btn-outline-success printer-tester" title="{{ 'app.printer.test'|trans }}" aria-label="{{ 'app.printer.test'|trans }}" data-field-name="users">🧪</button>
+		</li>
 		<li class="list-inline-item">
 			<a href="{{ path('printer_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
 		</li>
@@ -19,4 +23,6 @@
 
 {% block javascripts %}
 		<script src="{{ asset('js/slugger.js')}}"></script>
+		<script src="{{ asset('js/print_sdks/' ~ printer.api.value ~ '_sdk.js')}}" id="Sdk"></script>
+		<script src="{{ asset('js/print_sdks/' ~ printer.api.value ~ '.js')}}" id="Wrapper"></script>
 {% endblock %}

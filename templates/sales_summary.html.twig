@@ -23,16 +23,19 @@
 
 {% block body %}
 	<div x-data="{
-			order: {},
+			order: {
+				lines: []
+			},
 			totals: {
 				quantity: 0,
 				amount: 0
 			},
 			get actuallyOrdered() {
 				let filtered = {};
-				for (const id in this.order) {
-					if (this.order[id].quantity > 0 && !this.order[id].pack) {
-						filtered[id] = this.order[id];
+				for (const id in this.order.lines) {
+					const line = this.order.lines[id];
+					if (line.quantity > 0 && !line.pack) {
+						filtered[id] = line;
 					}
 				}
 				return filtered;
@@ -44,11 +47,12 @@
 						quantity: 0,
 						amount: 0
 					};
-					this.order = e.data.order;
-					for (const id in this.order) {
-						if (!this.order[id].pack) {
-							this.totals.quantity += this.order[id].quantity;
-							this.totals.amount += this.order[id].quantity * this.order[id].price;
+					this.order = e.data.data;
+					for (const id in this.order.lines) {
+						const line = this.order.lines[id];
+						if (!line.pack) {
+							this.totals.quantity += line.quantity;
+							this.totals.amount += line.quantity * line.price;
 						}
 					};
 				})

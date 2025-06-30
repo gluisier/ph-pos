@@ -11,6 +11,7 @@ global:
     show: Détails
     edit: Éditer
     validate: Valider
+    print: Imprimer
     list: Lister
     delete: Supprimer
     confirm_delete: Etes-vous certain de vouloir effectuer la suppression ?
@@ -124,13 +125,20 @@ app:
     payment_method:
       <<: *base
       id:
-        help: Ne peut contenir que des lettres minuscules, des chiffres et le sous-tiret <q><code>_</code></q>
+        help: &ascii Ne peut contenir que des lettres minuscules, des chiffres et le sous-tiret <q><code>_</code></q>
       available: *available
     printer:
-      manufacturer:
-        label: Fabricant
+      id:
+        help: *ascii
+      api:
+        label:
+          short: IAP
+          long: Interface Applicative de Programmation
       model:
         label: Modèle
+      location:
+        label: Emplacement
+        unspecified: Non renseigné
       ip:
         label: Adresse IP
       port:
@@ -164,7 +172,11 @@ app:
             short: 🔴
             long: Erreur
       users:
-        label: Utilisateurs
+        label: >-
+          {count, plural,
+            one {Utilisateur}
+            other {Utilisateurs}
+          }
     location:
       name:
         label: Nom
@@ -299,6 +311,7 @@ app:
       heading: *title
 
   printer:
+    test: Impression de test
     index:
       title: &title *printers_heading
       heading: *title

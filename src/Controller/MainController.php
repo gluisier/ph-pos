@@ -45,6 +45,24 @@ class MainController extends AbstractController
         ]);
     }
 
+    #[Route('/pre-print/{type}', name: 'pre_print', methods: ['GET'], requirements: ['type' => 'public|restricted'])]
+    public function prePrint(Request $request, string $type): Response
+    {
+        if ($type === 'restricted' && !$this->isGranted('ROLE_USER')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $paymentMethodId = $request->get('paymentMethodId');
+        $total = $request->get('total');
+        try {
+            return $this->render('/payment_method/' . $paymentMethodId . '/' . $type . '.html.twig', [
+                'total' => $total,
+            ]);
+        } catch (\Throwable $e) {
+            return new Response(null, Response::HTTP_NO_CONTENT);
+        }
+    }
+
     #[Route('/production', name: 'production_index', methods: ['GET'])]
     public function production(ItemRepository $itemRepository): Response
     {

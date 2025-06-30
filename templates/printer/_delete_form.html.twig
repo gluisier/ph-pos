@@ -1,4 +1,4 @@
 <form method="post" action="{{ path('printer_delete', {'id': printer.id}) }}" onsubmit="return confirm('{{ 'global.action.confirm_delete'|trans }}');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ printer.id) }}">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ printer.id) }}">
 	<button class="btn btn-danger" title="{{ 'global.action.delete'|trans }}" aria-label="{{ 'global.action.delete'|trans }}">🗑️</button>
 </form>

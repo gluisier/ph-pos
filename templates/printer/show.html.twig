@@ -1,33 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ printer.manufacturer.value|humanize ~ ' ' ~ printer.model }} | {{ parent() }}{% endblock %}
+{% block title %}{{ printer.model ~ ' (' ~ printer.api.value|humanize ~ ')' }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ printer.status|trans ~ ' ' ~ printer.manufacturer.value|humanize ~ ' ' ~ printer.model }}</h2>
+	<h2><abbr title="{{ ('app.fields.printer.status.' ~ printer.status.value ~ '.label.long')|trans }}">{{ printer.status|trans }}</abbr>
+		{{ printer.model ~ ' (' ~ printer.api.value|humanize ~ ')' }}</h2>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th colspan="2">{{ 'app.fields.printer.manufacturer.label'|trans }}</th>
-                <td colspan="2">{{ printer.manufacturer.value|humanize }}</td>
-            </tr>
-            <tr>
-                <th colspan="2">{{ 'app.fields.printer.model.label'|trans }}</th>
-                <td colspan="2">{{ printer.model }}</td>
-            </tr>
-            <tr>
-                <th colspan="2">{{ 'app.fields.id'|trans }}</th>
-                <td colspan="2">{{ printer.id }}</td>
-            </tr>
-            <tr>
-                <th>{{ 'app.fields.printer.ip.label'|trans }}</th>
-				<td>{{ printer.ip|trans }}</td>
-                <th>{{ 'app.fields.printer.port.label'|trans }}</th>
-				<td>{{ printer.port|trans }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>{{ 'app.fields.printer.location.label'|trans }}</th>
+				<td{% if printer.location %} data-field-name="location">
+						{{ printer.location.name }}
+					{%- else -%}>
+						<i>{{ 'app.fields.printer.location.unspecified'|trans }}</i>
+					{%- endif %}</td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.printer.users.label'|trans({'count': printer.users.count}) }}</th>
+				<td data-field-name="users">{{ printer.users|map(user => user.name)|join('global.join.end'|trans) }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.id'|trans }}</th>
+				<td data-field-name="id">{{ printer.id }}</td>
+			</tr>
+			<tr>
+				<th>{{ 'app.fields.printer.ip.label'|trans }} | {{ 'app.fields.printer.port.label'|trans }}</th>
+				<td>{{ printer.ip }} | {{ printer.port }}</td>
+			</tr>
+		</tbody>
+	</table>
 	<ul class="list-inline float-end">
+		<li class="list-inline-item">
+			<button type="button" class="btn btn-outline-success printer-tester" title="{{ 'app.printer.test'|trans }}" aria-label="{{ 'app.printer.test'|trans }}">🧪</button>
+		</li>
 		<li class="list-inline-item">
 			<a href="{{ path('printer_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>
 		</li>
@@ -38,4 +44,11 @@
 			{{ include('printer/_delete_form.html.twig') }}
 		</li>
 	</ul>
+{% endblock %}
+
+{% block javascripts %}
+		<script src="{{ path('printer_config', {'id': printer.id}) }}"></script>
+		<script src="{{ asset('js/print_sdks/' ~ printer.api.value ~ '_sdk.js') }}"></script>
+		<script src="{{ asset('js/print_sdks/' ~ printer.api.value ~ '.js') }}"></script>
+		<script src="{{ asset('js/printer_tester.js') }}"></script>
 {% endblock %}

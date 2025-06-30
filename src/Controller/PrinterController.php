@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Printer;
+use App\Entity\User;
 use App\Form\PrinterType;
 use App\Repository\PrinterRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,11 +12,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/printer', name: 'printer_')]
 final class PrinterController extends AbstractController
 {
-    #[Route(name: 'index', methods: ['GET'])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(PrinterRepository $printerRepository): Response
     {
         return $this->render('printer/index.html.twig', [
@@ -78,5 +80,18 @@ final class PrinterController extends AbstractController
         }
 
         return $this->redirectToRoute('printer_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/config/{id?}', name: 'config', methods: ['GET'], priority: 1)]
+    public function config(Request $request, UserInterface $user, #[MapEntity] ?Printer $printer = null)
+    {
+        if (!$printer && (!$user instanceof User || !($printer = $user->getPrinter()))) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('printer/config.js.twig', [
+            'printer' => $printer,
+            'user' => $user,
+        ], new Response(headers: ['Content-Type' => 'text/javascript']));
     }
 }
