@@ -30,6 +30,14 @@ global:
     end: " et "
 
 app:
+  flash:
+    success:
+      reset_password:
+        done: Mot de passe changé avec succès
+    warning:
+      reset_password:
+        valid_once_until_changed: Après validation de ce formulaire, le lien ne sera plus valide
+
   fields:
     id: ID
     base: &base
@@ -87,6 +95,10 @@ app:
         label: &password Mot de passe
       plainPassword:
         label: *password
+        first:
+          label: Nouveau mot de passe
+        second:
+          label: Confirmation du nouveau mot de passe
       token:
         label: Jeton
       createdAt:
@@ -195,6 +207,11 @@ app:
     new:
       title: &title Nouvel utilisateur
       heading: *title
+    show:
+      reset_password_link: &password_change Changement de mot de passe
+
+  reset_password:
+    title: *password_change
 
   order:
     index:
