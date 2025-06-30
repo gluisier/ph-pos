@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Config\Printer\Manufacturer;
+use App\Config\Printer\API;
 use App\Config\Printer\Status;
 use App\Entity\Printer;
 use Symfony\Component\Form\AbstractType;
@@ -30,16 +30,28 @@ class PrinterType extends AbstractType
             ->add('status', EnumType::class, [
                 'class' => Status::class,
                 'label_format' => 'app.fields.printer.%name%.label.short',
+                'label_attr' => [
+                    'title' => 'app.fields.printer.status.label.long',
+                ],
                 'expanded' => true,
                 'choice_attr' => fn($choice) => [
                     'title' => 'app.fields.printer.status.' . $choice->value . '.label.long',
-                    'class' => 'btn-check pwet-choice'
+                    'class' => 'btn-check'
                 ],
             ])
-            ->add('manufacturer', EnumType::class, [
-                'class' => Manufacturer::class,
+            ->add('location', null, [
+                'required' => false,
+                'choice_label' => 'name',
                 'label_format' => 'app.fields.printer.%name%.label',
+            ])
+            ->add('api', EnumType::class, [
+                'class' => API::class,
+                'label_format' => 'app.fields.printer.%name%.label.short',
+                'label_attr' => [
+                    'title' => 'app.fields.printer.api.label.long'
+                ],
                 'choice_label' => 'value',
+                'choice_translation_domain' => false,
             ])
         ;
     }

@@ -35,6 +35,9 @@
 				<li class="nav-item">
 					<a class="nav-link{% if 'user' in app.current_route %} active{% endif %}" href="{{ path('user_index') }}">{{ 'app.menu.users.heading'|trans }}</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link{% if 'printer' in app.current_route %} active{% endif %}" href="{{ path('printer_index') }}">{{ 'app.menu.printers.heading'|trans }}</a>
+				</li>
 				{% endif ~%}
 			</ul>
 			<ul class="navbar-nav d-flex">

@@ -25,9 +25,9 @@ order_line:
 
 payment_method:
   id:
-    not_unique: Cet ID est déjà utilisé
+    not_unique: &id Cet ID est déjà utilisé
     blank: Un ID est obligatoire
-    regex_not_match: Aucun accent, et au lieu des espaces, utilisez le tiret bas _
+    regex_not_match: &ascii Aucun accent, et au lieu des espaces, utilisez le tiret bas _
   title:
     not_unique: Ce nom est déjà utilisé
 
@@ -44,3 +44,15 @@ user:
   plain_password:
     blank: Veuillez saisir un mot de passe
     length: Le mot de passe ne peut être plus court que {limit} caractères
+
+  printer:
+    id:
+      not_unique: *id
+      blank: Veuillez spécifier un ID
+      regex_not_match: *ascii
+    ip:
+      not_private: L'adresse IP doit être de type privé
+    port:
+      out_of_range: Le port doit être entre {min} et {max}
+    api:
+      "null": Veuillez choisir une interface

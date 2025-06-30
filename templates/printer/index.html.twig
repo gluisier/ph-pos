@@ -10,13 +10,15 @@
 			<col />
 			<col />
 			<col />
+			<col />
 			<col class="col-1" />
 			<col class="col-1" />
 		</colgroup>
 		<thead>
 			<tr>
-				<th>{{ 'app.fields.printer.manufacturer.label'|trans }}</th>
 				<th>{{ 'app.fields.printer.model.label'|trans }}</th>
+				<th><abbr title="{{ 'app.fields.printer.api.label.long'|trans }}">{{ 'app.fields.printer.api.label.short'|trans }}</abbr></th>
+				<th>{{ 'app.fields.printer.location.label'|trans }}</th>
 				<th>{{ 'app.fields.id'|trans }}</th>
 				<th><abbr title="{{ 'app.fields.printer.status.label.long'|trans }}">{{ 'app.fields.printer.status.label.short'|trans }}</abbr></th>
 				<th><a href="{{ path('printer_new') }}" class="btn btn-success" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
@@ -25,10 +27,19 @@
 		<tbody>
 		{% for printer in printers %}
 			<tr>
-				<td>{{ printer.manufacturer.value|humanize }}</td>
 				<td>{{ printer.model }}</td>
+				<td>{{ printer.api.value|humanize }}</td>
+				<td>{% if not printer.status is same as(printer.status.STORED) -%}
+					{% if printer.location -%}
+					<abbr title="{{ printer.ip ~ ' | ' ~ printer.port }}">🌐</abbr> {{ printer.location.name }}
+					{%- else -%}
+						{{ printer.ip ~ ' | ' ~ printer.port }}
+					{% endif %}
+					{%- else -%}
+						<i>{{ 'app.fields.printer.location.unspecified'|trans }}</i>
+					{%- endif -%}</td>
 				<td>{{ printer.id }}</td>
-				<td>{{ printer.status|trans }}</td>
+				<td><abbr title="{{ ('app.fields.printer.status.' ~ printer.status.value ~ '.label.long')|trans }}">{{ printer.status|trans }}</abbr></td>
 				<td>
 					<a href="{{ path('printer_show', {'id': printer.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
 					<a href="{{ path('printer_edit', {'id': printer.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
@@ -36,7 +47,7 @@
 			</tr>
 		{% else %}
 			<tr>
-				<td colspan="5">{{ 'app.printer.index.none'|trans }}</td>
+				<td colspan="6">{{ 'app.printer.index.none'|trans }}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

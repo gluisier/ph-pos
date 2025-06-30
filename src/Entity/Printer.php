@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Config\Printer\Manufacturer;
+use App\Config\Printer\API;
 use App\Config\Printer\Status;
 use App\Repository\PrinterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,8 +43,8 @@ class Printer
     private ?int $port = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotNull(message: 'printer.manufacturer.null')]
-    private ?Manufacturer $manufacturer = null;
+    #[Assert\NotNull(message: 'printer.api.null')]
+    private ?API $api = null;
 
     #[ORM\ManyToOne(inversedBy: 'printers')]
     private ?Location $location = null;
@@ -120,14 +120,14 @@ class Printer
         return $this;
     }
 
-    public function getManufacturer(): ?Manufacturer
+    public function getAPI(): ?API
     {
-        return $this->manufacturer;
+        return $this->api;
     }
 
-    public function setManufacturer(Manufacturer $manufacturer): static
+    public function setAPI(API $api): static
     {
-        $this->manufacturer = $manufacturer;
+        $this->api = $api;
 
         return $this;
     }

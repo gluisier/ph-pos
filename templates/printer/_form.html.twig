@@ -1,22 +1,28 @@
+{% form_theme form.status 'radio_toggle_group.html.twig' %}
+
 {{ form_start(form) }}
-    <div class="row">
-        {{ form_row(form.manufacturer, {'row_attr': {'class': 'col-md-6 mb-3'}})}}
-        {{ form_row(form.model, {'row_attr': {'class': 'col-md-6 mb-3'}})}}
-    </div>
-    <div class="row">
+	<div class="row">
+		{{ form_row(form.model, {'row_attr': {'class': 'col-md-6 mb-3'}}) }}
+		{{ form_row(form.api, {'row_attr': {'class': 'col-md-6 mb-3'}}) }}
+	</div>
+	<div class="row">
+		{{ form_row(form.location, {'widget_attr': {'data-field-name': 'location'}}) }}
+	</div>
+	<div class="row">
 		<div class="col-md-6 mb-3">
 			{{ form_label(form.id) }}
 			<div class="input-group">
-				<button type="button" class="btn btn-outline-success slugger" title="{{ 'app.printer._form.slugger'|trans }}" aria-label="{{ 'app.printed._form.slugger'|trans }}" data-source="#{{ form.manufacturer.vars.id }}, #{{ form.model.vars.id }}" data-target="{{ form.id.vars.id }}">🪄</button>
-				{{ form_widget(form.id) }}
+				<button type="button" class="btn btn-outline-success slugger" title="{{ 'app.printer._form.slugger'|trans }}" aria-label="{{ 'app.printer._form.slugger'|trans }}" data-source="#{{ form.model.vars.id }}" data-target="{{ form.id.vars.id }}">🪄</button>
+				{{ form_widget(form.id, {'attr': {'data-field-name': 'id'}}) }}
 			</div>
 			{{ form_help(form.id) }}
 			{{ form_errors(form.id) }}
 		</div>
 		<div class="col-md-6 mb-3">
 			{{ form_label(form.ip) }}
+			| {{ form_label(form.port) }}
 			<div class="input-group">
-				{{ form_widget(form.ip) }}
+				{{ form_widget(form.ip, {'attr': {'style': 'flex-grow: 3;'}}) }}
 				{{ form_widget(form.port, {'attr': {'size': 6}}) }}
 			</div>
 			{{ form_help(form.ip) }}
@@ -24,10 +30,17 @@
 			{{ form_errors(form.ip) }}
 			{{ form_errors(form.port) }}
 		</div>
-    </div>
-    {{ form_row(form.status, {
+	</div>
+	{{ form_row(form.status, {
 		'attr': {'class': 'btn-group', 'role': 'group'},
-		# 'label_attr': {'class': 'btn btn-outline-secondary'}
+		'label_attr': {'class': 'btn btn-outline-secondary'}
 	}) }}
 	<button class="btn btn-primary float-start" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
 {{ form_end(form) }}
+
+{% block javascripts %}
+		<script src="{{ asset('js/slugger.js')}}"></script>
+		<script src="{{ path('printer_config') }}"></script>
+		<script src="{{ asset('js/printer_sdk_loader.js') }}" defer="defer" data-id="{{ form.api.vars.id }}" data-baseurl="{{ asset('js/print_sdks/') }}"></script>
+		<script src="{{ asset('js/printer_tester.js') }}" defer="defer"></script>
+{% endblock %}

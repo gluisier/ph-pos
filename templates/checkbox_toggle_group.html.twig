@@ -1,0 +1,18 @@
+{% block choice_widget_expanded %}
+	<div {{ block('widget_container_attributes') }}>
+		{%- for choice in form %}
+			<input type="checkbox" name="{{ choice.vars.full_name }}" value="{{ choice.vars.value }}"
+				{%- if required %} required="required"{% endif %} id="{{ choice.vars.id }}" class="{{ choice.vars.attr.class }}"
+				{%- if choice.vars.checked is same as true %} checked="checked"{% endif %} />
+			{%- if not choice_translation_domain is same as(false) %}
+			<label for="{{ choice.vars.id }}" class="btn btn-outline-secondary required" title="
+					{{- ('app.fields.printer.status.' ~ choice.vars.label.value ~ '.label.long')|trans({}, choice_translation_domain) -}}
+				" aria-label="
+					{{- ('app.fields.printer.status.' ~ choice.vars.label.value ~ '.label.long')|trans({}, choice_translation_domain) -}}
+			">
+				{{- choice.vars.label|trans({}, choice_translation_domain) -}}
+			</label>
+			{% endif -%}
+		{% endfor -%}
+	</div>
+{% endblock %}

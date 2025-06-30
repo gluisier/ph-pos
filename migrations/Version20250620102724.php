@@ -21,7 +21,7 @@ final class Version20250620102724 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            CREATE TABLE printer (id VARCHAR(255) NOT NULL, model VARCHAR(255) NOT NULL, status VARCHAR(15) NOT NULL, ip VARCHAR(63) NOT NULL, port SMALLINT NOT NULL, manufacturer VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE TABLE printer (id VARCHAR(255) NOT NULL, model VARCHAR(255) NOT NULL, status VARCHAR(15) NOT NULL, location VARCHAR(255) DEFAULT NULL, ip VARCHAR(63) NOT NULL, port SMALLINT NOT NULL, api VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE user ADD printer_id VARCHAR(255) DEFAULT NULL AFTER name

@@ -31,20 +31,20 @@
 						{% if item.attributes.empty or item.variants.empty %}
 						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text col-4 text-end item align-self-center float-start pe-1 py-1">{{ item.price|number_format(2, ',') }}</div>
 						<div class="col-2 px-0 d-flex align-items-center" data-layout-toggle="card-text col-8 ps-0 float-end ps-1">
-							{% if item.ticket %}
+							{% if app.user.printer is none and item.ticket %}
 							<div class="input-group input-group-sm">
 							{% endif %}
 							{{- form_widget(form.quantity, {'attr': {
 								'class': 'form-control-sm text-end',
 								'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
 								'data-item': item|json_encode}}) -}}
-							{% if item.ticket %}
+							{% if app.user.printer is none and item.ticket %}
 								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
 							</div>
-							{% endif %}
+							{% endif ~%}
 						</div>
 						<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="col-3 col-sm-2 text-end item item-total align-self-center" data-layout-toggle="card-text text-end item item-total w-100 align-self-center pe-2">0,00</output>
-						{% endif %}
+						{%~ endif %}
 					</div>
 				</div>
 			</div>
@@ -53,7 +53,7 @@
 {% form_theme form _self %}
 
 {% block body %}
-	{{ form_start(form) }}
+	{{ form_start(form, {'attr': {'id': 'Main'}}) }}
 		{#- Placeholder is not styled along the choices, some options are not copied to it.
 		Therefore, mere inline options instead of buttons -#}
 		{{ form_row(form.categories, {
@@ -98,8 +98,15 @@
 						<button type="button" class="btn btn-outline-primary dropdown-toggle validator" disabled="disabled" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
 						<ul class="dropdown-menu">
 							{% for i,child in form.paymentMethod.children %}
-							<li><button type="submit" class="dropdown-item display-6 validator" name="{{ form.paymentMethod.vars.full_name }}" value="{{ child.vars.value }}" style="{% if child.vars.attr.style|length > 18 %}{{ child.vars.attr.style }} !important; {% endif %}color: var(--bs-{{ child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color' }});">{{ child.vars.label }}</button></li>
-							{% do child.setRendered(true) %}
+							<li>{{ form_widget(child, {
+								'attr': {'class': 'btn-check validator'},
+								'label_attr': {
+									'class': 'dropdown-item display-6',
+									'style': (child.vars.attr.style|length > 18 ? child.vars.attr.style ~ ' !important; ')
+										~ 'color: var(--bs-'
+										~ (child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color') ~ ');'
+									}
+								}) }}</li>
 							{% endfor %}
 						</ul>
 					</div>
@@ -114,18 +121,35 @@
 {% endblock %}
 
 {% block javascripts %}
-	<script src="{{ asset('js/theme_handler.js')}}"></script>
-	<script src="{{ asset('js/layout_handler.js')}}"></script>
+	<script src="{{ asset('js/theme_handler.js') }}"></script>
+	<script src="{{ asset('js/layout_handler.js') }}"></script>
+	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
+	<script src="{{ assets_host }}/murmurhash3js/3.0.1/murmurhash3js.min.js" integrity="sha512-HCmS85fXMOkBrVzhJwv5ULIWC6ajmqSJ/JRNJEnD8blyvlSLjcAdlERQR5fazd3Iey5QfftJaFfUW5JiXTDhbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	{% if app.user.printer is not none -%}
+	<script src="{{ path('printer_config') }}"></script>
+	{% endif -%}
+	<script src="{{ asset('js/print_sdks/' ~ app.user.printer.api.value ~ '_sdk.js' )}}"></script>
+	<script src="{{ asset('js/print_sdks/' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
+	<script src="{{ asset('js/print_template/ticket.' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
+	{% endif -%}
 	<script>//<![CDATA[
 	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 	const channel = new BroadcastChannel('{{ app.user.token }}');
 	{% endif -%}
-	let previousCategory = document.querySelectorAll('.categories select, .categories [type="checkbox"]:checked, .categories [type="radio"]:checked').value;
-	const order = {};
+	const modal = document.getElementById('Modal');
+	const bootstrapModal = new bootstrap.Modal(modal);
+	const domParser = new DOMParser();
+	/** @type {Order} */
+	const order = {
+		lines: {},
+		user: '{{ app.user.userIdentifier }}',
+		date: null,
+		id: null
+	};
 	document.querySelectorAll('[type="number"]').forEach( input => {
 		const item = JSON.parse(input.dataset.item);
 		item.quantity = 0;
-		order[input.id] = item;
+		order.lines[input.id] = item;
 	});
 
 	const submitDisabler = (disabled) => {
@@ -219,16 +243,18 @@
 	document.querySelectorAll('input[type="number"]').forEach( element => {
 		element.addEventListener('change', event => {
 			const input = event.target;
-			order[input.id].quantity = parseInt(input.value, 10);
-			document.getElementById('_' + input.id).value = (order[input.id].quantity * order[input.id].price).toFixed(2).replace('.', ',');
+			order.lines[input.id].quantity = parseInt(input.value, 10);
+			document.getElementById('_' + input.id).value = (order.lines[input.id].quantity * order.lines[input.id].price).toFixed(2).replace('.', ',');
 			const totals = {
 				quantity: 0,
 				amount: 0
 			};
-			for (const id in order) {
-				if (!order[id].pack) {
-					totals.quantity += order[id].quantity;
-					totals.amount += order[id].quantity * order[id].price;
+			for (const id in order.lines) {
+				const line = order.lines[id];
+				if (!line.pack) {
+					totals.quantity += line.quantity;
+					totals.tickets += line.ticket;
+					totals.amount += line.quantity * line.price;
 				}
 			};
 			document.getElementById('totalItems').value = totals.quantity;
@@ -240,15 +266,74 @@
 		});
 	});
 
+	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
+	const printSuccess = () => {
+		bootstrapModal.hide();
+		event.target.submit();
+	};
+	const printError = (message) => {
+		debounceBroadcast('status', 'error');
+		console.error(message);
+	};
+	{% endif -%}
+	document.querySelectorAll('.validator[value]').forEach( element => {
+		element.addEventListener('click', async event => {
+			bootstrapModal.show();
+			const response = await fetch('{{ path('pre_print', {'type': 'restricted'})}}?'
+				+ new URLSearchParams({'total': document.getElementById('totalPrice').value, 'paymentMethodId': event.target.value}).toString());
+			if (!response.ok) {
+				return false;
+			}
+			response.text().then( text => {
+				if (text) {
+					modal.querySelector('.modal-content').replaceChildren(domParser.parseFromString(text, 'text/html').querySelector('body>*'));
+				} else {
+					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
+					try {
+						print(ticket_epson_xml, order, printSuccess, printError);
+					} catch (e) {
+						debounceBroadcast('status', 'error');
+						console.error(e);
+					}
+				{% else -%}
+					bootstrapModal.hide();
+					event.target.submit();
+				{% endif -%}
+				}
+			});
+		});
+	});
+
+	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
+	document.querySelector('form').addEventListener('submit', event => {
+		event.stopPropagation();
+		event.preventDefault();
+		if (event.submitter.dataset.action === 'print') {
+			try {
+				print(ticket_epson_xml, order, printSuccess, printError);
+			} catch (e) {
+				debounceBroadcast('status', 'error');
+				console.error(e);
+			}
+			return;
+		}
+	});
+	{% endif -%}
+
 	document.querySelector('form').addEventListener('reset', event => {
-		for (id in order) {
-			order[id].quantity = 0;
+		for (const id in order.lines) {
+			order.lines[id].quantity = 0;
 		}
 		document.querySelector('.categories :default').dispatchEvent(new Event('change'));
 		submitDisabler(true);
 		{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 		debounceBroadcast('clear', {});
 		{%- endif ~%}
+	});
+
+	modal.addEventListener('hide.bs.modal', function() {
+		const content = domParser.parseFromString(modal.querySelector('[data-empty-content]').dataset.emptyContent, 'text/html').querySelector('body>*');
+		modal.querySelector('.modal-content').replaceChildren(content);
 	});
 	{%- if is_granted('IS_AUTHENTICATED_FULLY') %}
 
@@ -262,8 +347,8 @@
 		}
 	}
 
-	const debounceBroadcast = debounce((type, order) => {
-		channel.postMessage({type, order});
+	const debounceBroadcast = debounce((type, data) => {
+		channel.postMessage({type, data});
 	}, 400);
 	{%- endif ~%}
 	//]]></script>
