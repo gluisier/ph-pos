@@ -1,0 +1,7 @@
+restricted:
+  amount:
+    label: Montant
+  cash:
+    label: Reçu
+  return:
+    label: A rendre
