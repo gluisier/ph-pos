@@ -11,14 +11,21 @@
 					<a class="nav-link{% if 'item_prices' in app.current_route %} active{% endif %}" href="{{ path('item_prices') }}">{{ 'app.menu.prices'|trans }}</a>
 				</li>
 				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('sales_index') }}">{{ 'app.menu.sales'|trans }}</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('production_index') }}">{{ 'app.menu.production'|trans }}</a>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle{%
+							if 'sales_index' == app.current_route
+								or 'production_index' in app.current_route
+						%} active{% endif %}" id="Operating" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.operating.heading'|trans }}</a>
+					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Operating">
+						<a class="dropdown-item{% if 'sales_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('sales_index') }}">{{ 'app.menu.operating.sales'|trans }}</a>
+						<a class="dropdown-item{% if 'production_index' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('production_index') }}">{{ 'app.menu.operating.production'|trans }}</a>
+					</div>
 				</li>
 				<li class="nav-item dropdown">
-					<a href="#" class="nav-link dropdown-toggle{% if 'item' in app.current_route or 'category' in app.current_route %} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
+					<a href="#" class="nav-link dropdown-toggle{%
+							if 'item' in app.current_route
+								or 'category' in app.current_route
+						%} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
 					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Items">
 						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.menu.items.list'|trans }}</a>
 						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.menu.items.event'|trans }}</a>
@@ -27,16 +34,23 @@
 					</div>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link{% if 'payment_method' in app.current_route %} active{% endif %}" href="{{ path('payment_method_index') }}">{{ 'app.menu.payment_methods.heading'|trans }}</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link{% if 'order' in app.current_route %} active{% endif %}" href="{{ path('order_index') }}">{{ 'app.menu.orders.heading'|trans }}</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link{% if 'user' in app.current_route %} active{% endif %}" href="{{ path('user_index') }}">{{ 'app.menu.users.heading'|trans }}</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link{% if 'printer' in app.current_route %} active{% endif %}" href="{{ path('printer_index') }}">{{ 'app.menu.printers.heading'|trans }}</a>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle{%
+							if 'user' in app.current_route
+								or 'printer' in app.current_route
+								or 'location' in app.current_route
+								or 'payment_method' in app.current_route
+						%} active{% endif %}" id="Admin" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.admin.heading'|trans }}</a>
+					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Admin">
+						<a class="dropdown-item{% if 'user' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('user_index') }}">{{ 'app.menu.admin.users.heading'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'printer' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('printer_index') }}">{{ 'app.menu.admin.printers.heading'|trans }}</a>
+						<a class="dropdown-item{% if 'location' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('location_index') }}">{{ 'app.menu.admin.locations.heading'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'payment_method' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('payment_method_index') }}">{{ 'app.menu.admin.payment_methods.heading'|trans }}</a>
+					</div>
 				</li>
 				{% endif ~%}
 			</ul>

@@ -203,22 +203,28 @@ app:
 
   menu:
     prices: &prices Liste de prix
-    sales: &sales_heading Ventes
-    production: &production_heading Production
+    operating:
+      heading: Exploitation
+      sales: &sales_heading Ventes
+      production: &production_heading Production
     items:
       heading: &items_heading Articles
       list: Lister
       categories: &categories_heading Catégories d’articles
       event: Préparation
       prices: *prices
-    payment_methods:
-      heading: &payment_methods_heading Moyens de paiement
     orders:
       heading: &orders_heading Commandes
-    users:
-      heading: &users_heading Utilisateurs
-    printers:
-      heading: &printers_heading Imprimantes
+    admin:
+      heading: Administration
+      users:
+        heading: &users_heading Utilisateurs
+      printers:
+        heading: &printers_heading Imprimantes
+      locations:
+        heading: &locations_heading Emplacements
+      payment_methods:
+        heading: &payment_methods_heading Moyens de paiement
     login: Connexion
     register: Enregistrement
     logout: Déconnexion
@@ -324,7 +330,7 @@ app:
 
   location:
     index:
-      title: &title Emplacements
+      title: &title *locations_heading
       heading: *title
       none: Pas d'emplacement renseigné
     new:

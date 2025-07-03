@@ -25,9 +25,9 @@
 			{% block body %}
 			<div class="d-grid gap-2 col-6 col-lg-4 col-xl-3 mx-auto mt-4">
 				<a href="{{ path('item_prices') }}" class="btn btn-lg btn-info" type="button">{{ 'app.fields.item.public.label.short'|trans ~ ' ' ~ 'app.menu.items.prices'|trans }}</a>
-				<a href="{{ path('sales_index') }}" class="btn btn-lg btn-primary">{{ 'app.fields.item.available.label.short'|trans ~ ' ' ~ 'app.menu.sales'|trans }}</a>
+				<a href="{{ path('sales_index') }}" class="btn btn-lg btn-primary">{{ 'app.fields.item.available.label.short'|trans ~ ' ' ~ 'app.menu.operating.sales'|trans }}</a>
 				<hr />
-				<a href="{{ path('production_index') }}" class="btn btn-lg btn-secondary">🏭 {{ 'app.menu.production'|trans }}</a>
+				<a href="{{ path('production_index') }}" class="btn btn-lg btn-secondary">🏭 {{ 'app.menu.operating.production'|trans }}</a>
 			</div>
 			{% endblock %}
 		</div>
