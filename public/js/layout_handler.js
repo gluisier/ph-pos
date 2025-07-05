@@ -11,7 +11,7 @@ const getPreferredLayout = () => {
 	return 'table';
 }
 
-const setLayout = (layout) => {
+const storeLayout = (layout) => {
 	localStorage.setItem('layout', layout);
 	document.querySelector('[data-layout]').setAttribute('data-layout', layout);
 	const layoutSwitcher = document.getElementById('LayoutToggler');
@@ -30,13 +30,13 @@ const toggleLayout = () => {
 		? 'deck'
 		: 'table';
 
-	setLayout(newLayout);
+	storeLayout(newLayout);
 };
 
 if (getPreferredLayout() != getLayout()) {
 	toggleLayout();
 } else {
-	setLayout(getPreferredLayout());
+	storeLayout(getPreferredLayout());
 }
 
 document.getElementById('LayoutToggler').addEventListener('click', event => {
@@ -52,7 +52,7 @@ const getPreferredTextDisplay = () => {
 	return localStorage.getItem('textDisplay') || getTextDisplay();
 }
 
-const setTextDisplay = (display) => {
+const storeTextDisplay = (display) => {
 	localStorage.setItem('textDisplay', display);
 }
 
@@ -72,7 +72,7 @@ const toggleText = () => {
 if (getPreferredTextDisplay() != getTextDisplay()) {
 	toggleText();
 } else {
-	setTextDisplay(getPreferredTextDisplay());
+	storeTextDisplay(getPreferredTextDisplay());
 }
 
 document.getElementById('TextToggler').addEventListener('click', event => {
