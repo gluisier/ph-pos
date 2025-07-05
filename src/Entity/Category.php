@@ -6,9 +6,10 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category extends DisplayableItem
+class Category extends DisplayableItem implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -105,5 +106,16 @@ class Category extends DisplayableItem
         });
 
         return empty($result);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'label' => $this->label,
+            'colour' => $this->colour,
+            'variants' => $this->variants->map(function ($variant) { return $variant->getId(); })->toArray(),
+        ];
     }
 }
