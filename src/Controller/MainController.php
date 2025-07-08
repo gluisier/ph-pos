@@ -44,11 +44,6 @@ class MainController extends AbstractController
             'form' => $orderForm,
         ]);
     }
-    #[Route('/js/sales.js', name: 'sales_alpine', methods: ['GET', 'POST'])]
-    public function salesAlpine(Request $request, EntityManagerInterface $entityManager, ?UserInterface $user): Response
-    {
-        return $this->render('sales_alpine.js.twig', response: new Response(headers: ['Content-Type' => 'text/javascript']));
-    }
 
     #[Route('/production', name: 'production_index', methods: ['GET'])]
     public function production(ItemRepository $itemRepository): Response

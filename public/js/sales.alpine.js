@@ -1,4 +1,5 @@
-window.sales = () => ({
+// @ts-check
+window.Sales = () => ({
 	category: '',
 	order: {
 		lines: {},
@@ -55,29 +56,20 @@ window.sales = () => ({
 	},
 	getTextDisplay() {
 		// The span is hidden when the titles are displayed
-		return document.querySelector('#TextToggler span').classList.contains('visually-hidden');
+		return document.querySelector('#TextToggler span')?.style.display != 'none';
 	},
 	getPreferredTextDisplay() {
-		return localStorage.getItem('textDisplay') || this.getTextDisplay();
+		return JSON.parse(localStorage.getItem('textDisplay') ?? 'false') || this.getTextDisplay();
 	},
 	storeTextDisplay(display) {
 		localStorage.setItem('textDisplay', display);
 		this.layout.textDisplay = display;
 	},
 	toggleText() {
-		document.querySelectorAll('.item-text').forEach( element => {
-			element.classList.toggle('visually-hidden');
-			if (toggle = element.dataset.layoutToggle) {
-				const temp = document.createElement('span');
-				temp.className = toggle;
-				temp.classList.toggle('visually-hidden');
-				element.dataset.layoutToggle = temp.className;
-			}
-		});
-		localStorage.setItem('textDisplay', this.getTextDisplay());
+		this.storeTextDisplay(this.getTextDisplay());
 	},
 	getReceiptDisplay() {
-		if (document.getElementById('Splitter').closest('.dropdown-item').classList.contains('active')) {
+		if (document.getElementById('Splitter')?.closest('.dropdown-item')?.classList.contains('active')) {
 			return document.getElementById('SplitterRatioSelector').value;
 		} else {
 			return '0';
@@ -101,9 +93,6 @@ window.sales = () => ({
 		}
 		this.changeReceiptDisplay(!target.closest('.dropdown-item').classList.contains('active') ? document.getElementById('SplitterRatioSelector').value : 0);
 	},
-	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-	channel: new BroadcastChannel('{{ app.user.token }}'),
-	{% endif -%}
 	init() {
 		this.order.lines = JSON.parse(document.querySelector('[data-items]').dataset.items);
 		for (const id in this.order.lines) {
@@ -264,20 +253,4 @@ window.sales = () => ({
 
 		return result;
 	}
-	{%- if is_granted('IS_AUTHENTICATED_FULLY') %},
-	debounce(func, delay) {
-		let timeoutId;
-		return (...args) => {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(() => {
-				func(...args);
-			}, delay || 400);
-		}
-	},
-	debounceBroadcast(type, order) {
-		this.debounce((type, order) => {
-			channel.postMessage({type, order});
-		}, 400);
-	}
-	{%- endif ~%}
 });
