@@ -56,7 +56,7 @@ window.Sales = () => ({
 	},
 	getTextDisplay() {
 		// The span is hidden when the titles are displayed
-		return document.querySelector('#TextToggler span')?.style.display != 'none';
+		return this.$refs.TextToggler.querySelector('span')?.style.display != 'none';
 	},
 	getPreferredTextDisplay() {
 		return JSON.parse(localStorage.getItem('textDisplay') ?? 'false') || this.getTextDisplay();
@@ -69,8 +69,8 @@ window.Sales = () => ({
 		this.storeTextDisplay(this.getTextDisplay());
 	},
 	getReceiptDisplay() {
-		if (document.getElementById('Splitter')?.closest('.dropdown-item')?.classList.contains('active')) {
-			return document.getElementById('SplitterRatioSelector').value;
+		if (this.$refs.Splitter.closest('.dropdown-item')?.classList.contains('active')) {
+			return this.$refs.SplitterRatioSelector.value;
 		} else {
 			return '0';
 		};
@@ -91,16 +91,16 @@ window.Sales = () => ({
 		if (target.tagName === 'INPUT') {
 			return;
 		}
-		this.changeReceiptDisplay(!target.closest('.dropdown-item').classList.contains('active') ? document.getElementById('SplitterRatioSelector').value : 0);
+		this.changeReceiptDisplay(!target.closest('.dropdown-item').classList.contains('active') ? this.$refs.SplitterRatioSelector.value : 0);
 	},
 	init() {
 		this.order.lines = JSON.parse(document.querySelector('[data-items]').dataset.items);
 		for (const id in this.order.lines) {
 			this.order.lines[id].quantity = 0;
-			this.order.lines[id].hide = function (category) {
-				return (!!category && !this.dataCategoryId().includes(+category))
-					|| (this.isPack && !category)
-					|| (Object.values(this.variantOf?.variants ?? {}).length > 1) && !category;
+			this.order.lines[id].show = function (category) {
+				return (!category || this.dataCategoryId().includes(+category))
+					&& (!this.isPack || !!category)
+					&& (Object.values(this.variantOf?.variants ?? {}).length <= 1 || !!category);
 			};
 			this.order.lines[id].dataCategoryId = function() {
 				const result = [];
@@ -131,7 +131,7 @@ window.Sales = () => ({
 		}
 		if (this.getPreferredReceiptDisplay() != this.getReceiptDisplay()) {
 			if ((this.getPreferredReceiptDisplay() != '0')) {
-				document.getElementById('Splitter').closest('.dropdown-item').classList.add('active');
+				this.$refs.Splitter.closest('.dropdown-item').classList.add('active');
 				this.layout.receiptDisplay = this.getPreferredReceiptDisplay();
 				this.changeReceiptDisplay(this.getPreferredReceiptDisplay(), '0');
 			}
@@ -237,7 +237,8 @@ window.Sales = () => ({
 	itemColourStyle(item) {
 		let result = {};
 		if (item.colour) {
-			result.color = this.itemColour(item)
+			result.color = this.itemColour(item);
+			result.borderColor = this.itemColour(item);
 		}
 
 		return result;

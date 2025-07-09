@@ -23,16 +23,39 @@
 
 {% block body %}
 	<div x-data="{
-			order: {},
-			totals: {
-				quantity: 0,
-				amount: 0
+			order: {
+				lines: {},
+				get quantity() {
+					let result = 0;
+					for (const id in this.lines) {
+						result += this.lines[id].quantity;
+					}
+					return result;
+				},
+				get tickets() {
+					let result = 0;
+					for (const id in this.lines) {
+						if (!this.lines[id].ticket) continue;
+						result += this.lines[id].quantity;
+					}
+					return result;
+				},
+				get amount() {
+					let result = 0;
+					for (const id in this.lines) {
+						result += this.lines[id].amount;
+					}
+					return result;
+				},
+				find(id) {
+					return this.lines.find(line => line.id == id);
+				}
 			},
 			get actuallyOrdered() {
 				let filtered = {};
-				for (const id in this.order) {
-					if (this.order[id].quantity > 0 && !this.order[id].pack) {
-						filtered[id] = this.order[id];
+				for (const id in this.order.lines) {
+					if (this.order.lines[id].quantity > 0 && !this.order.lines[id].pack) {
+						filtered[id] = this.order.lines[id];
 					}
 				}
 				return filtered;
@@ -40,16 +63,13 @@
 			channel: new BroadcastChannel('{{ app.user.token }}'),
 			init() {
 				this.channel.addEventListener('message', (e) => {
-					this.totals = {
-						quantity: 0,
-						amount: 0
-					};
-					this.order = e.data.order;
-					for (const id in this.order) {
-						if (!this.order[id].pack) {
-							this.totals.quantity += this.order[id].quantity;
-							this.totals.amount += this.order[id].quantity * this.order[id].price;
-						}
+					this.order = JSON.parse(e.data.order);
+					for (const id in this.order.lines) {
+						Object.defineProperty(this.order.lines[id], 'amount', {
+							get() {
+								return this.quantity * this.price;
+							}
+						});
 					};
 				})
 			},
@@ -75,7 +95,7 @@
 				<div class="col-4 col-sm-3 col-md-4 align-self-center" x-text="item.title"></div>
 				<div class="col-3 col-sm-2 text-end align-self-center" x-text="item.price.toFixed(2).replace('.', ',')"></div>
 				<div :class="quantityClass(item)" :style="quantityStyle(item)" x-text="item.quantity"></div>
-				<div class="col-3 col-sm-2 text-end align-self-center" x-text="(item.quantity * item.price).toFixed(2).replace('.', ',')"></div>
+				<div class="col-3 col-sm-2 text-end align-self-center" x-text="item.amount.toFixed(2).replace('.', ',')"></div>
 			</div>
 			</template>
 		</div>
@@ -84,8 +104,8 @@
 			<div class="d-none d-sm-block col-sm-3 col-md-2 mb-0 align-self-center display-6"></div>
 			<div class="col-4 col-sm-3 col-md-4 align-self-center display-6"></div>
 			<div class="col-3 col-sm-2 text-end align-self-center display-6">{{ 'app.sales.total'|trans }}</div>
-			<div class="col-2 text-end align-self-center display-6" x-text="totals.quantity"></div>
-			<div class="col-3 col-sm-2 text-end align-self-center display-6" x-text="totals.amount.toFixed(2).replace('.', ',')"></div>
+			<div class="col-2 text-end align-self-center display-6" x-text="order.quantity"></div>
+			<div class="col-3 col-sm-2 text-end align-self-center display-6" x-text="order.amount.toFixed(2).replace('.', ',')"></div>
 		</div>
 	</div>
 {% endblock %}
