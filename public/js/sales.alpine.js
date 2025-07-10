@@ -69,7 +69,7 @@ window.Sales = () => ({
 		this.storeTextDisplay(this.getTextDisplay());
 	},
 	getReceiptDisplay() {
-		if (this.$refs.Splitter.closest('.dropdown-item')?.classList.contains('active')) {
+		if (this.$refs.Splitter?.closest('.dropdown-item')?.classList.contains('active')) {
 			return this.$refs.SplitterRatioSelector.value;
 		} else {
 			return '0';
