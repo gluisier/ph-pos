@@ -269,7 +269,7 @@
 	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
 	const printSuccess = () => {
 		bootstrapModal.hide();
-		event.target.submit();
+		document.getElementById('Main').submit();
 	};
 	const printError = (message) => {
 		debounceBroadcast('status', 'error');

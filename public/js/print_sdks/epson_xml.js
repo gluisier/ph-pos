@@ -27,7 +27,7 @@ var print = function (template, data, successfulCallback, errorCallback) {
 			printer.timeout = 60000;
 			printer.onreceive = function(result) {
 				if (result.success) {
-					successfulCallback;
+					successfulCallback();
 				} else {
 					errorCallback(result.code);
 				}
