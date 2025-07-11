@@ -6,7 +6,7 @@
 		{{ form_row(form.api, {'row_attr': {'class': 'col-md-6 mb-3'}}) }}
 	</div>
 	<div class="row">
-		{{ form_row(form.location, {'widget_attr': {'data-field-name': 'location'}}) }}
+		{{ form_row(form.location, {'attr': {'data-field-name': 'location'}}) }}
 	</div>
 	<div class="row">
 		<div class="col-md-6 mb-3">
@@ -22,8 +22,8 @@
 			{{ form_label(form.ip) }}
 			| {{ form_label(form.port) }}
 			<div class="input-group">
-				{{ form_widget(form.ip, {'attr': {'style': 'flex-grow: 3;'}}) }}
-				{{ form_widget(form.port, {'attr': {'size': 6}}) }}
+				{{ form_widget(form.ip, {'attr': {'style': 'flex-grow: 3;', 'data-field-name': 'ip'}}) }}
+				{{ form_widget(form.port, {'attr': {'size': 6, 'data-field-name': 'port'}}) }}
 			</div>
 			{{ form_help(form.ip) }}
 			{{ form_help(form.port) }}
@@ -41,6 +41,6 @@
 {% block javascripts %}
 		<script src="{{ asset('js/slugger.js')}}"></script>
 		<script src="{{ path('printer_config') }}"></script>
-		<script src="{{ asset('js/printer_sdk_loader.js') }}" defer="defer" data-id="{{ form.api.vars.id }}" data-baseurl="{{ asset('js/print_sdks/') }}"></script>
+		<script src="{{ asset('js/printer_api_loader.js') }}" defer="defer" data-id="{{ form.api.vars.id }}" data-baseurl="{{ asset('js/print_') }}"></script>
 		<script src="{{ asset('js/printer_tester.js') }}" defer="defer"></script>
 {% endblock %}

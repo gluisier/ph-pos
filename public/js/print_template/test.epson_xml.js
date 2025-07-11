@@ -15,7 +15,7 @@
  * 	<text>Tamara, Tamina, Strawberry</text>
  * 	<feed/>
  * 	<cut type="feed"/>
- * 	</epos-print>
+ * </epos-print>
  * ```
  * @param {object} printer The Epson XML printer
  * @param {object} data The data to use for printing
@@ -26,12 +26,16 @@ const test_epson_xml = (printer, data) => {
 	printer.addText(data.id);
 	printer.addTextDouble(false, false);
 	printer.addFeed();
-	printer.addTextStyle(false, false, true, printer.COLOR_1);
-	printer.addText(data.location.name);
-	printer.addTextStyle(false, false, false, printer.COLOR_1);
-	printer.addTextAlign(printer.ALIGN_LEFT);
+	printer.addTextStyle(false, false, true, printer.COLOR_2);
+	printer.addText(data.location);
 	printer.addFeed();
-	printer.addText(users);
+	if (data.user == 'None') {
+		printer.addTextStyle(true, false, true, printer.COLOR_2);
+	} else {
+		printer.addTextStyle(false, false, false, printer.COLOR_1);
+		printer.addTextAlign(printer.ALIGN_LEFT);
+	}
+	printer.addText(data.users);
 	printer.addFeed();
 	printer.addCut(printer.CUT_FEED);
 	printer.send();

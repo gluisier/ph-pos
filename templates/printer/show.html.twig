@@ -26,7 +26,7 @@
 			</tr>
 			<tr>
 				<th>{{ 'app.fields.printer.ip.label'|trans }} | {{ 'app.fields.printer.port.label'|trans }}</th>
-				<td>{{ printer.ip }} | {{ printer.port }}</td>
+				<td><span data-field-name="ip">{{ printer.ip }}</span> | <span data-field-name="port">{{ printer.port }}</span></td>
 			</tr>
 		</tbody>
 	</table>
@@ -50,5 +50,6 @@
 		<script src="{{ path('printer_config', {'id': printer.id}) }}"></script>
 		<script src="{{ asset('js/print_sdks/' ~ printer.api.value ~ '_sdk.js') }}"></script>
 		<script src="{{ asset('js/print_sdks/' ~ printer.api.value ~ '.js') }}"></script>
+		<script src="{{ asset('js/print_template/test.' ~ printer.api.value ~ '.js') }}"></script>
 		<script src="{{ asset('js/printer_tester.js') }}"></script>
 {% endblock %}
