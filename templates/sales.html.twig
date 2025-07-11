@@ -134,12 +134,15 @@
 					</div>
 					{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 					<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary d-lg-none">🧾</a>
+					{% endif -%}
 					<div class="btn-group dropup d-none d-lg-block" role="group">
 						<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🧾</button>
 						<ul class="dropdown-menu">
 							<li><div class="dropdown-item btn btn-sm btn-outline-primary" :class="{ active: layout.receiptDisplay }" @click="toggleReceiptDisplay(event)" x-ref="Splitter"><span role="button">🗃️</span>
 								<input type="range" list="SplitterRatio" disabled="disabled" value="0" min="0.25" max="0.5" step="0.0833" :disabled="!layout.receiptDisplay" form="DontReset" class="ms-2" style="width: 7em;" @change="changeReceiptDisplay(event.target.value)" x-ref="SplitterRatioSelector" x-model="layout.receiptDisplay" /></div></li>
+							{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 							<li><a href="{{ path('sales_summary') }}" target="_blank" class="dropdown-item">🗂️</a></li>
+							{% endif -%}
 						</ul>
 					</div>
 					<datalist id="SplitterRatio">
@@ -147,7 +150,6 @@
 						<option value="0.3333" label="⅓"></option>
 						<option value="0.4999" label="½"></option>
 					</datalist>
-					{% endif -%}
 					<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
 				</div>
 			</div>
