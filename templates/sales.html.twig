@@ -31,14 +31,14 @@
 						{% if item.attributes.empty or item.variants.empty %}
 						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text col-4 text-end item align-self-center float-start pe-1 py-1">{{ item.price|number_format(2, ',') }}</div>
 						<div class="col-2 px-0 d-flex align-items-center" data-layout-toggle="card-text col-8 ps-0 float-end ps-1">
-							{% if app.user.printer is none and item.ticket %}
+							{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
 							<div class="input-group input-group-sm">
 							{% endif %}
 							{{- form_widget(form.quantity, {'attr': {
 								'class': 'form-control-sm text-end',
 								'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
 								'data-item': item|json_encode}}) -}}
-							{% if app.user.printer is none and item.ticket %}
+							{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
 								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
 							</div>
 							{% endif ~%}
@@ -142,7 +142,7 @@
 	/** @type {Order} */
 	const order = {
 		lines: {},
-		user: '{{ app.user.userIdentifier }}',
+		user: '{{ is_granted('IS_AUTHENTICATED_FULLY') ? app.user.userIdentifier }}',
 		date: null,
 		id: null
 	};
