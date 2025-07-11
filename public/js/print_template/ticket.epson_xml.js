@@ -31,6 +31,7 @@
  */
 const ticket_epson_xml = (printer, order) => {
 	let first = true;
+	printer.addTextLang('fr');
 	for (const id in order.lines) {
 		const line = order.lines[id];
 		// TODO pas de consigne non plus
@@ -38,7 +39,6 @@ const ticket_epson_xml = (printer, order) => {
 			continue;
 		}
 		for (let quantity = 0; quantity < line.quantity; quantity++) {
-			printer.addTextLang('fr');
 			printer.addTextDouble(false, true);
 			printer.addText(line.title);
 			printer.addTextDouble(false, false);

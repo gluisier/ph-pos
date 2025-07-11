@@ -257,6 +257,9 @@
 					totals.amount += line.quantity * line.price;
 				}
 			};
+			if (totals.quantity > 0 && order.date === null) {
+				order.date = (new Date()).toLocaleString('{{ app.request.locale }}').substring(0, 16);
+			}
 			document.getElementById('totalItems').value = totals.quantity;
 			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
 			submitDisabler(totals.quantity == 0);
@@ -323,6 +326,7 @@
 	document.querySelector('form').addEventListener('reset', event => {
 		for (const id in order.lines) {
 			order.lines[id].quantity = 0;
+			order.date = null;
 		}
 		document.querySelector('.categories :default').dispatchEvent(new Event('change'));
 		submitDisabler(true);
