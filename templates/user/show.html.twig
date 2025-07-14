@@ -6,22 +6,24 @@
 	<h2>{{ (user.active ? 'global.on' : 'global.off')|trans }}
 		{{ user.name }}</h2>
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>{{ 'app.fields.user.roles.label'|trans }}</th>
-				<td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
-			</tr>
-			<tr>
-				<th>{{ 'app.fields.user.token.label'|trans }}</th>
-				<td>{{ user.token }}</td>
-			</tr>
-			<tr>
-				<th>{{ 'app.fields.user.createdAt.label'|trans }}</th>
-				<td>{{ user.createdAt|date('Y-m-d H:i:s') }}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>{{ 'app.fields.user.roles.label'|trans }}</th>
+					<td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
+				</tr>
+				<tr>
+					<th>{{ 'app.fields.user.token.label'|trans }}</th>
+					<td>{{ user.token }}</td>
+				</tr>
+				<tr>
+					<th>{{ 'app.fields.user.createdAt.label'|trans }}</th>
+					<td>{{ user.createdAt|date('Y-m-d H:i:s') }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	<ul class="list-inline float-end">
 		<li class="list-inline-item">
 			<button class="btn btn-outline-secondary" title="{{ 'app.user.show.reset_password_link'|trans }}" aria-label="{{ 'app.user.show.reset_password_link'|trans }}" data-bs-toggle="modal" data-bs-target="#Modal" data-qrcode-data="{{ url('reset_password', {'token': user.token}) }}">🔑</button>

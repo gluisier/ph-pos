@@ -5,43 +5,45 @@
 {% block body %}
 	<h2>{{ 'app.payment_method.index.heading'|trans }}</h2>
 
-	<table class="table">
-		<colgroup>
-			<col />
-			<col class="col-1" />
-			<col class="col-1" />
-			<col class="col-1" />
-			<col class="col-1" />
-			<col class="col-1" />
-		</colgroup>
-		<thead>
-			<tr>
-				<th>{{ 'app.fields.payment_method.title.label'|trans }}</th>
-				<th class="text-center"><abbr title="{{ 'app.fields.payment_method.label.label.long'|trans }}">{{ 'app.fields.payment_method.label.label.short'|trans }}</abbr></th>
-				<th class="text-center"><abbr title="{{ 'app.fields.payment_method.available.label.long'|trans }}">{{ 'app.fields.payment_method.available.label.short'|trans }}</abbr></th>
-				<th class="text-center"><abbr title="{{ 'app.fields.payment_method.public.label.long'|trans }}">{{ 'app.fields.payment_method.public.label.short'|trans }}</abbr></th>
-				<th>{{ 'app.fields.payment_method.colour.label'|trans }}</th>
-				<th><a href="{{ path('payment_method_new') }}" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for payment_method in payment_methods %}
-			<tr>
-				<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ payment_method.title }}</td>
-				<td class="py-1 h2 text-center" style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ payment_method.label }}</td>
-				<td class="py-1 h2 text-center" style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ ('global.' ~ (payment_method.available ? 'on' : 'off'))|trans }}</td>
-				<td class="py-1 h2 text-center" style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ ('global.' ~ (payment_method.public ? 'on' : 'off'))|trans }}</td>
-				<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ payment_method.colour }}</code></td>
-				<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">
-					<a href="{{ path('payment_method_show', {'id': payment_method.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
-					<a href="{{ path('payment_method_edit', {'id': payment_method.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
-				</td>
-			</tr>
-		{% else %}
-			<tr>
-				<td colspan="6">{{ 'app.payment_method.index.none'|trans }}</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table">
+			<colgroup>
+				<col />
+				<col class="col-1" />
+				<col class="col-1" />
+				<col class="col-1" />
+				<col class="col-1" />
+				<col class="col-1" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>{{ 'app.fields.payment_method.title.label'|trans }}</th>
+					<th class="text-center"><abbr title="{{ 'app.fields.payment_method.label.label.long'|trans }}">{{ 'app.fields.payment_method.label.label.short'|trans }}</abbr></th>
+					<th class="text-center"><abbr title="{{ 'app.fields.payment_method.available.label.long'|trans }}">{{ 'app.fields.payment_method.available.label.short'|trans }}</abbr></th>
+					<th class="text-center"><abbr title="{{ 'app.fields.payment_method.public.label.long'|trans }}">{{ 'app.fields.payment_method.public.label.short'|trans }}</abbr></th>
+					<th>{{ 'app.fields.payment_method.colour.label'|trans }}</th>
+					<th><a href="{{ path('payment_method_new') }}" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for payment_method in payment_methods %}
+				<tr>
+					<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ payment_method.title }}</td>
+					<td class="py-1 h2 text-center" style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ payment_method.label }}</td>
+					<td class="py-1 h2 text-center" style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ ('global.' ~ (payment_method.available ? 'on' : 'off'))|trans }}</td>
+					<td class="py-1 h2 text-center" style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">{{ ('global.' ~ (payment_method.public ? 'on' : 'off'))|trans }}</td>
+					<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ payment_method.colour }}</code></td>
+					<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});">
+						<a href="{{ path('payment_method_show', {'id': payment_method.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
+						<a href="{{ path('payment_method_edit', {'id': payment_method.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="6">{{ 'app.payment_method.index.none'|trans }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

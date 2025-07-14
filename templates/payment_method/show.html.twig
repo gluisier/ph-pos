@@ -6,30 +6,32 @@
 	<h2>{{ payment_method.label }}
 		{{ payment_method.title }}</h2>
 
-	<table class="table">
-		<tbody>
-			<tr>
-				<th>{{ 'app.fields.payment_method.title.label'|trans }}</th>
-				<td>{{ payment_method.title }}</td>
-			</tr>
-			<tr>
-				<th>{{ 'app.fields.payment_method.label.label.long'|trans }}</th>
-				<td>{{ payment_method.label }}</td>
-			</tr>
-			<tr>
-				<th>{{ 'app.fields.payment_method.colour.label'|trans }}</th>
-				<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ payment_method.colour }}</code></td>
-			</tr>
-			<tr>
-				<th>{{ 'app.fields.payment_method.available.label.long'|trans }} ({{ 'app.fields.payment_method.available.label.short'|trans }})</th>
-				<td>{{ ('global.' ~ (payment_method.available ? 'on' : 'off'))|trans }}</td>
-			</tr>
-			<tr>
-				<th>{{ 'app.fields.payment_method.public.label.long'|trans }} ({{ 'app.fields.payment_method.public.label.short'|trans }})</th>
-				<td>{{ ('global.' ~ (payment_method.public ? 'on' : 'off'))|trans }}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>{{ 'app.fields.payment_method.title.label'|trans }}</th>
+					<td>{{ payment_method.title }}</td>
+				</tr>
+				<tr>
+					<th>{{ 'app.fields.payment_method.label.label.long'|trans }}</th>
+					<td>{{ payment_method.label }}</td>
+				</tr>
+				<tr>
+					<th>{{ 'app.fields.payment_method.colour.label'|trans }}</th>
+					<td style="background-color: {{ payment_method.colour }}; color: var(--bs-{{ payment_method.colour ? (is_dark(payment_method.colour) ? 'light' : 'dark') : 'body-color' }});"><code style="color: inherit;">{{ payment_method.colour }}</code></td>
+				</tr>
+				<tr>
+					<th>{{ 'app.fields.payment_method.available.label.long'|trans }} ({{ 'app.fields.payment_method.available.label.short'|trans }})</th>
+					<td>{{ ('global.' ~ (payment_method.available ? 'on' : 'off'))|trans }}</td>
+				</tr>
+				<tr>
+					<th>{{ 'app.fields.payment_method.public.label.long'|trans }} ({{ 'app.fields.payment_method.public.label.short'|trans }})</th>
+					<td>{{ ('global.' ~ (payment_method.public ? 'on' : 'off'))|trans }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	<ul class="list-inline float-end">
 		<li class="list-inline-item">
 			<a href="{{ path('payment_method_index') }}" class="btn btn-secondary" title="{{ 'global.action.list'|trans }}" aria-label="{{ 'global.action.list'|trans }}">📃</a>

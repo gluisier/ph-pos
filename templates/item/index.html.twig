@@ -5,54 +5,56 @@
 {% block body %}
 	<h2>{{ 'app.item.index.heading'|trans }}</h2>
 
-	<table class="table align-middle">
-		<colgroup>
-			<col class="col-1 pe-0 pe-lg-2" />
-			<col class="col-xl-2 ps-0 ps-lg-2" />
-			<col />
-			<col class="col-1" />
-			<col class="col-2 col-md-1" />
-			<col class="col-2 col-md-1" />
-			<col class="col-1" />
-		</colgroup>
-		<thead>
-			<tr>
-				<th><abbr title="{{ 'app.fields.item.category.label.long'|trans }}">{{ 'app.fields.item.category.label.short'|trans }}</abbr></th>
-				<th>{{ 'app.fields.item.label.label.long'|trans }}</th>
-				<th>{{ 'app.fields.item.title.label'|trans }}</th>
-				<th><abbr id="AvailableLabel" title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
-				<th id="PriceLabel">{{ 'app.fields.item.price.label'|trans }}</th>
-				<th id="StockLabel">{{ 'app.fields.item.stock.label'|trans }}</th>
-				<th><a href="{{ path('item_new') }}" class="btn btn-success btn-sm" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for item in items %}
-			{% set style = (item.colour ? 'background-color: ' ~ item.colour ~ ' !important; color: var(--bs-' ~ (is_dark(item.colour) ? 'light' : 'dark') ~ ');' : '') %}
-			<tr>
-				<td class="text-center h2 py-1 pe-0 pe-lg-2" {% if style %} style="{{ style }}"{% endif %}>{{ item.category ? item.category.label }}</td>
-				<td class="text-center h2 py-1 ps-0 ps-lg-2" style="{% if item.isPack %}{{ pack_gradient(item.composedOf) }}{% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}{% elseif item.colour %}background-color: {{ item.colour }} !important{% endif %}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.label }}</td>
-				<td {% if style %} style="{{ style }}"{% endif %}>{{ item.title }}
-					{%- if item.ticket -%}
-					{%- if item.colour %}
-						<abbr title="{{ item.colour }}">{{ 'app.fields.item.ticket.label.short'|trans }}</abbr>
-					{%- else -%}
-						{{ 'app.fields.item.ticket.label.short'|trans }}
-					{%- endif -%}
-					{%- endif %}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>{{ ('global.' ~ (item.available ? 'on' : 'off'))|trans }}</td>
-				<td class="text-end"{% if style %} style="{{ style }}"{% endif %}>{{ item.price|number_format(2, ',') }}</td>
-				<td class="text-end"{% if style %} style="{{ style }}"{% endif %}>{{ item.stock }}</td>
-				<td{% if style %} style="{{ style }}"{% endif %}>
-					<a href="{{ path('item_show', {'id': item.id}) }}" class="btn btn-sm btn-outline-info px-1" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
-					<a href="{{ path('item_edit', {'id': item.id}) }}" class="btn btn-sm btn-outline-warning px-1" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
-				</td>
-			</tr>
-		{% else %}
-			<tr>
-				<td colspan="7">{{ 'app.item.index.none'|trans }}</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table align-middle">
+			<colgroup>
+				<col class="col-1 pe-0 pe-lg-2" />
+				<col class="col-xl-2 ps-0 ps-lg-2" />
+				<col />
+				<col class="col-1" />
+				<col class="col-2 col-md-1" />
+				<col class="col-2 col-md-1" />
+				<col class="col-1" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th><abbr title="{{ 'app.fields.item.category.label.long'|trans }}">{{ 'app.fields.item.category.label.short'|trans }}</abbr></th>
+					<th>{{ 'app.fields.item.label.label.long'|trans }}</th>
+					<th>{{ 'app.fields.item.title.label'|trans }}</th>
+					<th><abbr id="AvailableLabel" title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
+					<th id="PriceLabel">{{ 'app.fields.item.price.label'|trans }}</th>
+					<th id="StockLabel">{{ 'app.fields.item.stock.label'|trans }}</th>
+					<th><a href="{{ path('item_new') }}" class="btn btn-success btn-sm" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for item in items %}
+				{% set style = (item.colour ? 'background-color: ' ~ item.colour ~ ' !important; color: var(--bs-' ~ (is_dark(item.colour) ? 'light' : 'dark') ~ ');' : '') %}
+				<tr>
+					<td class="text-center h2 py-1 pe-0 pe-lg-2" {% if style %} style="{{ style }}"{% endif %}>{{ item.category ? item.category.label }}</td>
+					<td class="text-center h2 py-1 ps-0 ps-lg-2" style="{% if item.isPack %}{{ pack_gradient(item.composedOf) }}{% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}{% elseif item.colour %}background-color: {{ item.colour }} !important{% endif %}; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ item.label }}</td>
+					<td {% if style %} style="{{ style }}"{% endif %}>{{ item.title }}
+						{%- if item.ticket -%}
+						{%- if item.colour %}
+							<abbr title="{{ item.colour }}">{{ 'app.fields.item.ticket.label.short'|trans }}</abbr>
+						{%- else -%}
+							{{ 'app.fields.item.ticket.label.short'|trans }}
+						{%- endif -%}
+						{%- endif %}</td>
+					<td{% if style %} style="{{ style }}"{% endif %}>{{ ('global.' ~ (item.available ? 'on' : 'off'))|trans }}</td>
+					<td class="text-end"{% if style %} style="{{ style }}"{% endif %}>{{ item.price|number_format(2, ',') }}</td>
+					<td class="text-end"{% if style %} style="{{ style }}"{% endif %}>{{ item.stock }}</td>
+					<td{% if style %} style="{{ style }}"{% endif %}>
+						<a href="{{ path('item_show', {'id': item.id}) }}" class="btn btn-sm btn-outline-info px-1" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
+						<a href="{{ path('item_edit', {'id': item.id}) }}" class="btn btn-sm btn-outline-warning px-1" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="7">{{ 'app.item.index.none'|trans }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

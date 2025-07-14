@@ -5,33 +5,35 @@
 {% block body %}
 	<h2>{{ 'app.user.index.heading'|trans }}</h2>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>{{ 'app.fields.user.name.label'|trans }}</th>
-				<th>{{ 'app.fields.user.active.label'|trans }}</th>
-				<th>{{ 'app.fields.user.roles.label'|trans }}</th>
-				<th>{{ 'app.fields.user.createdAt.label'|trans }}</th>
-				<th><a href="{{ path('user_new') }}" class="btn btn-success" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for user in users %}
-			<tr>
-				<td>{{ user.name }}</td>
-				<td>{{ (user.active ? 'global.on' : 'global.off')|trans }}</td>
-				<td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
-				<td>{{ user.createdAt|date('Y-m-d') }}</td>
-				<td>
-					<a href="{{ path('user_show', {'name': user.name}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
-					<a href="{{ path('user_edit', {'name': user.name}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
-				</td>
-			</tr>
-		{% else %}
-			<tr>
-				<td colspan="5">{{ 'app.user.index.none'|trans }}</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>{{ 'app.fields.user.name.label'|trans }}</th>
+					<th>{{ 'app.fields.user.active.label'|trans }}</th>
+					<th>{{ 'app.fields.user.roles.label'|trans }}</th>
+					<th>{{ 'app.fields.user.createdAt.label'|trans }}</th>
+					<th><a href="{{ path('user_new') }}" class="btn btn-success" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for user in users %}
+				<tr>
+					<td>{{ user.name }}</td>
+					<td>{{ (user.active ? 'global.on' : 'global.off')|trans }}</td>
+					<td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
+					<td>{{ user.createdAt|date('Y-m-d') }}</td>
+					<td>
+						<a href="{{ path('user_show', {'name': user.name}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
+						<a href="{{ path('user_edit', {'name': user.name}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">{{ 'app.user.index.none'|trans }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}
