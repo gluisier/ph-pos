@@ -4,6 +4,10 @@ const printerConfig = {
 	port: {{ printer.port }},
 	id: '{{ printer.id }}',
 	"status": '{{ printer.status.value }}',
+	{% if printer_logo_key_1 is not none and printer_logo_key_2 is not none -%}
+	key1: '{{ printer_logo_key_1 }}',
+	key2: '{{ printer_logo_key_2 }}',
+	{% endif -%}
 	valid: function () {
 		return (Object.getOwnPropertyNames(this).length == 6)
 			&& (this.status !== 'stored');

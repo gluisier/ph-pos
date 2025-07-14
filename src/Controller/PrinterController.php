@@ -9,6 +9,7 @@ use App\Repository\PrinterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -83,8 +84,13 @@ final class PrinterController extends AbstractController
     }
 
     #[Route('/config/{id?}', name: 'config', methods: ['GET'], priority: 1)]
-    public function config(Request $request, UserInterface $user, #[MapEntity] ?Printer $printer = null)
-    {
+    public function config(
+        Request $request,
+        UserInterface $user,
+        #[MapEntity]?Printer $printer = null,
+        #[Autowire(env: 'PRINTER_LOGO_KEY_1')] $printerLogoKey1,
+        #[Autowire(env: 'PRINTER_LOGO_KEY_2')] $printerLogoKey2
+    ): Response {
         if (!$printer && (!$user instanceof User || !($printer = $user->getPrinter()))) {
             throw $this->createNotFoundException();
         }
@@ -92,6 +98,8 @@ final class PrinterController extends AbstractController
         return $this->render('printer/config.js.twig', [
             'printer' => $printer,
             'user' => $user,
+            'printer_logo_key_1' => $printerLogoKey1,
+            'printer_logo_key_2' => $printerLogoKey2
         ], new Response(headers: ['Content-Type' => 'text/javascript']));
     }
 }

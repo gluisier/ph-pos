@@ -131,6 +131,7 @@
 	<script src="{{ asset('js/print_sdks/' ~ app.user.printer.api.value ~ '_sdk.js' )}}"></script>
 	<script src="{{ asset('js/print_sdks/' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
 	<script src="{{ asset('js/print_template/ticket.' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
+	<script src="{{ asset('js/print_template/ticket_logo.' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
 	{% endif -%}
 	<script>//<![CDATA[
 	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
@@ -293,7 +294,11 @@
 				} else {
 					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
 					try {
-						print(ticket_epson_xml, order, printSuccess, printError);
+						if (!printerConfig.key1 || !printerConfig.key2 || ! ticket_logo_epson_xml) {
+							print(ticket_epson_xml, order, printSuccess, printError);
+						} else {
+							print(ticket_logo_epson_xml, order, printSuccess, printError);
+						}
 					} catch (e) {
 						debounceBroadcast('status', 'error');
 						console.error(e);
