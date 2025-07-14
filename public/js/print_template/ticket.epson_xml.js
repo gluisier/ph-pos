@@ -20,7 +20,7 @@
  * 	<text>Product</text>
  * 	<text dw="false" dh="true"/>
  * 	<feed/>
- * 	<text>now - user</text>
+ * 	<text>now — id — user</text>
  * 	<feed/>
  * 	<cut type="feed"/>
  * 	…
@@ -30,7 +30,7 @@
  * @param {!Order} order The order to print ticket(s) for
  */
 const ticket_epson_xml = (printer, order) => {
-	let first = true;
+	let counter = 1;
 	printer.addTextLang('fr');
 	for (const id in order.lines) {
 		const line = order.lines[id];
@@ -43,10 +43,10 @@ const ticket_epson_xml = (printer, order) => {
 			printer.addText(line.title);
 			printer.addTextDouble(false, false);
 			printer.addFeed();
-			printer.addText(`${order.date} — ${order.user}`);
+			printer.addText(`${order.date}|${order.id.padStart(7, '0')}-${('' + counter).padStart(2, '0')}|${order.user}`);
 			printer.addFeed();
 			printer.addCut(printer.CUT_FEED);
-			first = false;
+			counter++;
 		}
 	}
 	printer.send();

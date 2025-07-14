@@ -14,7 +14,7 @@ class OrderSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('id', IntegerType::class, [
+            ->add('externalId', null, [
                 'label_format' => 'app.fields.id',
                 'required' => false,
             ])

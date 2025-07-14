@@ -30,15 +30,15 @@ class OrderRepository extends ServiceEntityRepository
         ;
 
         if (!empty($criteria['from']) && empty($criteria['to'])) {
-            $qb ->andWhere($qb->expr()->gte('o.createdAt', ':from'))
+            $qb ->andWhere($qb->expr()->gte('o.printDate', ':from'))
                 ->setParameter(':from', $criteria['from']);
             unset($criteria['from']);
         } else if (!empty($criteria['to']) && empty($criteria('from'))) {
-            $qb ->andWhere($qb->expr()->gte('o.createdAt', ':to'))
+            $qb ->andWhere($qb->expr()->lte('o.printDate', ':to'))
                 ->setParameter(':to', $criteria['to']);
             unset($criteria['to']);
         } else if (!empty($criteria['from']) && !empty($criteria['to'])) {
-            $qb ->andWhere($qb->expr()->between('o.createdAt', 'from', ':to'))
+            $qb ->andWhere($qb->expr()->between('o.printDate', 'from', ':to'))
                 ->setParameter(':from', $criteria['from'])
                 ->setParameter(':to', $criteria['to']);
             unset($criteria['from']);
@@ -91,6 +91,9 @@ class OrderRepository extends ServiceEntityRepository
         switch ($field) {
             case 'id':
                 $field = 'o.id';
+                break;
+            case 'externalId':
+                $field = 'o.externalId';
                 break;
             case 'paymentMethod':
                 $field = 'pm.id';

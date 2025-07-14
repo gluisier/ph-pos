@@ -11,7 +11,9 @@ use App\Repository\PaymentMethodRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -80,6 +82,12 @@ class OrderSimpleType extends AbstractType
                 },
                 'translation_domain' => false,
             ])
+            ->add('externalId', HiddenType::class)
+            ->add('printDate', HiddenType::class)
+        ;
+        $builder
+            ->get('printDate')
+            ->addModelTransformer(new DateTimeToStringTransformer('Europe/Zurich', 'UTC', parseFormat: 'Y-m-d\TH:i:s.u\Z'))
         ;
     }
 

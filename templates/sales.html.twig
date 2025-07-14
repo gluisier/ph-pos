@@ -259,7 +259,11 @@
 				}
 			};
 			if (totals.quantity > 0 && order.date === null) {
-				order.date = (new Date()).toLocaleString('{{ app.request.locale }}').substring(0, 16);
+				const now = new Date();
+				order.date = now.toLocaleString('{{ app.request.locale }}').substring(0, 16);
+				document.querySelector('[name*="printDate"]').value = now.toISOString();
+				order.id = murmurHash3.x86.hash32(order.date + channel.name + order.user).toString(36);
+				document.querySelector('[name*="externalId"]').value = order.id;
 			}
 			document.getElementById('totalItems').value = totals.quantity;
 			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
@@ -332,6 +336,9 @@
 		for (const id in order.lines) {
 			order.lines[id].quantity = 0;
 			order.date = null;
+			document.querySelector('[name*="printDate"]').value = '';
+			order.id = null;
+			document.querySelector('[name*="externalId"]').value = '';
 		}
 		document.querySelector('.categories :default').dispatchEvent(new Event('change'));
 		submitDisabler(true);

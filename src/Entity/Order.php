@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,6 +19,12 @@ class Order
     private ?int $id = null;
 
     #[ORM\Column]
+    private ?string $externalId = null;
+
+    #[ORM\Column]
+    private ?\DateTime $printDate = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $createdAt = null;
 
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class, cascade: ["persist"], indexBy: 'item_id')]
@@ -37,6 +44,42 @@ class Order
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getExternalId(): ?string
+    {
+        return $this->externalId;
+    }
+
+    public function setExternalId(string $externalId): static
+    {
+        $this->externalId = $externalId;
+
+        return $this;
+    }
+
+    public function getPrintDate(): ?\DateTimeInterface
+    {
+        return $this->printDate;
+    }
+
+    public function setPrintDate(\DateTimeInterface $printDate): static
+    {
+        $this->printDate = $printDate;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 
     /**
@@ -73,18 +116,6 @@ class Order
                 $line->setOrder(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }

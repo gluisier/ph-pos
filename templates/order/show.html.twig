@@ -3,7 +3,7 @@
 {% block title %}{{ 'app.order.show.title'|trans({'id': order.id}) }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ 'app.order.show.heading'|trans({'id': order.id}) }}</h2>
+	<h2>{{ 'app.order.show.heading'|trans({'id': order.externalId}) }}</h2>
 
 	<div class="table-responsive">
 		<table class="table">

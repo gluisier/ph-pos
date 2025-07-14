@@ -3,7 +3,7 @@
 {% block title %}{{ 'app.order.edit.title'|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ 'app.order.edit.heading'|trans({'id': order.id}) }}</h2>
+	<h2>{{ 'app.order.edit.heading'|trans({'id': order.externalId}) }}</h2>
 
 	{{ include('order/_form.html.twig') }}
 

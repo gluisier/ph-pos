@@ -18,24 +18,24 @@
 					<tr>
 						<th>{{ 'app.fields.id'|trans }}</th>
 						<th>{{ 'app.fields.order.paymentMethod.label'|trans }}</th>
-						<th>{{ 'app.fields.order.createdAt.label'|trans }}</th>
+						<th>{{ 'app.fields.order.printDate.label'|trans }}</th>
 						<th><a href="{{ path('order_new') }}" class="btn btn-success" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
 					</tr>
 					<tr>
-						<th>{{ form_label(searchForm.id, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.id , {'attr': {'class': 'form-control-sm searchField', 'placeholder': 'app.fields.id'|trans, 'tabindex': 1, 'translation_domain': false}}) }}</th>
-						<th>{{ form_label(searchForm.paymentMethod, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.paymentMethod , {'attr': {'class': 'form-select-sm searchField', 'placeholder': 'app.fields.order.paymentMethod.label'|trans, 'tabindex': 1}, 'translation_domain': false}) }}</th>
-						<th><div class="row"><div class="col-auto">{{ form_label(searchForm.from, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.from , {'attr': {'class': 'form-control-sm searchField', 'title': 'app.fields.order.createdAt.from'|trans, 'placeholder': 'app.fields.order.createdAt.from'|trans, 'tabindex': 1}}) }}</div>
-							<div class="col-auto">{{ form_label(searchForm.to, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.to , {'attr': {'class': 'form-control-sm searchField', 'title': 'app.fields.order.createdAt.to'|trans, 'placeholder': 'app.fields.order.createdAt.to'|trans, 'tabindex': 1}}) }}</div></div></th>
+						<th>{{ form_label(searchForm.externalId, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.externalId, {'attr': {'class': 'form-control-sm searchField', 'placeholder': 'app.fields.id'|trans, 'tabindex': 1, 'translation_domain': false}}) }}</th>
+						<th>{{ form_label(searchForm.paymentMethod, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.paymentMethod, {'attr': {'class': 'form-select-sm searchField', 'placeholder': 'app.fields.order.paymentMethod.label'|trans, 'tabindex': 1}, 'translation_domain': false}) }}</th>
+						<th><div class="row"><div class="col-auto">{{ form_label(searchForm.from, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.from , {'attr': {'class': 'form-control-sm searchField', 'title': 'app.fields.order.printDate.from'|trans, 'placeholder': 'app.fields.order.printDate.from'|trans, 'tabindex': 1}}) }}</div>
+							<div class="col-auto">{{ form_label(searchForm.to, null, {'label_attr': {'class': 'visually-hidden'}}) }} {{ form_widget(searchForm.to, {'attr': {'class': 'form-control-sm searchField', 'title': 'app.fields.order.printDate.to'|trans, 'placeholder': 'app.fields.order.printDate.to'|trans, 'tabindex': 1}}) }}</div></div></th>
 						<th><button type="submit" class="btn btn-sm btn-primary" title="{{ 'global.action.filter'|trans }}" aria-label="{{ 'global.action.filter'|trans }}">🔎</button>
-							<a href="{{ path('payment_method_index') }}" class="btn btn-sm btn-light" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</a></th>
+							<a href="{{ path('order_index') }}" class="btn btn-sm btn-light" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</a></th>
 					</tr>
 				</thead>
 				<tbody>
 				{% for order in orders %}
 					<tr>
-						<td>{{ order.id }}</td>
+						<td>{{ order.externalId }}</td>
 						<td>{{ order.paymentMethod.title }}</td>
-						<td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+						<td>{{ order.printDate ? order.printDate|date('Y-m-d H:i:s') : '' }}</td>
 						<td>
 							<a href="{{ path('order_show', {'id': order.id}) }}" class="btn btn-sm btn-outline-info" title="{{ 'global.action.show'|trans }}" aria-label="{{ 'global.action.show'|trans }}">👁️</a>
 							<a href="{{ path('order_edit', {'id': order.id}) }}" class="btn btn-sm btn-outline-warning" title="{{ 'global.action.edit'|trans }}" aria-label="{{ 'global.action.edit'|trans }}">✏️</a>

@@ -109,14 +109,19 @@ app:
       createdAt:
         label: Créé le
     order:
+      externalId : ID externe
+      printDate:
+        label: Date d'impression
+        from: &date_from De
+        to: &date_to A
       paymentMethod:
         label: Moyen de paiement
       lines:
         label: Produits
       createdAt:
         label: Créée le
-        from: De
-        to: A
+        from: *date_from
+        to: *date_to
     order_line:
       quantity:
         label: Quantité
