@@ -269,8 +269,9 @@ app:
   sales:
     title: *sales_heading
     total: Total
-    statuses:
-
+    payment_method:
+      dialog:
+        title: Commande __id__, __date__
 
   production:
     title: *production_heading

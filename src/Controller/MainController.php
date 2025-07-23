@@ -53,10 +53,10 @@ class MainController extends AbstractController
         }
 
         $paymentMethodId = $request->get('paymentMethodId');
-        $total = $request->get('total');
+        $amount = $request->get('amount');
         try {
             return $this->render('/payment_method/' . $paymentMethodId . '/' . $type . '.html.twig', [
-                'total' => $total,
+                'amount' => $amount,
             ]);
         } catch (\Throwable $e) {
             return new Response(null, Response::HTTP_NO_CONTENT);

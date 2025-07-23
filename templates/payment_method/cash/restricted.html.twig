@@ -1,31 +1,25 @@
+{% extends 'payment_method/dialog.html.twig' %}
+
+{% block modal_content %}
+{% trans_default_domain 'payment_method_cash' %}
 <form class="container modal-body">
 	<div class="row mb-3">
-		<label class="col-3" for="Amount">{{ 'restricted.amount.label'|trans({}, 'payment_method_cash') }}</label>
+		<label class="col-3" for="Amount">{{ 'restricted.amount.label'|trans }}</label>
 		<div class="col-9">
-			<input type="number" value="{{ total|replace({',': '.'}) }}" readonly="readonly" id="Amount" class="form-control-plaintext px-3" />
+			<input type="number" value="{{ amount|replace({',': '.'})|default('__amount__') }}" readonly="readonly" id="Amount" class="form-control-plaintext px-3" />
 		</div>
 	</div>
 	<div class="row mb-3">
-		<label class="col-3" for="Cash">{{ 'restricted.cash.label'|trans({}, 'payment_method_cash') }}</label>
+		<label class="col-3" for="Cash">{{ 'restricted.cash.label'|trans }}</label>
 		<div class="col-9">
-			<input type="number" value="" id="Cash" class="form-control" oninput="document.getElementById('Return').value = this.value - document.getElementById('Amount').value;" />
+			<input type="number" value="" id="Cash" class="form-control px-3" autofocus="autofocus" oninput="document.getElementById('Return').value = this.value - document.getElementById('Amount').value;" />
 		</div>
 	</div>
 	<div class="row mb-3">
-		<label class="col-3" for="Return">{{ 'restricted.return.label'|trans({}, 'payment_method_cash') }}</label>
+		<label class="col-3" for="Return">{{ 'restricted.return.label'|trans }}</label>
 		<div class="col-9">
 			<input type="number" value="" id="Return" class="form-control-plaintext px-3" />
 		</div>
 	</div>
-	<div class="d-grid">
-		{%- if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is defined and app.user.printer is not none -%}
-			<button type="submit" form="Main" class="btn btn-primary btn-lg" aria-label="
-					{{- 'global.action.print'|trans -}}
-				" data-action="print">🖨️</button>
-		{%- else -%}
-			<button type="submit" form="Main" class="btn btn-primary btn-lg" aria-label="
-					{{- 'global.action.validate'|trans -}}
-				" data-action="validate">✔️</button>
-		{%- endif -%}
-	</button></div>
 </form>
+{% endblock %}
