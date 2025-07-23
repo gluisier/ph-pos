@@ -29,10 +29,12 @@ window.Sales = () => ({
 	direction: 1,
 	layout: {
 		layout: 'table',
-		textDisplay: true,
+		titleDisplay: true,
 		labelDisplay: true,
+		numbersDisplay: true,
 		receiptDisplay: 0,
 	},
+	// Layout (table / card)
 	getLayout() {
 		return document.querySelector('[data-layout]').dataset.layout;
 	},
@@ -54,20 +56,49 @@ window.Sales = () => ({
 			: 'table';
 		this.storeLayout(newLayout);
 	},
-	getTextDisplay() {
-		// The span is hidden when the titles are displayed
-		return this.$refs.TextToggler.querySelector('span')?.style.display != 'none';
+	// Title display
+	getTitleDisplay() {
+		return this.$refs.TitleToggler.checked;
 	},
-	getPreferredTextDisplay() {
-		return JSON.parse(localStorage.getItem('textDisplay') ?? 'false') || this.getTextDisplay();
+	getPreferredTitleDisplay() {
+		return JSON.parse(localStorage.getItem('titleDisplay') ?? 'false') || this.getTitleDisplay();
 	},
-	storeTextDisplay(display) {
-		localStorage.setItem('textDisplay', display);
-		this.layout.textDisplay = display;
+	storeTitleDisplay(display) {
+		localStorage.setItem('titleDisplay', display);
+		this.layout.titleDisplay = display;
 	},
-	toggleText() {
-		this.storeTextDisplay(this.getTextDisplay());
+	toggleTitle() {
+		this.storeTitleDisplay(this.getTitleDisplay());
 	},
+	// Label display
+	getLabelDisplay() {
+		return this.$refs.LabelToggler.checked;
+	},
+	getPreferredLabelDisplay() {
+		return JSON.parse(localStorage.getItem('labelDisplay') ?? 'false') || this.getLabelDisplay();
+	},
+	storeLabelDisplay(display) {
+		localStorage.setItem('labelDisplay', display);
+		this.layout.labelDisplay = display;
+	},
+	toggleLabel() {
+		this.storeLabelDisplay(this.getLabelDisplay());
+	},
+	// Numbers display
+	getNumbersDisplay() {
+		return this.$refs.NumbersToggler.checked;
+	},
+	getPreferredNumbersDisplay() {
+		return JSON.parse(localStorage.getItem('numbersDisplay') ?? 'false') || this.getNumbersDisplay();
+	},
+	storeNumbersDisplay(display) {
+		localStorage.setItem('numbersDisplay', display);
+		this.layout.numbersDisplay = display;
+	},
+	toggleNumbers() {
+		this.storeNumbersDisplay(this.getNumbersDisplay());
+	},
+	// Receipt display
 	getReceiptDisplay() {
 		if (this.$refs.Splitter?.closest('.dropdown-item')?.classList.contains('active')) {
 			return this.$refs.SplitterRatioSelector.value;
@@ -119,15 +150,29 @@ window.Sales = () => ({
 				}
 			});
 		}
+		// Layout (table / card)
 		if (this.getPreferredLayout() != this.getLayout()) {
 			this.toggleLayout();
 		} else {
 			this.storeLayout(this.getPreferredLayout());
 		}
-		if (this.getPreferredTextDisplay() != this.getTextDisplay()) {
-			this.toggleText();
+		// Title display
+		if (this.getPreferredTitleDisplay() != this.getTitleDisplay()) {
+			this.toggleTitle();
 		} else {
-			this.storeTextDisplay(this.getPreferredTextDisplay());
+			this.storeTitleDisplay(this.getPreferredTitleDisplay());
+		}
+		// Label display
+		if (this.getPreferredLabelDisplay() != this.getLabelDisplay()) {
+			this.toggleLabel();
+		} else {
+			this.storeLabelDisplay(this.getPreferredLabelDisplay());
+		}
+		// Numbers display
+		if (this.getPreferredNumbersDisplay() != this.getNumbersDisplay()) {
+			this.toggleNumbers();
+		} else {
+			this.storeNumbersDisplay(this.getPreferredNumbersDisplay());
 		}
 		if (this.getPreferredReceiptDisplay() != this.getReceiptDisplay()) {
 			if ((this.getPreferredReceiptDisplay() != '0')) {
@@ -164,7 +209,7 @@ window.Sales = () => ({
 			const backgroundColor = style.backgroundColor;
 			const backgroundImage = style.backgroundImage;
 			for (const categoriesContainer of document.getElementsByClassName('categories')) {
-				const template = categoriesContainer.firstChild.cloneNode(true);
+				const template = categoriesContainer.lastChild.cloneNode(true);
 				template.classList.add('reset-remove');
 				template.setAttribute('x-effect', function() {
 					if (this.category != $el.querySelector('[value]').value) {
@@ -172,7 +217,7 @@ window.Sales = () => ({
 					}
 				});
 				const input = template.querySelector('select, [type="checkbox"], [type="radio"]');
-				template.querySelector('label').innerText = itemRoot.querySelector('label').innerText;
+				template.querySelector('label').innerText = itemRoot.querySelector('label').previousElementSibling.innerText;
 				template.querySelector('[value]').value = id;
 				input.value = id;
 				template.style.backgroundImage = backgroundImage;
@@ -195,31 +240,6 @@ window.Sales = () => ({
 		const b = (rgb & 0xff);
 
 		return ((r * 0.299 + g * 0.587 + b * 0.114) / 256) < 0.114;
-	},
-	variantsGradient(items) {
-		if (Object.values(items).length < 2) {
-			return '';
-		}
-		let steps = [];
-		for (let i = 0; i < Object.values(items).length; i++) {
-			({colour} = Object.values(items)[i]);
-			steps.push([colour, i * this.STEP_WIDTH + this.STEP_WIDTH_UNIT, (i + 1) * this.STEP_WIDTH + this.STEP_WIDTH_UNIT].join(' '));
-		}
-
-		return {background: `repeating-linear-gradient(45deg, ${steps.join(', ')})`};
-	},
-	packGradient(items) {
-		if (Object.values(items).length < 2) {
-			return '';
-		}
-		let steps = [];
-		for (let i = 0; i < Object.values(items).length; i++) {
-			({colour} = Object.values(items)[i]);
-			steps.push([colour, i * this.STEP_WIDTH + this.STEP_WIDTH_UNIT].join(' '));
-		}
-		steps.push([Object.values(items).shift().colour, Object.values(items).length * this.STEP_WIDTH + this.STEP_WIDTH_UNIT].join(' '));
-
-		return {background: `repeating-linear-gradient(-45deg, ${steps.join(', ')})`};
 	},
 	itemBackgroundStyle(item) {
 		let result = {};

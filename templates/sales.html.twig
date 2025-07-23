@@ -17,164 +17,201 @@
 		</style>
 {%- endblock %}
 
-{% block container_type %}container-fluid" x-data="Sales()
-	{%- if is_granted('ROLE_USER') %}" x-init="Object.assign($data, authenticatedSales); $data.debounceBroadcast = Alpine.debounce($data.broadcast.bind($data), 400)" x-effect="order.quantity; debounceBroadcast('update', order){% endif %}
+{% block container_type %}container-fluid"
+				x-data="Sales()
+				{%- if is_granted('ROLE_USER') %}"
+				x-init="Object.assign($data, authenticatedSales); $data.debounceBroadcast = Alpine.debounce($data.broadcast.bind($data), 400)"
+				x-effect="order.quantity; debounceBroadcast('update', order)
+				{%- endif -%}
 {%- endblock -%}
 
 {% block menu %}{% endblock %}
 
-{% block body %}
-	{{ form_start(form, {'attr': {'class': 'row', 'x-ref': 'Form'}}) }}
-		<div id="Receipt" class="d-none" :class="{'d-lg-block': layout.receiptDisplay > 0, ['col-lg-' + Math.round(layout.receiptDisplay * 12)]: layout.receiptDisplay > 0}" x-ref="Receipt">
-			<div class="mt-3">
-				<template x-for="item of order.lines" :key="item.id">
-				<div class="row border-top" style="min-height: 4em;" x-show="item.quantity > 0 && !item.isPack">
-					<div class="d-none h1 text-center mb-0 align-self-center"
-						:class="{
-							'd-sm-block col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
-							'col-md-2': layout.receiptDisplay * window.screen.availWidth > 767.98
-						}"
-						x-text="item.label"
-					></div>
-					<div class="col-4 align-self-center"
-						:class="{
-							'col-sm-6': layout.receiptDisplay * window.screen.availWidth <= 575.98,
-							'col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
-							'col-md-4': layout.receiptDisplay * window.screen.availWidth > 767.98
-						}"
-						x-text="item.title"
-					></div>
-					<div class="col-3 col-sm-2 text-end align-self-center" x-text="item.price.toFixed(2).replace('.', ',')"></div>
-					<div class="col-2 text-end align-self-center" :class="{'has-ticket': item.ticket}" :style="item.ticket ? itemStyle(item) : {}" x-text="item.quantity"></div>
-					<div class="col-3 col-sm-2 text-end align-self-center" x-text="(item.quantity * item.price).toFixed(2).replace('.', ',')"></div>
-				</div>
-				</template>
-			</div>
-		</div>
-		<div id="ItemList" :class="{['col-lg-' + (12 - Math.round(layout.receiptDisplay * 12))]: layout.receiptDisplay > 0}" x-ref="ItemList">
-			{#- Placeholder is not styled along the choices, some options are not copied to it.
-			Therefore, mere inline options instead of buttons -#}
-			{{ form_row(form.categories, {
-				'label_attr': {'class': 'radio-inline'},
-				'row_attr': {
-					'class': 'sticky-top pt-3 mb-3 h3',
-					'style': 'background-color: var(--bs-body-bg);'
-				},
-				'attr': {
-					'class': 'categories',
-					'data-layout': 'table'
-				},
-				'help': '<hr class="row mt-3 mb-0" />',
-				'help_html': true,
-			}) }}
-			{# No filtered list for the loop, those might break packs per now -#}
-			<div id="order_simple_lines"
-				:class="{
-					'row row-cols-2 g-2': layout.layout == 'deck',
-					'row-cols-sm-3': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 575.98,
-					'row-cols-md-4': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 767.98,
-					'row-cols-lg-5': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 991.98,
-					'row-cols-xl-6': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 1399.98
-				}">
-				<template x-for="item of order.lines" :key="item.id">
+{% block _order_simple_lines_entry_row %}
+{%- set item = form.vars.data.item %}
 				<div class="item-root"
+						data-id="{{ item.id }}"
+						data-content-ids="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}"
 						:class="{'col': layout.layout == 'deck'}"
-						:data-is-variant="JSON.stringify(item.isVariant)"
-						:data-id="item.id"
-						:data-content-ids="JSON.stringify(item.isPack ? Object.values(item.composedOf).map(i => Number(i)) : [item.id])"
-						:data-category-id="JSON.stringify(item.dataCategoryId())"
-						x-show="item.show(category)"
+						x-show="order.lines[{{ item.id }}].show(category)"
 						@click="itemClick"
 					>
-					<div :class="{'card h-100': layout.layout == 'deck'}" :style="itemStyle(item)" :title="item.title">
-						<template x-if="Object.values(item.attributes ?? {}).length != 0 && Object.values(item.variants ?? {}).length != 0">
+					<div style="
+							{%- if item.colour %}background-color: {{ item.colour }} !important; {% endif -%}
+							{%- if item.isPack %}{{ pack_gradient(item.composedOf) }}; {% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}; {% endif -%}
+							color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});"
+							title="{{ item.title }}"
+							:class="{'card h-100': layout.layout == 'deck'}"
+						>
 						<div :class="{'row': layout.layout != 'deck', 'card-body': layout.layout == 'deck'}">
-							<label :for="`{{ form.lines[1].vars.id|replace({'1': '${item.id}'}) }}`" class="h1 text-center user-select-none" :class="{'col-4': layout.layout != 'deck', 'col-sm-3 col-md-2': layout.layout != 'deck' && layout.textDisplay, 'col-sm-6': layout.layout != 'deck' && !layout.textDisplay, 'card-title w-100': layout.layout == 'deck'}" x-text="item.label"></label>
-							<div class="user-select-none" :class="{'col-sm-3 col-md-4 d-none d-sm-block d-flex align-self-center': layout.layout != 'deck', 'text-center mb-2': layout.layout == 'deck', 'visually-hidden': !layout.textDisplay}" :style="item.isPack || Object.values(item.variants ?? {}).length > 1 ? `text-shadow: 0 0 3px ${itemColour(item)}` : null" x-text="item.title"></div>
-						</div>
-						</template>
-						<template x-if="Object.values(item.attributes ?? {}).length == 0 || Object.values(item.variants ?? {}).length == 0">
-						<div :class="{'row': layout.layout != 'deck', 'card-body': layout.layout == 'deck'}">
-							<label :for="`{{ form.lines[1].vars.id|replace({'1': '${item.id}'}) }}`" class="h1 text-center user-select-none" :class="{'col-4': layout.layout != 'deck', 'col-sm-3 col-md-2': layout.layout != 'deck' && layout.textDisplay, 'col-sm-6': layout.layout != 'deck' && !layout.textDisplay, 'card-title w-100': layout.layout == 'deck'}" x-text="item.label"></label>
-							<div class="user-select-none" :class="{'col-sm-3 col-md-4 d-none d-sm-block d-flex align-self-center': layout.layout != 'deck', 'text-center mb-2': layout.layout == 'deck', 'visually-hidden': !layout.textDisplay}" :style="item.isPack || Object.values(item.variants ?? {}).length > 1 ? `text-shadow: 0 0 3px ${itemColour(item)}` : null" x-text="item.title"></div>
-							<div class="text-end user-select-none" :class="{'align-self-center col-3 col-sm-2': layout.layout != 'deck', 'card-text col-4 float-start pe-1 py-1': layout.layout == 'deck'}" x-text="item.price.toFixed(2).replace('.', ',')"></div>
-							<div :class="{'col-2 px-0 d-flex align-items-center': layout.layout != 'deck', 'card-text col-8 ps-0 float-end ps-1': layout.layout == 'deck'}">
-								<template x-if="item.ticket">
-								<div class="input-group input-group-sm">
-									<input type="number" :id="`{{ form.lines[1].quantity.vars.id|replace({'1': '${item.id}'}) }}`" :name="`{{ form.lines[1].quantity.vars.full_name|replace({'1': '${item.id}'}) }}`" required="required" class="form-control form-control-sm text-end" value="0" :style="`background-color: inherit; color: ${itemColour(item)}; border-color: ${itemColour(item)}; min-width: 3em;`" x-model.number="item.quantity" />
-									<span class="input-group-text border-4 py-0 p-1" :style="itemStyle(item)">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
-								</div>
-								</template>
-								<template x-if="!item.ticket">
-								<input type="number" :id="`{{ form.lines[1].quantity.vars.id|replace({'1': '${item.id}'}) }}`" :name="`{{ form.lines[1].quantity.vars.full_name|replace({'1': '${item.id}'}) }}`" required="required" class="form-control form-control-sm text-end" value="0" :style="`background-color: inherit; color: ${itemColour(item)}; border-color: ${itemColour(item)}; min-width: 3em;`" x-model.number="item.quantity" />
-								</template>
+							<div class="h1 text-center user-select-none"
+									:class="{'col-4': layout.layout != 'deck', 'col-sm-3 col-md-2': layout.layout != 'deck' && layout.titleDisplay, 'col-sm-6': layout.layout != 'deck' && !layout.titleDisplay, 'card-title w-100': layout.layout == 'deck'}"
+									x-show="layout.labelDisplay"
+								>
+								{{- item.label -}}
 							</div>
-							<output :name="`_{{ form.lines[1].quantity.vars.id|replace({'1': '${item.id}'}) }}`" :id="`_{{ form.lines[1].quantity.vars.id|replace({'1': '${item.id}'}) }}`" class="text-end user-select-none item-total" :class="{'col-3 col-sm-2 align-self-center': layout.layout != 'deck', 'card-text w-100 align-self-center pe-2': layout.layout == 'deck'}" x-text="item.amount.toFixed(2).replace('.', ',')"></output>
+							<label for="{{ form.quantity.vars.id }}"
+									class="user-select-none"
+									:class="{
+										'd-none d-sm-block d-flex align-self-center': layout.layout != 'deck',
+										'd col-sm-3 col-md-4': layout.layout != 'deck' && layout.labelDisplay,
+										'col-sm-6 py-3': layout.layout != 'deck' && !layout.labelDisplay,
+										'text-center mb-2 d-block': layout.layout == 'deck',
+										'visually-hidden': !layout.titleDisplay
+									}"
+									{%~ if item.isPack or item.variants.count > 1 %}style="text-shadow: 0 0 3px var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'dark' : 'light') : 'body-color' }})"{% endif %}
+								>
+								{{- item.title -}}
+							</label>
+							{% if item.attributes.empty or item.variants.empty -%}
+							<div class="text-end user-select-none"
+									:class="{'align-self-center col-3 col-sm-2': layout.layout != 'deck', 'card-text col-4 float-start pe-1 py-1': layout.layout == 'deck'}"
+									x-show="layout.numbersDisplay"
+								>
+								{{- item.price|number_format(2, ',') -}}
+							</div>
+							<div :class="{'col-2 px-0 align-items-center': layout.layout != 'deck', 'card-text col-8 ps-0 float-end ps-1': layout.layout == 'deck', 'd-flex': layout.layout != 'deck' && layout.numbersDisplay}" x-show="layout.numbersDisplay">
+								{% if item.ticket -%}
+								<div class="input-group input-group-sm">
+								{%- endif %}
+									{{ form_widget(form.quantity, {'attr': {
+										'class': "form-control form-control-sm text-end",
+										'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); border-color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
+										'x-model.number': 'order.lines[' ~ item.id ~ '].quantity'
+									}}) }}
+								{%~ if item.ticket %}
+									<span class="input-group-text border-4 py-0 p-1" style="background-color: inherit; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }}); border-color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
+								</div>
+								{%~ endif %}
+							</div>
+							<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="text-end user-select-none item-total" :class="{'col-3 col-sm-2 align-self-center': layout.layout != 'deck', 'card-text w-100 align-self-center pe-2': layout.layout == 'deck'}" x-show="layout.numbersDisplay" x-text="order.lines[{{ item.id }}].amount.toFixed(2).replace('.', ',')"></output>
+							{%~ endif %}
 						</div>
-						</template>
 					</div>
 				</div>
-				</template>
-			</div>
-		</div>
-		{% do form.lines.setRendered(true) -%}
-		<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
-			<hr />
-			<div class="col-5">
-				<div class="btn-group" role="group">
-					<input type="radio" checked="checked" name="direction" class="btn-check" value="1" x-model.number="direction" /><label for="Adder" class="btn btn-outline-success">➕</label>
-					<input type="radio" name="direction" class="btn-check" value="-1" x-model.number="direction" /><label for="Remover" class="btn btn-outline-warning">➖</label>
-					<div class="btn-group dropup" role="group">
-						<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
-						<ul class="dropdown-menu">
-							<li class="d-none d-sm-block" data-layout-toggle=""><button type="button" class="dropdown-item" x-ref="TextToggler" @click="toggleText()">{{ 'app.fields.item.label.label.short'|trans }}<span x-show="!layout.textDisplay"> 〰️</span></button></li>
-							<li><button type="button" class="dropdown-item" @click="toggleLayout(event)" x-ref="LayoutToggler" x-text="(layout.layout != 'deck') ? '▦' : '▤'"></button></li>
-							<li><button type="button" id="ThemeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
-						</ul>
+{% endblock %}
+
+{% form_theme form _self %}
+
+{% block body -%}
+			{{ form_start(form, {'attr': {'class': 'row', 'x-ref': 'Form'}}) }}
+				<div id="Receipt" class="d-none" :class="{'d-lg-block': layout.receiptDisplay > 0, ['col-lg-' + Math.round(layout.receiptDisplay * 12)]: layout.receiptDisplay > 0}" x-ref="Receipt">
+					<div class="mt-3">
+						{% for line in form.lines -%}
+						{%- set item = line.vars.data.item -%}
+						<div class="row border-top" style="min-height: 4em;" x-show="order.lines[{{ item.id }}].quantity > 0 && !order.lines[{{ item.id }}].isPack">
+							<div class="d-none h1 text-center mb-0 align-self-center"
+								:class="{
+									'd-sm-block col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
+									'col-md-2': layout.receiptDisplay * window.screen.availWidth > 767.98
+								}"
+								x-text="order.lines[{{ item.id }}].label"
+							></div>
+							<div class="col-4 align-self-center"
+								:class="{
+									'col-sm-6': layout.receiptDisplay * window.screen.availWidth <= 575.98,
+									'col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
+									'col-md-4': layout.receiptDisplay * window.screen.availWidth > 767.98
+								}"
+								x-text="order.lines[{{ item.id }}].title"
+							></div>
+							<div class="col-3 col-sm-2 text-end align-self-center" x-text="order.lines[{{ item.id }}].price.toFixed(2).replace('.', ',')"></div>
+							<div class="col-2 text-end align-self-center" :class="{'has-ticket': order.lines[{{ item.id }}].ticket}" :style="order.lines[{{ item.id }}].ticket ? itemStyle(order.lines[{{ item.id }}]) : {}" x-text="order.lines[{{ item.id }}].quantity"></div>
+							<div class="col-3 col-sm-2 text-end align-self-center" x-text="(order.lines[{{ item.id }}].quantity * order.lines[{{ item.id }}].price).toFixed(2).replace('.', ',')"></div>
+						</div>
+						{% endfor ~%}
 					</div>
-					{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-					<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary d-lg-none">🧾</a>
-					{% endif -%}
-					<div class="btn-group dropup d-none d-lg-block" role="group">
-						<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🧾</button>
-						<ul class="dropdown-menu">
-							<li><div class="dropdown-item btn btn-sm btn-outline-primary" :class="{ active: layout.receiptDisplay }" @click="toggleReceiptDisplay(event)" x-ref="Splitter"><span role="button">🗃️</span>
-								<input type="range" list="SplitterRatio" disabled="disabled" value="0" min="0.25" max="0.5" step="0.0833" :disabled="!layout.receiptDisplay" form="DontReset" class="ms-2" style="width: 7em;" @change="changeReceiptDisplay(event.target.value)" x-ref="SplitterRatioSelector" x-model="layout.receiptDisplay" /></div></li>
+				</div>
+				<div id="ItemList" :class="{['col-lg-' + (12 - Math.round(layout.receiptDisplay * 12))]: layout.receiptDisplay > 0}" x-ref="ItemList">
+					{#- Placeholder is not styled along the choices, some options are not copied to it.
+					Therefore, mere inline options instead of buttons -#}
+					{{ form_row(form.categories, {
+						'label_attr': {'class': 'radio-inline'},
+						'row_attr': {
+							'class': 'sticky-top pt-3 mb-3 h3',
+							'style': 'background-color: var(--bs-body-bg);'
+						},
+						'attr': {
+							'class': 'categories',
+							'data-layout': 'table'
+						},
+						'help': '<hr class="row mt-3 mb-0" />',
+						'help_html': true,
+					}) }}
+					{{ form_widget(form.lines, {
+						'attr': {':class': "{
+							'row row-cols-2 g-2': layout.layout == 'deck',
+							'row-cols-sm-3': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 575.98,
+							'row-cols-md-4': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 767.98,
+							'row-cols-lg-5': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 991.98,
+							'row-cols-xl-6': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 1399.98
+						}"|raw}
+					}) ~}}
+				</div>
+				<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
+					<hr />
+					<div class="col-5">
+						<div class="btn-group" role="group">
+							<input type="radio" checked="checked" name="direction" class="btn-check" value="1" x-model.number="direction" /><label for="Adder" class="btn btn-outline-success">➕</label>
+							<input type="radio" name="direction" class="btn-check" value="-1" x-model.number="direction" /><label for="Remover" class="btn btn-outline-warning">➖</label>
+							<div class="btn-group dropup" role="group">
+								<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
+								<ul class="dropdown-menu">
+									<li class="d-none d-sm-block"><div class="dropdown-item px-0 btn-group">
+										<input type="checkbox" checked="checked" id="LabelToggler" class="btn-check" :disabled="!layout.titleDisplay" @click="toggleLabel()" x-model.boolean="layout.labelDisplay" x-ref="LabelToggler" />
+										<label for="LabelToggler" class="btn btn-outline-primary">🏷️</label>
+										<input type="checkbox" checked="checked" id="TitleToggler" class="btn-check" :disabled="!layout.labelDisplay" @click="toggleTitle()" x-model.boolean="layout.titleDisplay" x-ref="TitleToggler" />
+										<label for="TitleToggler" class="btn btn-outline-primary">〰️</label>
+										<input type="checkbox" checked="checked" id="NumbersToggler" class="btn-check" @click="toggleNumbers()" x-model.boolean="layout.numbersDisplay" x-ref="NumbersToggler" />
+										<label for="NumbersToggler" class="btn btn-outline-primary">🔢</label>
+									</div></li>
+									<li><button type="button" class="dropdown-item" @click="toggleLayout(event)" x-ref="LayoutToggler" x-text="(layout.layout != 'deck') ? '▦' : '▤'"></button></li>
+									<li><button type="button" id="ThemeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
+								</ul>
+							</div>
 							{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-							<li><a href="{{ path('sales_summary') }}" target="_blank" class="dropdown-item">🗂️</a></li>
+							<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary d-lg-none">🧾</a>
 							{% endif -%}
-						</ul>
+							<div class="btn-group dropup d-none d-lg-block" role="group">
+								<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🧾</button>
+								<ul class="dropdown-menu">
+									<li><div class="dropdown-item btn btn-sm btn-outline-primary" :class="{ active: layout.receiptDisplay }" @click="toggleReceiptDisplay(event)" x-ref="Splitter"><span role="button">🗃️</span>
+										<input type="range" list="SplitterRatio" disabled="disabled" value="0" min="0.25" max="0.5" step="0.0833" :disabled="!layout.receiptDisplay" form="DontReset" class="ms-2" style="width: 7em;" @change="changeReceiptDisplay(event.target.value)" x-ref="SplitterRatioSelector" x-model="layout.receiptDisplay" /></div></li>
+									{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
+									<li><a href="{{ path('sales_summary') }}" target="_blank" class="dropdown-item">🗂️</a></li>
+									{% endif -%}
+								</ul>
+							</div>
+							<datalist id="SplitterRatio">
+								<option value="0.25" label="¼"></option>
+								<option value="0.3333" label="⅓"></option>
+								<option value="0.4999" label="½"></option>
+							</datalist>
+							<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
+						</div>
 					</div>
-					<datalist id="SplitterRatio">
-						<option value="0.25" label="¼"></option>
-						<option value="0.3333" label="⅓"></option>
-						<option value="0.4999" label="½"></option>
-					</datalist>
-					<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
+					<div class="col-3 text-end{% if is_granted('IS_AUTHENTICATED_FULLY') %}">
+						{%- if form.paymentMethod.children|length == 1 -%}
+							<button type="submit" name="{{ form.paymentMethod.vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" disabled="disabled" class="btn btn-primary float-start validator" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">{{ 'global.action.validate'|trans }}</button>
+							{%- do form.paymentMethod.children[0].setRendered(true) -%}
+						{%- else -%}
+							<div class="btn-group dropup" role="group">
+								<button type="button" disabled="disabled" class="btn btn-outline-primary dropdown-toggle validator" :disabled="order.quantity == 0" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
+								<ul class="dropdown-menu">
+									{% for i,child in form.paymentMethod.children -%}
+									<li><button type="submit" name="{{ form.paymentMethod.vars.full_name }}" value="{{ child.vars.value }}" :disabled="order.quantity == 0" class="dropdown-item display-6 validator" style="{% if child.vars.attr.style|length > 18 %}{{ child.vars.attr.style }} !important; {% endif %}color: var(--bs-{{ child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color' }});">{{ child.vars.label }}</button></li>
+									{% do child.setRendered(true) -%}
+									{% endfor -%}
+								</ul>
+							</div>
+						{%- endif %}
+						{%- else %} pt-1">
+							{%- do form.paymentMethod.setRendered(true) -%}
+						{% endif %} {{ 'app.sales.total'|trans }}</div>
+					<output name="totalItems" class="col-2 pt-1 text-end" x-text="`${order.quantity} (${order.tickets} {{ 'app.fields.item.ticket.label.short'|trans }})`"></output>
+					<output name="totalPrice" class="col-2 pt-1 text-end" x-text="order.amount.toFixed(2).replace('.', ',')"></output>
 				</div>
-			</div>
-			<div class="col-3 text-end{% if is_granted('IS_AUTHENTICATED_FULLY') %}">
-				{%- if form.paymentMethod.children|length == 1 -%}
-					<button type="submit" name="{{ form.paymentMethod.vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" disabled="disabled" class="btn btn-primary float-start validator" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">{{ 'global.action.validate'|trans }}</button>
-					{%- do form.paymentMethod.children[0].setRendered(true) -%}
-				{%- else -%}
-					<div class="btn-group dropup" role="group">
-						<button type="button" disabled="disabled" class="btn btn-outline-primary dropdown-toggle validator" :disabled="order.quantity == 0" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
-						<ul class="dropdown-menu">
-							{% for i,child in form.paymentMethod.children -%}
-							<li><button type="submit" name="{{ form.paymentMethod.vars.full_name }}" value="{{ child.vars.value }}" :disabled="order.quantity == 0" class="dropdown-item display-6 validator" style="{% if child.vars.attr.style|length > 18 %}{{ child.vars.attr.style }} !important; {% endif %}color: var(--bs-{{ child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color' }});">{{ child.vars.label }}</button></li>
-							{% do child.setRendered(true) -%}
-							{% endfor -%}
-						</ul>
-					</div>
-				{%- endif %}
-				{%- else %} pt-1">
-					{%- do form.paymentMethod.setRendered(true) -%}
-				{% endif %} {{ 'app.sales.total'|trans }}</div>
-			<output name="totalItems" class="col-2 pt-1 text-end" x-text="`${order.quantity} (${order.tickets} {{ 'app.fields.item.ticket.label.short'|trans }})`"></output>
-			<output name="totalPrice" class="col-2 pt-1 text-end" x-text="order.amount.toFixed(2).replace('.', ',')"></output>
-		</div>
-	{{ form_end(form) }}
+			{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
