@@ -6,3 +6,85 @@
 input[type="number"] {
 	text-align: right !important;
 }
+
+.wait:before {
+    content: '';
+}
+.wait.waiting:before {
+    display: inline-block;
+    animation: 12s infinite normal clock;
+}
+@keyframes clock {
+    0%, 100% {
+        content: '🕛 ';
+    }
+    4.166% {
+        content: '​🕧 ';
+    }
+    8.333% {
+        content: '🕐 ';
+    }
+    12.5% {
+        content: '🕜 ';
+    }
+    16.666% {
+        content: '🕑 ';
+    }
+    20.833% {
+        content: '🕝 ';
+    }
+    25% {
+        content: '​🕒 ';
+    }
+    29.166% {
+        content: '🕞 ';
+    }
+    33.333% {
+        content: '🕓 ';
+    }
+    37.5% {
+        content: '🕟 ';
+    }
+    41.666% {
+        content: '🕔 ';
+    }
+    45.833% {
+        content: '🕠 ';
+    }
+    50% {
+        content: '🕕 ';
+    }
+    54.166% {
+        content: '🕡 ';
+    }
+    58.333% {
+        content: '🕖 ';
+    }
+    62.5% {
+        content: '🕢 ';
+    }
+    66.666% {
+        content: '🕗 ';
+    }
+    70.833% {
+        content: '🕣 ';
+    }
+    75% {
+        content: '🕘 ';
+    }
+    79.166% {
+        content: '🕤 ';
+    }
+    83.333% {
+        content: '🕙 ';
+    }
+    87.5% {
+        content: '🕥 ';
+    }
+    91.666% {
+        content: '🕚 ';
+    }
+    95.833% {
+        content: '🕦 ';
+    }
+}
