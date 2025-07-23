@@ -24,11 +24,32 @@
 {% block body %}
 	<div x-data="{
 			order: {
-				lines: []
-			},
-			totals: {
-				quantity: 0,
-				amount: 0
+				lines: {},
+				get quantity() {
+					let result = 0;
+					for (const id in this.lines) {
+						result += this.lines[id].quantity;
+					}
+					return result;
+				},
+				get tickets() {
+					let result = 0;
+					for (const id in this.lines) {
+						if (!this.lines[id].ticket) continue;
+						result += this.lines[id].quantity;
+					}
+					return result;
+				},
+				get amount() {
+					let result = 0;
+					for (const id in this.lines) {
+						result += this.lines[id].amount;
+					}
+					return result;
+				},
+				find(id) {
+					return this.lines.find(line => line.id == id);
+				}
 			},
 			get actuallyOrdered() {
 				let filtered = {};
@@ -43,17 +64,13 @@
 			channel: new BroadcastChannel('{{ app.user.token }}'),
 			init() {
 				this.channel.addEventListener('message', (e) => {
-					this.totals = {
-						quantity: 0,
-						amount: 0
-					};
-					this.order = e.data.data;
+					this.order.lines = JSON.parse(e.data.order).lines;
 					for (const id in this.order.lines) {
-						const line = this.order.lines[id];
-						if (!line.pack) {
-							this.totals.quantity += line.quantity;
-							this.totals.amount += line.quantity * line.price;
-						}
+						Object.defineProperty(this.order.lines[id], 'amount', {
+							get() {
+								return this.quantity * this.price;
+							}
+						});
 					};
 				})
 			},
@@ -79,7 +96,7 @@
 				<div class="col-4 col-sm-3 col-md-4 align-self-center" x-text="item.title"></div>
 				<div class="col-3 col-sm-2 text-end align-self-center" x-text="item.price.toFixed(2).replace('.', ',')"></div>
 				<div :class="quantityClass(item)" :style="quantityStyle(item)" x-text="item.quantity"></div>
-				<div class="col-3 col-sm-2 text-end align-self-center" x-text="(item.quantity * item.price).toFixed(2).replace('.', ',')"></div>
+				<div class="col-3 col-sm-2 text-end align-self-center" x-text="item.amount.toFixed(2).replace('.', ',')"></div>
 			</div>
 			</template>
 		</div>
@@ -88,8 +105,8 @@
 			<div class="d-none d-sm-block col-sm-3 col-md-2 mb-0 align-self-center display-6"></div>
 			<div class="col-4 col-sm-3 col-md-4 align-self-center display-6"></div>
 			<div class="col-3 col-sm-2 text-end align-self-center display-6">{{ 'app.sales.total'|trans }}</div>
-			<div class="col-2 text-end align-self-center display-6" x-text="totals.quantity"></div>
-			<div class="col-3 col-sm-2 text-end align-self-center display-6" x-text="totals.amount.toFixed(2).replace('.', ',')"></div>
+			<div class="col-2 text-end align-self-center display-6" x-text="order.quantity"></div>
+			<div class="col-3 col-sm-2 text-end align-self-center display-6" x-text="order.amount.toFixed(2).replace('.', ',')"></div>
 		</div>
 	</div>
 {% endblock %}

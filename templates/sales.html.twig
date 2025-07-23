@@ -4,368 +4,361 @@
 
 {% block stylesheets %}{{ parent() }}
 		<style>
-		.item {
-			user-select: none;
+		.has-ticket {
+			position: relative;
+		}
+		.has-ticket::before {
+			position: absolute;
+			content: '{{ 'app.fields.item.ticket.label.short'|trans }} ';
+			transform: rotate(-45deg);
+			top: 0;
+			left: 0;
 		}
 		</style>
 {%- endblock %}
 
-{% block container_type %}container-fluid{% endblock %}
+{% block container_type %}container-fluid"
+				x-data="Sales()
+				{%- if is_granted('ROLE_USER') %}"
+				x-init="Object.assign($data, authenticatedSales); $data.debounceBroadcast = Alpine.debounce($data.broadcast.bind($data), 400)"
+				x-effect="order.quantity; debounceBroadcast('update', order)
+				{%- endif -%}
+{%- endblock -%}
 
 {% block menu %}{% endblock %}
 
 {% block _order_simple_lines_entry_row %}
 {%- set item = form.vars.data.item %}
-			<div class="item-root
-					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none" data-is-variant="true
-					{%- endif -%}
-				" data-id="{{ item.id }}" data-content-ids="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}" data-layout-toggle="item-root col
-					{%- if (item.isVariant and (item.variantOf.variants.count > 1)) or item.isPack %} d-none{% endif -%}
-				" data-category-id="
-					{{- ((item.isVariant ? item.variantOf.id) ~ ' ' ~ (item.category and (item.attributes.empty or item.variants.empty) ? item.category.id))|trim -}}
-			">
-				<div style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}{% if item.isPack %}{{ pack_gradient(item.composedOf) }}; {% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});" title="{{ item.title }}" data-layout-toggle="card h-100">
-					<div class="row" data-layout-toggle="card-body">
-						<label for="{{ form.quantity.vars.id }}" class="col-4 col-sm-3 col-md-2 h1 text-center item" data-layout-toggle="card-title h1 w-100 text-center item">{{ item.label }}</label>
-						<div class="item-text col-sm-3 col-md-4 d-none d-sm-block item d-flex align-self-center" data-layout-toggle="item-text text-center item mb-2" {% if item.isPack or item.variants.count > 1 %} style="text-shadow: 0 0 3px var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'dark' : 'light') : 'body-color' }})"{% endif %}>{{ item.title }}</div>
-						{% if item.attributes.empty or item.variants.empty %}
-						<div class="col-3 col-sm-2 text-end item align-self-center" data-layout-toggle="card-text col-4 text-end item align-self-center float-start pe-1 py-1">{{ item.price|number_format(2, ',') }}</div>
-						<div class="col-2 px-0 d-flex align-items-center" data-layout-toggle="card-text col-8 ps-0 float-end ps-1">
-							{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
-							<div class="input-group input-group-sm">
-							{% endif %}
-							{{- form_widget(form.quantity, {'attr': {
-								'class': 'form-control-sm text-end',
-								'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
-								'data-item': item|json_encode}}) -}}
-							{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
-								<span class="input-group-text border-4 py-0 p-1" style="{% if item.colour %}background-color: {{ item.colour }} !important; {% endif %}color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
+				<div class="item-root"
+						data-id="{{ item.id }}"
+						data-content-ids="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}"
+						:class="{'col': layout.layout == 'deck'}"
+						x-show="order.lines[{{ item.id }}].show(category)"
+						@click="itemClick"
+					>
+					<div style="
+							{%- if item.colour %}background-color: {{ item.colour }} !important; {% endif -%}
+							{%- if item.isPack %}{{ pack_gradient(item.composedOf) }}; {% elseif item.variants.count > 1 %}{{ variants_gradient(item.variants)}}; {% endif -%}
+							color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});"
+							title="{{ item.title }}"
+							:class="{'card h-100': layout.layout == 'deck'}"
+						>
+						<div :class="{'row': layout.layout != 'deck', 'card-body': layout.layout == 'deck'}">
+							<div class="h1 text-center user-select-none"
+									:class="{
+										'col-4': layout.layout != 'deck',
+										'col-sm-3 col-md-2': layout.layout != 'deck' && layout.titleDisplay,
+										'col-sm-6': layout.layout != 'deck' && !layout.titleDisplay,
+										'card-title w-100': layout.layout == 'deck'
+									}"
+									x-show="layout.labelDisplay"
+								>
+								{{- item.label -}}
 							</div>
-							{% endif ~%}
+							<label for="{{ form.quantity.vars.id }}"
+									class="user-select-none"
+									:class="{
+										'd-none d-sm-block d-flex align-self-center': layout.layout != 'deck',
+										'd col-sm-3 col-md-4': layout.layout != 'deck' && layout.labelDisplay,
+										'col-sm-6 py-3': layout.layout != 'deck' && !layout.labelDisplay,
+										'text-center mb-2 d-block': layout.layout == 'deck',
+										'visually-hidden': !layout.titleDisplay
+									}"
+									{%~ if item.isPack or item.variants.count > 1 %}style="text-shadow: 0 0 3px var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'dark' : 'light') : 'body-color' }})"{% endif %}
+								>
+								{{- item.title -}}
+							</label>
+							{% if item.attributes.empty or item.variants.empty -%}
+							<div class="text-end user-select-none"
+									:class="{
+										'align-self-center col-3 col-sm-2': layout.layout != 'deck',
+										'card-text col-4 float-start pe-1 py-1': layout.layout == 'deck'
+									}"
+									x-show="layout.numbersDisplay"
+								>
+								{{- item.price|number_format(2, ',') -}}
+							</div>
+							<div :class="{'col-2 px-0 align-items-center': layout.layout != 'deck', 'card-text col-8 ps-0 float-end ps-1': layout.layout == 'deck', 'd-flex': layout.layout != 'deck' && layout.numbersDisplay}" x-show="layout.numbersDisplay">
+								{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
+								<div class="input-group input-group-sm">
+								{%- endif %}
+									{{ form_widget(form.quantity, {'attr': {
+										'class': "form-control form-control-sm text-end",
+										'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color')
+											~ '); border-color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
+										'x-model.number': 'order.lines[' ~ item.id ~ '].quantity'
+									}}) }}
+								{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
+									<span class="input-group-text border-4 py-0 p-1" style="background-color: inherit; color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }}); border-color: var(--bs-{{ item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color' }});">{{ 'app.fields.item.ticket.label.short'|trans }}</span>
+								</div>
+								{% endif ~%}
+							</div>
+							<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="text-end user-select-none item-total" :class="{'col-3 col-sm-2 align-self-center': layout.layout != 'deck', 'card-text w-100 align-self-center pe-2': layout.layout == 'deck'}" x-show="layout.numbersDisplay" x-text="order.lines[{{ item.id }}].amount.toFixed(2).replace('.', ',')"></output>
+							{%~ endif %}
 						</div>
-						<output name="_{{ form.quantity.vars.id }}" id="_{{ form.quantity.vars.id }}" class="col-3 col-sm-2 text-end item item-total align-self-center" data-layout-toggle="card-text text-end item item-total w-100 align-self-center pe-2">0,00</output>
-						{%~ endif %}
 					</div>
 				</div>
-			</div>
 {% endblock %}
 
 {% form_theme form _self %}
 
-{% block body %}
-	{{ form_start(form, {'attr': {'id': 'Main'}}) }}
-		{#- Placeholder is not styled along the choices, some options are not copied to it.
-		Therefore, mere inline options instead of buttons -#}
-		{{ form_row(form.categories, {
-			'label_attr': {'class': 'radio-inline'},
-			'row_attr': {
-				'class': 'sticky-top pt-3 mb-3 h3',
-				'style': 'background-color: var(--bs-body-bg);'
-			},
-			'attr': {
-				'class': 'categories',
-				'data-layout': 'table'
-			},
-			'help': '<hr class="row mt-3 mb-0" />',
-			'help_html': true,
-		}) }}
-		{{ form_widget(form.lines, {'attr': {'data-layout-toggle': 'row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2'}}) }}
-		<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
-			<hr />
-			<div class="col-5">
-				<div class="btn-group" role="group">
-					<input type="radio" checked="checked" name="direction" id="Adder" class="btn-check" value="1" /><label for="Adder" class="btn btn-outline-success">➕</label>
-					<input type="radio" name="direction" id="Remover" class="btn-check" value="-1" /><label for="Remover" class="btn btn-outline-warning">➖</label>
-
-					<div class="btn-group dropup" role="group">
-						<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
-						<ul class="dropdown-menu">
-							<li class="d-none d-sm-block" data-layout-toggle=""><button type="button" id="TextToggler" class="dropdown-item">{{ 'app.fields.item.label.label.short'|trans }}<span class="item-text visually-hidden"> 〰️</span></button></li>
-							<li><button type="button" id="LayoutToggler" class="dropdown-item" data-content-possible="{&quot;table&quot;:&quot;▄▀&quot;,&quot;deck&quot;:&quot;☰&quot;}">▦</button></li>
-							<li><button type="button" id="ThemeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
-						</ul>
+{% block body -%}
+			{{ form_start(form, {'attr': {'id': 'Main', 'class': 'row', '@submit': 'orderSubmit','x-ref': 'Form'}}) }}
+				<div id="Receipt" class="d-none" :class="{'d-lg-block': layout.receiptDisplay > 0, ['col-lg-' + Math.round(layout.receiptDisplay * 12)]: layout.receiptDisplay > 0}" x-ref="Receipt">
+					<div class="mt-3">
+						{% for line in form.lines -%}
+						{%- set item = line.vars.data.item -%}
+						<div class="row border-top" style="min-height: 4em;" x-show="order.lines[{{ item.id }}].quantity > 0 && !order.lines[{{ item.id }}].isPack">
+							<div class="d-none h1 text-center mb-0 align-self-center"
+								:class="{
+									'd-sm-block col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
+									'col-md-2': layout.receiptDisplay * window.screen.availWidth > 767.98
+								}"
+								x-text="order.lines[{{ item.id }}].label"
+							></div>
+							<div class="col-4 align-self-center"
+								:class="{
+									'col-sm-6': layout.receiptDisplay * window.screen.availWidth <= 575.98,
+									'col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
+									'col-md-4': layout.receiptDisplay * window.screen.availWidth > 767.98
+								}"
+								x-text="order.lines[{{ item.id }}].title"
+							></div>
+							<div class="col-3 col-sm-2 text-end align-self-center" x-text="order.lines[{{ item.id }}].price.toFixed(2).replace('.', ',')"></div>
+							<div class="col-2 text-end align-self-center"
+								:class="{'has-ticket': order.lines[{{ item.id }}].ticket}"
+								{% if item.ticket and item.colour -%}
+								style="background-color: {{ item.colour }} !important; color: var(--bs-{{ is_dark(item.colour) ? 'light' : 'dark' }});"
+								{% endif -%}
+								x-text="order.lines[{{ item.id }}].quantity"
+							></div>
+							<div class="col-3 col-sm-2 text-end align-self-center" x-text="(order.lines[{{ item.id }}].amount).toFixed(2).replace('.', ',')"></div>
+						</div>
+						{% endfor ~%}
 					</div>
-					{% if is_granted('IS_AUTHENTICATED_FULLY') %}<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary">🧾</a>{% endif %}
-					<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
 				</div>
-			</div>
-			<div class="col-3 text-end">{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-				{%- if form.paymentMethod.children|length == 1 -%}
-					<button type="submit" class="btn btn-primary float-start validator" name="{{ form.paymentMethod.vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" disabled="disabled">{{ 'global.action.validate'|trans }}</button>
-					{%- do form.paymentMethod.children[0].setRendered(true) -%}
-				{%- else -%}
-					<div class="btn-group dropup" role="group">
-						<button type="button" class="btn btn-outline-primary dropdown-toggle validator" disabled="disabled" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
-						<ul class="dropdown-menu">
-							{% for i,child in form.paymentMethod.children %}
-							<li>{{ form_widget(child, {
-								'attr': {'class': 'btn-check validator'},
-								'label_attr': {
-									'class': 'dropdown-item display-6',
-									'style': (child.vars.attr.style|length > 18 ? child.vars.attr.style ~ ' !important; ')
-										~ 'color: var(--bs-'
-										~ (child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color') ~ ');'
-									}
-								}) }}</li>
-							{% endfor %}
-						</ul>
+				<div id="ItemList" :class="{['col-lg-' + (12 - Math.round(layout.receiptDisplay * 12))]: layout.receiptDisplay > 0}" x-ref="ItemList">
+					{#- Placeholder is not styled along the choices, some options are not copied to it.
+					Therefore, mere inline options instead of buttons -#}
+					{{ form_row(form.categories, {
+						'label_attr': {'class': 'radio-inline'},
+						'row_attr': {
+							'class': 'sticky-top pt-3 mb-3 h3',
+							'style': 'background-color: var(--bs-body-bg);',
+						},
+						'attr': {
+							'class': 'categories',
+							'data-layout': 'table'
+						},
+						'help': '<hr class="row mt-3 mb-0" />',
+						'help_html': true,
+					}) }}
+					{{ form_widget(form.lines, {
+						'attr': {':class': "{
+							'row row-cols-2 g-2': layout.layout == 'deck',
+							'row-cols-sm-3': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 575.98,
+							'row-cols-md-4': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 767.98,
+							'row-cols-lg-5': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 991.98,
+							'row-cols-xl-6': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 1399.98
+						}"|raw}
+					}) ~}}
+				</div>
+				<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
+					<hr />
+					<div class="col-5">
+						<div class="btn-group" role="group">
+							<input type="radio" checked="checked" name="direction" id="Adder" class="btn-check" value="1" x-model.number="direction" /><label for="Adder" class="btn btn-outline-success">➕</label>
+							<input type="radio" name="direction" id="Remover" class="btn-check" value="-1" x-model.number="direction" /><label for="Remover" class="btn btn-outline-warning">➖</label>
+							<div class="btn-group dropup" role="group">
+								<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
+								<ul class="dropdown-menu">
+									<li class="d-none d-sm-block"><div class="dropdown-item px-0 btn-group">
+										<input type="checkbox" checked="checked" id="LabelToggler" class="btn-check" :disabled="!layout.titleDisplay" @click="toggleLabel()" x-model.boolean="layout.labelDisplay" x-ref="LabelToggler" />
+										<label for="LabelToggler" class="btn btn-outline-primary">🏷️</label>
+										<input type="checkbox" checked="checked" id="TitleToggler" class="btn-check" :disabled="!layout.labelDisplay" @click="toggleTitle()" x-model.boolean="layout.titleDisplay" x-ref="TitleToggler" />
+										<label for="TitleToggler" class="btn btn-outline-primary">〰️</label>
+										<input type="checkbox" checked="checked" id="NumbersToggler" class="btn-check" :disabled="layout.receiptDisplay == 0" @click="toggleNumbers()" x-model.boolean="layout.numbersDisplay" x-ref="NumbersToggler" />
+										<label for="NumbersToggler" class="btn btn-outline-primary">🔢</label>
+									</div></li>
+									<li><button type="button" class="dropdown-item" @click="toggleLayout(event)" x-ref="LayoutToggler" x-text="(layout.layout != 'deck') ? '▄▀' : '☰'"></button></li>
+									<li><button type="button" id="ThemeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
+								</ul>
+							</div>
+							{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
+							<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary d-lg-none">🧾</a>
+							{% endif -%}
+							<div class="btn-group dropup d-none d-lg-block" role="group">
+								<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🧾</button>
+								<ul class="dropdown-menu">
+									<li><div class="dropdown-item" :class="{ active: layout.receiptDisplay }" @click="toggleReceiptDisplay(event)" x-ref="Splitter"><span role="button">🗃️</span>
+										<input type="range" list="SplitterRatio" disabled="disabled" value="0" min="0.25" max="0.5" step="0.0833" :disabled="!layout.receiptDisplay" form="DontReset" class="ms-2" style="width: 7em;" @change="changeReceiptDisplay(event.target.value)" x-ref="SplitterRatioSelector" x-model="layout.receiptDisplay" /></div></li>
+									{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
+									<li><a href="{{ path('sales_summary') }}" target="_blank" class="dropdown-item">🗂️</a></li>
+									{% endif -%}
+								</ul>
+							</div>
+							<datalist id="SplitterRatio">
+								<option value="0.25" label="¼"></option>
+								<option value="0.3333" label="⅓"></option>
+								<option value="0.4999" label="½"></option>
+							</datalist>
+							<button type="reset" class="btn btn-danger" title="{{ 'global.action.reset'|trans }}" aria-label="{{ 'global.action.reset'|trans }}">🧹</button>
+						</div>
 					</div>
-				{%- endif %}
-				{%- else %}
-					{%- do form.paymentMethod.setRendered(true) -%}
-				{% endif %} {{ 'app.sales.total'|trans }}</div>
-			<output name="totalItems" id="totalItems" class="col-2 text-end">0</output>
-			<output name="totalPrice" id="totalPrice" class="col-2 text-end">0,00</output>
-		</div>
-	{{ form_end(form) }}
+					<div class="col-3 text-end{% if is_granted('IS_AUTHENTICATED_FULLY') %}">
+						{%- if form.paymentMethod.children|length == 1 -%}
+							<button type="button" name="{{ form.paymentMethod.children[0].vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" :disabled="order.quantity == 0" class="btn btn-primary float-start payment-method" title="{{ 'global.action.validate'|trans }}" @click="paymentMethodSelect" aria-label="{{ 'global.action.validate'|trans }}">{{ 'global.action.validate'|trans }}</button>
+							{%- do form.paymentMethod.children[0].setRendered(true) -%}
+						{%- else -%}
+							<div class="btn-group dropup" role="group">
+								<button type="button" disabled="disabled" class="btn btn-outline-primary dropdown-toggle payment-method" :disabled="order.quantity == 0" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
+								<ul class="dropdown-menu">
+									{% for i,child in form.paymentMethod.children -%}
+									<li>{{ form_widget(child, {
+										'attr': {
+											'class': 'btn-check payment-method',
+										},
+										'label_attr': {
+											'class': 'dropdown-item display-6',
+											'style': (child.vars.attr.style|length > 18 ? child.vars.attr.style ~ ' !important; ')
+												~ 'color: var(--bs-'
+												~ (child.vars.attr.style|length > 18 ? (is_dark(child.vars.attr.style[18:]) ? 'light' : 'dark') : 'body-color') ~ ');',
+											'@click': 'paymentMethodSelect',
+										}}) }}</li>
+									{% endfor -%}
+								</ul>
+							</div>
+						{%- endif %}
+						{%- else %} pt-1">
+							{%- do form.paymentMethod.setRendered(true) -%}
+						{% endif %} {{ 'app.sales.total'|trans }}</div>
+					<output name="totalItems" class="col-2 pt-1 text-end" x-text="`${order.quantity} (${order.tickets} {{ 'app.fields.item.ticket.label.short'|trans }})`"></output>
+					<output name="totalPrice" class="col-2 pt-1 text-end" x-text="order.amount.toFixed(2).replace('.', ',')"></output>
+				</div>
+			{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
 	<script src="{{ asset('js/theme_handler.js') }}"></script>
-	<script src="{{ asset('js/layout_handler.js') }}"></script>
-	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
+	<script src="{{ asset('js/sales.alpine.js') }}" defer="defer" data-items="{{ form.lines.vars.data|map(l => l.item)|json_encode|e('html') }}"></script>
+	<script src="{{ assets_host }}/alpinejs/3.14.9/cdn.min.js" defer="defer" integrity="sha512-KSdieUYxSxr/laB3Bh5TP8GAng49b2qRfdcnFvh8OuPpPgksA189OQ9v1A3gIz5P9s3A4aXMe5uiHLMfla60Uw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 	<script src="{{ assets_host }}/murmurhash3js/3.0.1/murmurhash3js.min.js" integrity="sha512-HCmS85fXMOkBrVzhJwv5ULIWC6ajmqSJ/JRNJEnD8blyvlSLjcAdlERQR5fazd3Iey5QfftJaFfUW5JiXTDhbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	{% if app.user.printer is not none -%}
 	<script src="{{ path('printer_config') }}"></script>
-	{% endif -%}
 	<script src="{{ asset('js/print_sdks/' ~ app.user.printer.api.value ~ '_sdk.js' )}}"></script>
 	<script src="{{ asset('js/print_sdks/' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
 	<script src="{{ asset('js/print_template/ticket.' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
 	<script src="{{ asset('js/print_template/ticket_logo.' ~ app.user.printer.api.value ~ '.js') }}" defer="defer"></script>
 	{% endif -%}
 	<script>//<![CDATA[
-	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-	const channel = new BroadcastChannel('{{ app.user.token }}');
-	{% endif -%}
 	const modal = document.getElementById('Modal');
 	const bootstrapModal = new bootstrap.Modal(modal);
 	const domParser = new DOMParser();
-	/** @type {Order} */
-	const order = {
-		lines: {},
-		user: '{{ is_granted('IS_AUTHENTICATED_FULLY') ? app.user.userIdentifier }}',
-		date: null,
-		id: null
-	};
-	document.querySelectorAll('[type="number"]').forEach( input => {
-		const item = JSON.parse(input.dataset.item);
-		item.quantity = 0;
-		order.lines[input.id] = item;
-	});
-
-	const submitDisabler = (disabled) => {
-		Array.from(document.getElementsByClassName('validator')).forEach( submitter => {
-			submitter.disabled = disabled;
-		});
-	}
-
-	const categoryChangeListener = (event) => {
-		if (event.target.value) {
-			document.querySelectorAll('[data-category-id]:not([data-category-id~="' + event.target.value +'"])').forEach( item => {
-				item.classList.add('d-none');
-			});
-			document.querySelectorAll('[data-category-id~="' + event.target.value +'"]').forEach( item => {
-				item.classList.remove('d-none');
-			});
-		} else {
-			document.querySelectorAll('.item-root:not([data-variant-of])').forEach( item => {
-				item.classList.remove('d-none');
-			});
-			document.querySelectorAll('.item-root[data-is-variant]').forEach( item => {
-				item.classList.add('d-none');
-			});
-			document.querySelectorAll('.categories .reset-remove').forEach( toRemove => {
-				toRemove.remove();
-			})
-		}
-		if (!event.target.closest('.reset-remove')) {
-			document.querySelectorAll('.reset-remove').forEach( toRemove => {
-				toRemove.remove();
-			})
-		}
-	}
-
-	Array.from(document.getElementsByClassName('categories')).forEach( container => {
-		container.querySelectorAll('select, [type="checkbox"], [type="radio"]').forEach( input => {
-			input.addEventListener('change', categoryChangeListener);
-		});
-	});
-
-	Array.from(document.getElementsByClassName('item-root')).forEach( element => {
-		element.addEventListener('click', event => {
-			// Handles bubbling from inner elements. From input, dismiss
-			if (event.target.tagName == 'INPUT') {
-				event.stopPropagation();
-				return;
-			}
-			const itemRoot = event.target.closest('.item-root');
-			const input = itemRoot.querySelector('input[type="number"]');
-			if (input) {
-				switch (document.querySelector('input[name="direction"]:checked').value) {
-					case "-1":
-						input.stepDown();
-						break;
-					default:
-						input.stepUp();
-						break;
-				}
-				input.dispatchEvent(new Event('change'));
-				event.preventDefault();
-				const composedOf = Object.values(JSON.parse(itemRoot.dataset.contentIds));
-				if (composedOf.length > 1) {
-					document.querySelectorAll('[data-id="' + composedOf.join('"], [data-id="') + '"]').forEach( element => {
-						element.dispatchEvent(new Event('click'));
-					});
-				}
-			} else {
-				const id = itemRoot.dataset.id;
-				const style = itemRoot.querySelector('[style]').style;
-				const backgroundColor = style.backgroundColor;
-				const backgroundImage = style.backgroundImage;
-				Array.from(document.getElementsByClassName('categories')).forEach( categoriesContainer => {
-					const template = categoriesContainer.firstChild.cloneNode(true);
-					template.classList.add('reset-remove');
-					const input = template.querySelector('select, [type="checkbox"], [type="radio"]');
-					template.querySelector('label').innerText = itemRoot.querySelector('label').innerText;
-					template.querySelector('[value]').value = id;
-					input.value = id;
-					input.checked = true;
-					template.style.backgroundImage = backgroundImage;
-					template.classList.add('rounded');
-					categoriesContainer.append(template);
-					input.style.backgroundColor = backgroundColor;
-					input.addEventListener('change', categoryChangeListener);
-					input.dispatchEvent(new Event('change'));
-				});
-			}
-			return false;
-		});
-	});
-	document.querySelectorAll('input[type="number"]').forEach( element => {
-		element.addEventListener('change', event => {
-			const input = event.target;
-			order.lines[input.id].quantity = parseInt(input.value, 10);
-			document.getElementById('_' + input.id).value = (order.lines[input.id].quantity * order.lines[input.id].price).toFixed(2).replace('.', ',');
-			const totals = {
-				quantity: 0,
-				amount: 0
-			};
-			for (const id in order.lines) {
-				const line = order.lines[id];
-				if (!line.pack) {
-					totals.quantity += line.quantity;
-					totals.tickets += line.ticket;
-					totals.amount += line.quantity * line.price;
-				}
-			};
-			if (totals.quantity > 0 && order.date === null) {
-				const now = new Date();
-				order.date = now.toLocaleString('{{ app.request.locale }}').substring(0, 16);
-				document.querySelector('[name*="printDate"]').value = now.toISOString();
-				order.id = murmurHash3.x86.hash32(order.date + channel.name + order.user).toString(36);
-				document.querySelector('[name*="externalId"]').value = order.id;
-			}
-			document.getElementById('totalItems').value = totals.quantity;
-			document.getElementById('totalPrice').value = totals.amount.toFixed(2).replace('.', ',');
-			submitDisabler(totals.quantity == 0);
-			{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-			debounceBroadcast('update', order);
-			{%- endif ~%}
-		});
-	});
-
-	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
-	const printSuccess = () => {
-		bootstrapModal.hide();
-		document.getElementById('Main').submit();
-	};
-	const printError = (message) => {
-		debounceBroadcast('status', 'error');
-		console.error(message);
-	};
-	{% endif -%}
-	document.querySelectorAll('.validator[value]').forEach( element => {
-		element.addEventListener('click', async event => {
-			bootstrapModal.show();
-			const response = await fetch('{{ path('pre_print', {'type': 'restricted'})}}?'
-				+ new URLSearchParams({'total': document.getElementById('totalPrice').value, 'paymentMethodId': event.target.value}).toString());
-			if (!response.ok) {
-				return false;
-			}
-			response.text().then( text => {
-				if (text) {
-					modal.querySelector('.modal-content').replaceChildren(domParser.parseFromString(text, 'text/html').querySelector('body>*'));
-				} else {
-					{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
-					try {
-						if (!printerConfig.key1 || !printerConfig.key2 || ! ticket_logo_epson_xml) {
-							print(ticket_epson_xml, order, printSuccess, printError);
-						} else {
-							print(ticket_logo_epson_xml, order, printSuccess, printError);
-						}
-					} catch (e) {
-						debounceBroadcast('status', 'error');
-						console.error(e);
-					}
-				{% else -%}
-					bootstrapModal.hide();
-					event.target.submit();
-				{% endif -%}
-				}
-			});
-		});
-	});
-
-	{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none -%}
-	document.querySelector('form').addEventListener('submit', event => {
-		event.stopPropagation();
-		event.preventDefault();
-		if (event.submitter.dataset.action === 'print') {
-			try {
-				print(ticket_epson_xml, order, printSuccess, printError);
-			} catch (e) {
-				debounceBroadcast('status', 'error');
-				console.error(e);
-			}
-			return;
-		}
-	});
-	{% endif -%}
-
-	document.querySelector('form').addEventListener('reset', event => {
-		for (const id in order.lines) {
-			order.lines[id].quantity = 0;
-			order.date = null;
-			document.querySelector('[name*="printDate"]').value = '';
-			order.id = null;
-			document.querySelector('[name*="externalId"]').value = '';
-		}
-		document.querySelector('.categories :default').dispatchEvent(new Event('change'));
-		submitDisabler(true);
-		{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-		debounceBroadcast('clear', {});
-		{%- endif ~%}
-	});
-
 	modal.addEventListener('hide.bs.modal', function() {
 		const content = domParser.parseFromString(modal.querySelector('[data-empty-content]').dataset.emptyContent, 'text/html').querySelector('body>*');
 		modal.querySelector('.modal-content').replaceChildren(content);
 	});
-	{%- if is_granted('IS_AUTHENTICATED_FULLY') %}
-
-	const debounce = (func, delay) => {
-		let timeoutId;
-		return (...args) => {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(() => {
-				func(...args);
-			}, delay || 400);
+	document.querySelectorAll('.payment-method[value]:not([value=""])').forEach(async paymentMethod => {
+		const now = Date.now();
+		if (!localStorage.getItem('paymentMethod.restricted.' + paymentMethod.value + '.expires')
+			|| new Date(localStorage.getItem('paymentMethod.restricted.' + paymentMethod.value + '.expires')).getTime() < now
+		) {
+			const restrictedResponse = await fetch('{{ path('pre_print', {'type': 'restricted'})}}?'
+				+ new URLSearchParams({'paymentMethodId': paymentMethod.value}).toString());
+			if (restrictedResponse.ok) {
+				restrictedResponse.text().then( text => {
+					if (text) {
+						localStorage.setItem('paymentMethod.restricted.' + paymentMethod.value + '.content', text);
+					}
+					localStorage.setItem('paymentMethod.restricted.' + paymentMethod.value + '.expires', (new Date(now + 4 * 60 * 60 * 1000)).toISOString());
+				});
+			}
+		}
+		if (!localStorage.getItem('paymentMethod.public.' + paymentMethod.value + '.expires')
+			|| new Date(localStorage.getItem('paymentMethod.public.' + paymentMethod.value + '.expires')).getTime() < now
+		) {
+			const publicResponse = await fetch('{{ path('pre_print', {'type': 'public'})}}?'
+				+ new URLSearchParams({'paymentMethodId': paymentMethod.value}).toString());
+			if (publicResponse.ok) {
+				publicResponse.text().then( text => {
+					if (text) {
+						localStorage.setItem('paymentMethod.public.' + paymentMethod.value + '.content', text);
+					}
+					localStorage.setItem('paymentMethod.public.' + paymentMethod.value + '.expires', (new Date(now + 4 * 60 * 60 * 1000)).toISOString());
+				});
+			}
+		}
+	});
+	const authenticatedSales = {
+		channel: new BroadcastChannel('{{ app.user.token }}'),
+		broadcast(type, order) {
+			this.channel.postMessage({type, order: JSON.stringify(order)});
+		},
+		paymentMethodSelect(event) {
+			// Avoid invalid error when last item waas a variant
+			this.category = '';
+			const paymentMethodId = document.getElementById(event.target.getAttribute('for')).value;
+			let content = localStorage.getItem('paymentMethod.restricted.' + paymentMethodId + '.content');
+			if (this.order.quantity > 0 && !this.order.date) {
+				const now = new Date();
+				this.order.date = now.toLocaleString('{{ app.request.locale }}').substring(0, 16);
+				document.querySelector('[name*="printDate"]').value = now.toISOString();
+				this.order.id = murmurHash3.x86.hash32(this.order.date + this.channel.name + this.order.user).toString(36).padStart(7, '0');
+				document.querySelector('[name*="externalId"]').value = this.order.id;
+			}
+			if (content) {
+				content = content
+					.replace(/__amount__/, this.order.amount)
+					.replace(/__id__/, this.order.id)
+					.replace(/__date__/, this.order.date);
+				modal.querySelector('.modal-content').replaceChildren(...domParser.parseFromString(content, 'text/html').querySelectorAll('body>*'));
+				bootstrapModal.show();
+			} else {
+				{%- if app.user.printer is not none ~%}
+				try {
+					if (!printerConfig.key1 || !printerConfig.key2 || !ticket_logo_epson_xml) {
+						print(ticket_epson_xml, this.order, this.printSuccess, this.printError);
+					} else {
+						print(ticket_logo_epson_xml, this.order, this.printSuccess, this.printError);
+					}
+				} catch (e) {
+					this.debounceBroadcast('status', 'error');
+					console.error(e);
+				}
+				{%- else ~%}
+				event.target.submit();
+				{%- endif ~%}
+			}
+		},
+		printSuccess() {
+			bootstrapModal.hide();
+			document.getElementById('Main').submit();
+		},
+		printError(message) {
+			this.debounceBroadcast('status', 'error');
+			console.error(message);
+		},
+		orderSubmit(event) {
+			if (event.submitter.dataset.action === 'print') {
+				event.stopPropagation();
+				event.preventDefault();
+				try {
+					if (!printerConfig.key1 || !printerConfig.key2 || !ticket_logo_epson_xml) {
+						print(ticket_epson_xml, this.order, this.printSuccess, this.printError);
+					} else {
+						print(ticket_logo_epson_xml, this.order, this.printSuccess, this.printError);
+					}
+					event.submitter.classList.add('waiting', 'disabled');
+				} catch (e) {
+					event.submitter.classList.remove('waiting', 'disabled');
+					this.debounceBroadcast('status', 'error');
+					console.error(e);
+				}
+				return;
+			}
 		}
 	}
-
-	const debounceBroadcast = debounce((type, data) => {
-		channel.postMessage({type, data});
-	}, 400);
-	{%- endif ~%}
-	//]]></script>
+	/*]]>*/</script>
+	{% endif -%}
 {% endblock %}

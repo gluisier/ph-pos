@@ -23,7 +23,7 @@
  * 		<text>product</text>
  * 		<text dw="false" dh="false"/>
  * 		<feed/>
- * 		<text>now — user</text>
+ * 		<text>now|orderId-ticketNumber|user</text>
  * 		<area x="476" y="0" width="100" height="100"/>
  * 		<feed unit="75"/>
  * 		<logo key1="{key1}" key2="{key2}"/>
@@ -51,7 +51,7 @@ const ticket_logo_epson_xml = (printer, order) => {
 			printer.addText(line.title);
 			printer.addTextDouble(false, false);
 			printer.addFeed();
-			printer.addText(`${order.date}|${order.id.padStart(7, '0')}-${('' + counter).padStart(2, '0')}|${order.user}`);
+			printer.addText(`${order.date}|${order.id}-${('' + counter).padStart(2, '0')}|${order.user}`);
 			printer.addPageArea(476, 0, 100, 100);
 			printer.addFeedUnit(75);
 			printer.addLogo(printerConfig.key1, printerConfig.key2);

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'app.order.show.title'|trans({'id': order.id}) }} | {{ parent() }}{% endblock %}
+{% block title %}{{ 'app.order.show.title'|trans({'id': order.externalId}) }} | {{ parent() }}{% endblock %}
 
 {% block body %}
 	<h2>{{ 'app.order.show.heading'|trans({'id': order.externalId}) }}</h2>

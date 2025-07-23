@@ -356,7 +356,18 @@ class Item extends DisplayableItem implements \JsonSerializable
             'colour' => $this->colour,
             'stock' => $this->stock,
             'ticket' => $this->ticket,
-            'pack' => $this->isPack(),
+            'isPack' => $this->isPack(),
+            'isVariant' => $this->isVariant(),
+            'category' => $this->category,
+            'variantOf' => $this->variantOf,
+            'variants' => $this->variants->map(function ($variant) {
+                return [
+                    'id' => $variant->getId(),
+                    'colour' => $variant->getColour(),
+                ];
+            })->toArray(),
+            'attributes' => $this->attributes?->toArray(),
+            'composedOf' => $this->composedOf?->toArray(),
         ];
     }
 }

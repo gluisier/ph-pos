@@ -9,7 +9,7 @@ const printerConfig = {
 	key2: '{{ printer_logo_key_2 }}',
 	{% endif -%}
 	valid: function () {
-		return (Object.getOwnPropertyNames(this).length == 6)
+		return (this.user && this.ip && this.port && this.id)
 			&& (this.status !== 'stored');
 	}
 };

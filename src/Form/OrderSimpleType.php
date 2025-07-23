@@ -43,8 +43,12 @@ class OrderSimpleType extends AbstractType
                         // label_attr is not dynamic as of 7.1.3
                         'style' => 'background-color: ' . $choice->getColour(),
                         'title' => $choice->getTitle(),
+                        'x-model' => 'category',
                     ];
                 },
+                'placeholder_attr' => [
+                    'x-model' => 'category',
+                ],
                 'translation_domain' => false,
             ])
             ->add('lines', CollectionType::class, [

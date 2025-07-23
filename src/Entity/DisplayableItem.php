@@ -21,7 +21,6 @@ abstract class DisplayableItem
             Assert\NoSuspiciousCharacters::CHECK_INVISIBLE
             | Assert\NoSuspiciousCharacters::CHECK_MIXED_NUMBERS
             | Assert\NoSuspiciousCharacters::CHECK_HIDDEN_OVERLAY
-            | Assert\NoSuspiciousCharacters::RESTRICTION_LEVEL_SINGLE_SCRIPT
         )]
     protected ?string $title = null;
 

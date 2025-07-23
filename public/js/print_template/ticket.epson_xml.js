@@ -20,7 +20,7 @@
  * 	<text>Product</text>
  * 	<text dw="false" dh="true"/>
  * 	<feed/>
- * 	<text>now — id — user</text>
+ * 	<text>now|orderId-ticketNumber|user</text>
  * 	<feed/>
  * 	<cut type="feed"/>
  * 	…
@@ -43,7 +43,7 @@ const ticket_epson_xml = (printer, order) => {
 			printer.addText(line.title);
 			printer.addTextDouble(false, false);
 			printer.addFeed();
-			printer.addText(`${order.date}|${order.id.padStart(7, '0')}-${('' + counter).padStart(2, '0')}|${order.user}`);
+			printer.addText(`${order.date}|${order.id}-${('' + counter).padStart(2, '0')}|${order.user}`);
 			printer.addFeed();
 			printer.addCut(printer.CUT_FEED);
 			counter++;
