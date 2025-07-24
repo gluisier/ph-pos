@@ -38,5 +38,4 @@ const test_epson_xml = (printer, data) => {
 	printer.addText(data.users);
 	printer.addFeed();
 	printer.addCut(printer.CUT_FEED);
-	printer.send();
 }

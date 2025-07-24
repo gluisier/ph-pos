@@ -33,6 +33,7 @@ var print = function (template, data, successfulCallback, errorCallback) {
 				}
 			};
 			template(printer, data);
+			printer.send();
 		} else {
 			errorCallback(retcode);
 		}

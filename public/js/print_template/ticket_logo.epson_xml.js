@@ -39,7 +39,6 @@ const ticket_logo_epson_xml = (printer, order) => {
 	printer.addTextLang('fr');
 	for (const id in order.lines) {
 		const line = order.lines[id];
-		// TODO pas de consigne non plus
 		if (line.pack) {
 			continue;
 		}
@@ -60,5 +59,4 @@ const ticket_logo_epson_xml = (printer, order) => {
 			counter++;
 		}
 	}
-	printer.send();
 }
