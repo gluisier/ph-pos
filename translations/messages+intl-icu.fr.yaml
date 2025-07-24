@@ -197,6 +197,7 @@ app:
   login:
     title: &title Authentification
     heading: *title
+    change: Actuellement connecté en tant que {user}, <a href="{url}">se déconnecter</a>
     user: Utilisateur
     password: Mot de passe
     register: Pas de compte ? <a href="{url}">S’enregistrer</a>
