@@ -32,6 +32,13 @@
 const ticket_epson_xml = (printer, order) => {
 	let counter = 1;
 	printer.addTextLang('fr');
+	if (printerConfig.nbUsers > 1 && order.quantity > 0) {
+		printer.addTextAlign(printer.ALIGN_CENTER);
+		printer.addText(order.id + ' | ' + printerConfig.user);
+		printer.addTextAlign(printer.ALIGN_LEFT);
+		printer.addFeed();
+		printer.addCut(printer.CUT_FEED);
+	}
 	for (const id in order.lines) {
 		const line = order.lines[id];
 		if (line.pack) {
@@ -42,7 +49,7 @@ const ticket_epson_xml = (printer, order) => {
 			printer.addText(line.title);
 			printer.addTextDouble(false, false);
 			printer.addFeed();
-			printer.addText(`${order.date}|${order.id}-${('' + counter).padStart(2, '0')}|${order.user}`);
+			printer.addText(`${order.date}|${order.id}-${('' + counter).padStart(2, '0')}|${printerConfig.user}`);
 			printer.addFeed();
 			printer.addCut(printer.CUT_FEED);
 			counter++;
