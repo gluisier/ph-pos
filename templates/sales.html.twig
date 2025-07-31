@@ -106,39 +106,25 @@
 
 {% block body -%}
 			{{ form_start(form, {'attr': {'id': 'Main', 'class': 'row', '@submit': 'orderSubmit','x-ref': 'Form'}}) }}
-				<div id="Receipt" class="d-none" :class="{'d-lg-block': layout.receiptDisplay > 0, ['col-lg-' + Math.round(layout.receiptDisplay * 12)]: layout.receiptDisplay > 0}" x-ref="Receipt">
-					<div class="mt-3">
+				<div id="Receipt" class="d-none px-0" :class="{'d-md-block': layout.receiptDisplay > 0, ['col-md-' + Math.round(layout.receiptDisplay * 12)]: layout.receiptDisplay > 0}" x-ref="Receipt">
+					<table class="table table-sm align-middle mt-3">
 						{% for line in form.lines -%}
 						{%- set item = line.vars.data.item -%}
-						<div class="row border-top item-root" style="min-height: 4em;" data-id="{{ item.id }}" x-show="order.lines[{{ item.id }}].quantity > 0 && !order.lines[{{ item.id }}].isPack">
-							<div class="d-none h1 text-center mb-0 align-self-center"
-								:class="{
-									'd-sm-block col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
-									'col-md-2': layout.receiptDisplay * window.screen.availWidth > 767.98
-								}"
-								x-text="order.lines[{{ item.id }}].label"
-							></div>
-							<div class="col-4 align-self-center"
-								:class="{
-									'col-sm-6': layout.receiptDisplay * window.screen.availWidth <= 575.98,
-									'col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
-									'col-md-4': layout.receiptDisplay * window.screen.availWidth > 767.98
-								}"
-								x-text="order.lines[{{ item.id }}].title"
-							></div>
-							<div class="col-3 col-sm-2 text-end align-self-center" x-text="order.lines[{{ item.id }}].price.toFixed(2).replace('.', ',')"></div>
-							<div class="col-2 text-end align-self-center
-								{%- if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none and item.ticket and item.colour %} has-ticket"
+						<tr class="item-root" style="min-height: 4em;" data-id="{{ item.id }}" x-show="order.lines[{{ item.id }}].quantity > 0 && !order.lines[{{ item.id }}].isPack">
+							<td class="d-none text-center"
+								:class="{'d-none': layout.receiptDisplay * window.screen.availWidth <= 287.99}">{{ item.label }}</td>
+							<td>{{ item.title }}</td>
+							<td class="text-end">{{ item.price|number_format(2, ',') }}</td>
+							<td class="text-end
+								{%- if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket and item.colour %} ps-3 has-ticket"
 								style="background-color: {{ item.colour }} !important; color: var(--bs-{{ is_dark(item.colour) ? 'light' : 'dark' }});
-								{% endif %}"
-								x-text="order.lines[{{ item.id }}].quantity"
-							></div>
-							<div class="col-3 col-sm-2 text-end align-self-center" x-text="(order.lines[{{ item.id }}].amount).toFixed(2).replace('.', ',')"></div>
-						</div>
+								{% endif %}" x-text="order.lines[{{ item.id }}].quantity"></td>
+							<td class="text-end" x-text="(order.lines[{{ item.id }}].amount).toFixed(2).replace('.', ',')"></td>
+						</tr>
 						{% endfor ~%}
-					</div>
+					</table>
 				</div>
-				<div id="ItemList" :class="{['col-lg-' + (12 - Math.round(layout.receiptDisplay * 12))]: layout.receiptDisplay > 0}" x-ref="ItemList">
+				<div id="ItemList" :class="{['col-md-' + (12 - Math.round(layout.receiptDisplay * 12))]: layout.receiptDisplay > 0}" x-ref="ItemList">
 					{#- Placeholder is not styled along the choices, some options are not copied to it.
 					Therefore, mere inline options instead of buttons -#}
 					{{ form_row(form.categories, {
