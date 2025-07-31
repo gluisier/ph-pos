@@ -38,15 +38,17 @@ class OrderSimpleType extends AbstractType
 
                     return $qb;
                 },
+                // label_attr is not dynamic as of 7.2.8
                 'choice_attr' => function (Category $choice) {
                     return [
-                        // label_attr is not dynamic as of 7.1.3
-                        'style' => 'background-color: ' . $choice->getColour(),
+                        'class' => 'btn-check',
                         'title' => $choice->getTitle(),
+                        'data-colour' => $choice->getColour(),
                         'x-model' => 'category',
                     ];
                 },
                 'placeholder_attr' => [
+                    'class' => 'btn-check',
                     'x-model' => 'category',
                 ],
                 'translation_domain' => false,

@@ -209,21 +209,26 @@ window.Sales = () => ({
 			const backgroundColor = style.backgroundColor;
 			const backgroundImage = style.backgroundImage;
 			for (const categoriesContainer of document.getElementsByClassName('categories')) {
-				const template = categoriesContainer.lastChild.cloneNode(true);
-				template.classList.add('reset-remove');
-				template.setAttribute('x-effect', function() {
-					if (this.category != $el.querySelector('[value]').value) {
+				const input = categoriesContainer.lastChild?.previousElementSibling?.cloneNode(true);
+				const label = categoriesContainer.lastChild?.cloneNode(true);
+
+				input.value = id;
+				input.setAttribute('x-effect', function() {
+					if (this.category != $el.value) {
 						$el.remove();
 					}
 				});
-				const input = template.querySelector('select, [type="checkbox"], [type="radio"]');
-				template.querySelector('label').innerText = itemRoot.querySelector('label').previousElementSibling.innerText;
-				template.querySelector('[value]').value = id;
-				input.value = id;
-				template.style.backgroundImage = backgroundImage;
-				input.style.backgroundColor = backgroundColor;
-				template.classList.add('rounded');
-				categoriesContainer.append(template);
+				categoriesContainer.append(input);
+
+				label.classList.add('reset-remove');
+				label.setAttribute('x-effect', function() {
+					if (this.category != $el.previousElementSibling.value) {
+						$el.remove();
+					}
+				});
+				label.innerText = itemRoot.querySelector('.h1').innerText;
+				label.style.backgroundImage = backgroundImage;
+				categoriesContainer.append(label);
 			};
 		}
 		return false;

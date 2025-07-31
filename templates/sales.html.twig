@@ -86,8 +86,6 @@
 								{%- endif %}
 									{{ form_widget(form.quantity, {'attr': {
 										'class': "form-control form-control-sm text-end",
-										'style': 'background-color: inherit; color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color')
-											~ '); border-color: var(--bs-' ~ (item.colour ? (is_dark(item.colour) ? 'light' : 'dark') : 'body-color') ~ '); min-width: 3em;',
 										'x-model.number': 'order.lines[' ~ item.id ~ '].quantity'
 									}}) }}
 								{% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none and item.ticket %}
@@ -125,12 +123,13 @@
 					</table>
 				</div>
 				<div id="ItemList" :class="{['col-md-' + (12 - Math.round(layout.receiptDisplay * 12))]: layout.receiptDisplay > 0}" x-ref="ItemList">
-					{#- Placeholder is not styled along the choices, some options are not copied to it.
-					Therefore, mere inline options instead of buttons -#}
 					{{ form_row(form.categories, {
-						'label_attr': {'class': 'radio-inline'},
+						'label_attr': {
+							'class': 'btn btn-lg',
+							':class': "{'btn-outline-light': this.getPreferredTheme() == 'dark', 'btn-outline-dark': this.getPreferredTheme() == 'light'}"
+						},
 						'row_attr': {
-							'class': 'sticky-top pt-3 mb-3 h3',
+							'class': 'sticky-top pt-3 mb-3',
 							'style': 'background-color: var(--bs-body-bg);',
 						},
 						'attr': {
