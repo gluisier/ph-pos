@@ -18,7 +18,9 @@
 					<td>{{ line.item.title }}</td>
 					<td>{{ line.quantity }}</td>
 					<td>{{ line.item.price|number_format(2, ',') -}}
-						{%- set total = total + line.item.price %}</td>
+						{%- if not line.item.pack %}
+						{%- set total = total + line.quantity * line.item.price %}
+						{%- endif %}</td>
 				</tr>
 				{% endfor %}
 				<tr>
