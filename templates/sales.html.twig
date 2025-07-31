@@ -20,7 +20,9 @@
 {% block container_type %}container-fluid"
 				x-data="Sales()
 				{%- if is_granted('ROLE_USER') %}"
-				x-init="Object.assign($data, authenticatedSales); $data.debounceBroadcast = Alpine.debounce($data.broadcast.bind($data), 400)"
+				x-init="Object.assign($data, authenticatedSales);
+					$data.debounceBroadcast = Alpine.debounce($data.broadcast.bind($data), 400);
+					$data.printError = $data.printError.bind($data);"
 				x-effect="order.quantity; debounceBroadcast('update', order)
 				{%- endif -%}
 {%- endblock -%}
@@ -108,7 +110,7 @@
 					<div class="mt-3">
 						{% for line in form.lines -%}
 						{%- set item = line.vars.data.item -%}
-						<div class="row border-top" style="min-height: 4em;" x-show="order.lines[{{ item.id }}].quantity > 0 && !order.lines[{{ item.id }}].isPack">
+						<div class="row border-top item-root" style="min-height: 4em;" data-id="{{ item.id }}" x-show="order.lines[{{ item.id }}].quantity > 0 && !order.lines[{{ item.id }}].isPack">
 							<div class="d-none h1 text-center mb-0 align-self-center"
 								:class="{
 									'd-sm-block col-sm-3': layout.receiptDisplay * window.screen.availWidth > 575.98,
@@ -125,11 +127,10 @@
 								x-text="order.lines[{{ item.id }}].title"
 							></div>
 							<div class="col-3 col-sm-2 text-end align-self-center" x-text="order.lines[{{ item.id }}].price.toFixed(2).replace('.', ',')"></div>
-							<div class="col-2 text-end align-self-center"
-								:class="{'has-ticket': order.lines[{{ item.id }}].ticket}"
-								{% if item.ticket and item.colour -%}
-								style="background-color: {{ item.colour }} !important; color: var(--bs-{{ is_dark(item.colour) ? 'light' : 'dark' }});"
-								{% endif -%}
+							<div class="col-2 text-end align-self-center
+								{%- if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is not none and item.ticket and item.colour %} has-ticket"
+								style="background-color: {{ item.colour }} !important; color: var(--bs-{{ is_dark(item.colour) ? 'light' : 'dark' }});
+								{% endif %}"
 								x-text="order.lines[{{ item.id }}].quantity"
 							></div>
 							<div class="col-3 col-sm-2 text-end align-self-center" x-text="(order.lines[{{ item.id }}].amount).toFixed(2).replace('.', ',')"></div>
@@ -185,12 +186,12 @@
 								</ul>
 							</div>
 							{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
-							<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary d-lg-none">🧾</a>
+							<a href="{{ path('sales_summary') }}" target="_blank" class="btn btn-outline-secondary d-md-none">🧾</a>
 							{% endif -%}
-							<div class="btn-group dropup d-none d-lg-block" role="group">
+							<div class="btn-group dropup d-none d-md-block" role="group">
 								<button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🧾</button>
 								<ul class="dropdown-menu">
-									<li><div class="dropdown-item" :class="{ active: layout.receiptDisplay }" @click="toggleReceiptDisplay(event)" x-ref="Splitter"><span role="button">🗃️</span>
+									<li><div class="dropdown-item" :class="{ 'active': layout.receiptDisplay }" @click="toggleReceiptDisplay(event)" x-ref="Splitter"><span role="button">🗃️</span>
 										<input type="range" list="SplitterRatio" disabled="disabled" value="0" min="0.25" max="0.5" step="0.0833" :disabled="!layout.receiptDisplay" form="DontReset" class="ms-2" style="width: 7em;" @change="changeReceiptDisplay(event.target.value)" x-ref="SplitterRatioSelector" x-model="layout.receiptDisplay" /></div></li>
 									{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
 									<li><a href="{{ path('sales_summary') }}" target="_blank" class="dropdown-item">🗂️</a></li>
@@ -207,7 +208,9 @@
 					</div>
 					<div class="col-3 text-end{% if is_granted('IS_AUTHENTICATED_FULLY') %}">
 						{%- if form.paymentMethod.children|length == 1 -%}
-							<button type="button" name="{{ form.paymentMethod.children[0].vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" :disabled="order.quantity == 0" class="btn btn-primary float-start payment-method" title="{{ 'global.action.validate'|trans }}" @click="paymentMethodSelect" aria-label="{{ 'global.action.validate'|trans }}">{{ 'global.action.validate'|trans }}</button>
+							<button type="button" name="{{ form.paymentMethod.children[0].vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" :disabled="order.quantity == 0" class="btn btn-primary float-start payment-method" title="{{ 'global.action.validate'|trans }}" @click="paymentMethodSelect" aria-label="
+									{{- 'global.action.validate'|trans -}}
+								" data-action="validate">✔️</button>
 							{%- do form.paymentMethod.children[0].setRendered(true) -%}
 						{%- else -%}
 							<div class="btn-group dropup" role="group">
@@ -232,7 +235,8 @@
 						{%- else %} pt-1">
 							{%- do form.paymentMethod.setRendered(true) -%}
 						{% endif %} {{ 'app.sales.total'|trans }}</div>
-					<output name="totalItems" class="col-2 pt-1 text-end" x-text="`${order.quantity} (${order.tickets} {{ 'app.fields.item.ticket.label.short'|trans }})`"></output>
+					<output name="totalItems" class="col-2 pt-1 text-end" x-text="`${order.quantity}
+						{%- if is_granted('IS_AUTHENTICATED_FULLY') and app.user.printer is none %} (${order.tickets} {{ 'app.fields.item.ticket.label.short'|trans }}){% endif %}`"></output>
 					<output name="totalPrice" class="col-2 pt-1 text-end" x-text="order.amount.toFixed(2).replace('.', ',')"></output>
 				</div>
 			{{ form_end(form) }}
@@ -296,15 +300,16 @@
 			this.channel.postMessage({type, order: JSON.stringify(order)});
 		},
 		paymentMethodSelect(event) {
-			// Avoid invalid error when last item waas a variant
+			bootstrapModal.show();
+			// Avoid invalid error when last item was a variant
 			this.category = '';
 			const paymentMethodId = document.getElementById(event.target.getAttribute('for')).value;
 			let content = localStorage.getItem('paymentMethod.restricted.' + paymentMethodId + '.content');
-			if (this.order.quantity > 0 && !this.order.date) {
+			if (this.order.quantity != 0 && !this.order.date) {
 				const now = new Date();
 				this.order.date = now.toLocaleString('{{ app.request.locale }}').substring(0, 16);
 				document.querySelector('[name*="printDate"]').value = now.toISOString();
-				this.order.id = murmurHash3.x86.hash32(this.order.date + this.channel.name + this.order.user).toString(36).padStart(7, '0');
+				this.order.id = murmurHash3.x86.hash32(now.toISOString() + this.channel.name).toString(36).padStart(7, '0');
 				document.querySelector('[name*="externalId"]').value = this.order.id;
 			}
 			if (content) {
@@ -313,7 +318,6 @@
 					.replace(/__id__/, this.order.id)
 					.replace(/__date__/, this.order.date);
 				modal.querySelector('.modal-content').replaceChildren(...domParser.parseFromString(content, 'text/html').querySelectorAll('body>*'));
-				bootstrapModal.show();
 			} else {
 				{%- if app.user.printer is not none ~%}
 				try {
