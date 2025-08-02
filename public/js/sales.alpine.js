@@ -205,8 +205,9 @@ window.Sales = () => ({
 		if (input) {
 			this.order.lines[id].quantity += this.direction;
 			event.preventDefault();
-			if (this.order.lines[id].composedOf.length > 1) {
-				this.order.lines[id].composedOf.forEach( composedOf => {
+			const composedOf =  Object.values(JSON.parse(itemRoot.dataset.composedOf));
+			if (composedOf.length > 1) {
+				composedOf.forEach( composedOf => {
 					this.order.lines[composedOf].quantity += this.direction;
 				});
 			}

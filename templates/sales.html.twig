@@ -33,7 +33,7 @@
 {%- set item = form.vars.data.item %}
 				<div class="item-root"
 						data-id="{{ item.id }}"
-						data-content-ids="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}"
+						data-composed-of="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}"
 						:class="{'col': layout.layout == 'deck'}"
 						x-show="order.lines[{{ item.id }}].show(category)"
 						@click="itemClick"
