@@ -159,11 +159,11 @@
 								<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
 								<ul class="dropdown-menu">
 									<li class="d-none d-sm-block"><div class="dropdown-item px-0 btn-group">
-										<input type="checkbox" checked="checked" id="LabelToggler" class="btn-check" :disabled="!layout.titleDisplay" @click="toggleLabel()" x-model.boolean="layout.labelDisplay" x-ref="LabelToggler" />
+										<input type="checkbox" checked="checked" id="LabelToggler" form="DontReset" class="btn-check" :disabled="!layout.titleDisplay" @click="toggleLabel()" x-model.boolean="layout.labelDisplay" x-ref="LabelToggler" />
 										<label for="LabelToggler" class="btn btn-outline-primary">🏷️</label>
-										<input type="checkbox" checked="checked" id="TitleToggler" class="btn-check" :disabled="!layout.labelDisplay" @click="toggleTitle()" x-model.boolean="layout.titleDisplay" x-ref="TitleToggler" />
+										<input type="checkbox" checked="checked" id="TitleToggler" form="DontReset" class="btn-check" :disabled="!layout.labelDisplay" @click="toggleTitle()" x-model.boolean="layout.titleDisplay" x-ref="TitleToggler" />
 										<label for="TitleToggler" class="btn btn-outline-primary">〰️</label>
-										<input type="checkbox" checked="checked" id="NumbersToggler" class="btn-check" :disabled="layout.receiptDisplay == 0" @click="toggleNumbers()" x-model.boolean="layout.numbersDisplay" x-ref="NumbersToggler" />
+										<input type="checkbox" checked="checked" id="NumbersToggler" form="DontReset" class="btn-check" :disabled="layout.receiptDisplay == 0" @click="toggleNumbers()" x-model.boolean="layout.numbersDisplay" x-ref="NumbersToggler" />
 										<label for="NumbersToggler" class="btn btn-outline-primary">🔢</label>
 									</div></li>
 									<li><button type="button" class="dropdown-item" @click="toggleLayout(event)" x-ref="LayoutToggler" x-text="(layout.layout != 'deck') ? '▄▀' : '☰'"></button></li>
