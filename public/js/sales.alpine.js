@@ -68,7 +68,7 @@ window.Sales = () => ({
 		return this.$refs.TitleToggler.checked;
 	},
 	getPreferredTitleDisplay() {
-		return JSON.parse(localStorage.getItem('titleDisplay') ?? 'false') || this.getTitleDisplay();
+		return JSON.parse(localStorage.getItem('titleDisplay') || (this.getTitleDisplay() ? 'true' : 'false'));
 	},
 	storeTitleDisplay(display) {
 		localStorage.setItem('titleDisplay', display);
@@ -82,7 +82,7 @@ window.Sales = () => ({
 		return this.$refs.LabelToggler.checked;
 	},
 	getPreferredLabelDisplay() {
-		return JSON.parse(localStorage.getItem('labelDisplay') ?? 'false') || this.getLabelDisplay();
+		return JSON.parse(localStorage.getItem('labelDisplay') || (this.getLabelDisplay() ? 'true' : 'false'));
 	},
 	storeLabelDisplay(display) {
 		localStorage.setItem('labelDisplay', display);
@@ -96,7 +96,7 @@ window.Sales = () => ({
 		return this.$refs.NumbersToggler.checked;
 	},
 	getPreferredNumbersDisplay() {
-		return JSON.parse(localStorage.getItem('numbersDisplay') ?? 'false') || this.getNumbersDisplay();
+		return JSON.parse(localStorage.getItem('numbersDisplay') || (this.getNumbersDisplay() ? 'true' : 'false'));
 	},
 	storeNumbersDisplay(display) {
 		localStorage.setItem('numbersDisplay', display);
@@ -165,22 +165,23 @@ window.Sales = () => ({
 		}
 		// Title display
 		if (this.getPreferredTitleDisplay() != this.getTitleDisplay()) {
-			this.toggleTitle();
-		} else {
 			this.storeTitleDisplay(this.getPreferredTitleDisplay());
+		} else {
+			this.storeTitleDisplay(this.getTitleDisplay());
 		}
 		// Label display
 		if (this.getPreferredLabelDisplay() != this.getLabelDisplay()) {
-			this.toggleLabel();
-		} else {
 			this.storeLabelDisplay(this.getPreferredLabelDisplay());
+		} else {
+			this.storeLabelDisplay(this.getLabelDisplay());
 		}
 		// Numbers display
 		if (this.getPreferredNumbersDisplay() != this.getNumbersDisplay()) {
-			this.toggleNumbers();
-		} else {
 			this.storeNumbersDisplay(this.getPreferredNumbersDisplay());
+		} else {
+			this.storeNumbersDisplay(this.getNumbersDisplay());
 		}
+		// Receipt display
 		if (this.getPreferredReceiptDisplay() != this.getReceiptDisplay()) {
 			if ((this.getPreferredReceiptDisplay() != '0')) {
 				this.$refs.Splitter.closest('.dropdown-item').classList.add('active');
