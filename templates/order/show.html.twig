@@ -10,24 +10,28 @@
 			<tbody>
 				<tr>
 					<th>{{ 'app.fields.order.createdAt.label'|trans }}</th>
-					<td colspan="2">{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+					<td colspan="3">{{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</td>
 				</tr>
 				{%- set total = 0 -%}
 				{% for line in order.lines %}
 				<tr>
 					<td>{{ line.item.title }}</td>
-					<td>{{ line.quantity }}</td>
-					<td>{{ line.item.price|number_format(2, ',') -}}
+					<td class="text-end">{{ line.item.price|number_format(2, ',') -}}</td>
+					<td class="text-end">{{ line.quantity }}</td>
+					<td class="text-end">{{ line.amount|number_format(2, ',') -}}
 						{%- if not line.item.pack %}
-						{%- set total = total + line.quantity * line.item.price %}
+						{%- set total = total + line.amount %}
 						{%- endif %}</td>
 				</tr>
 				{% endfor %}
+			</tbody>
+			<tfoot>
 				<tr>
 					<th>{{ 'app.order.show.total'|trans }}</th>
-					<td>{{ order.paymentMethod.title }}</td>
-					<td>{{ total|number_format(2, ',') }}</td>
-			</tbody>
+					<td colspan="2">{{ order.paymentMethod.title }}</td>
+					<td class="text-end">{{ total|number_format(2, ',') }}</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 

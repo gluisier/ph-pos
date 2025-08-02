@@ -71,4 +71,9 @@ class OrderLine
 
         return $this;
     }
+
+    public function getAmount(): int
+    {
+        return $this->quantity * $this->item->getPrice();
+    }
 }
