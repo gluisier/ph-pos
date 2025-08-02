@@ -28,6 +28,7 @@
 				get quantity() {
 					let result = 0;
 					for (const id in this.lines) {
+						if (this.lines[id].isPack) continue;
 						result += this.lines[id].quantity;
 					}
 					return result;
@@ -55,7 +56,7 @@
 				let filtered = {};
 				for (const id in this.order.lines) {
 					const line = this.order.lines[id];
-					if (line.quantity > 0 && !line.pack) {
+					if (line.quantity > 0 && !line.isPack) {
 						filtered[id] = line;
 					}
 				}

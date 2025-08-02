@@ -46,7 +46,7 @@ const ticket_logo_epson_xml = (printer, order) => {
 	}
 	for (const id in order.lines) {
 		const line = order.lines[id];
-		if (line.pack) {
+		if (line.isPack) {
 			continue;
 		}
 		for (let quantity = 0; quantity < line.quantity; quantity++) {
