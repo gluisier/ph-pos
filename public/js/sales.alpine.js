@@ -10,6 +10,13 @@ window.Sales = () => ({
 			}
 			return result;
 		},
+		get absoluteQuantity() {
+			let result = 0;
+			for (const id in this.lines) {
+				result += Math.abs(this.lines[id].quantity);
+			}
+			return result;
+		},
 		get tickets() {
 			let result = 0;
 			for (const id in this.lines) {

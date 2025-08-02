@@ -193,13 +193,13 @@
 					</div>
 					<div class="col-3 text-end{% if is_granted('IS_AUTHENTICATED_FULLY') %}">
 						{%- if form.paymentMethod.children|length == 1 -%}
-							<button type="button" name="{{ form.paymentMethod.children[0].vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" :disabled="order.quantity == 0" class="btn btn-primary float-start payment-method" title="{{ 'global.action.validate'|trans }}" @click="paymentMethodSelect" aria-label="
+							<button type="button" name="{{ form.paymentMethod.children[0].vars.full_name }}" value="{{ form.paymentMethod.children[0].vars.value }}" :disabled="order.absoluteQuantity == 0" class="btn btn-primary float-start payment-method" title="{{ 'global.action.validate'|trans }}" @click="paymentMethodSelect" aria-label="
 									{{- 'global.action.validate'|trans -}}
 								" data-action="validate">✔️</button>
 							{%- do form.paymentMethod.children[0].setRendered(true) -%}
 						{%- else -%}
 							<div class="btn-group dropup" role="group">
-								<button type="button" disabled="disabled" class="btn btn-outline-primary dropdown-toggle payment-method" :disabled="order.quantity == 0" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
+								<button type="button" disabled="disabled" class="btn btn-outline-primary dropdown-toggle payment-method" :disabled="order.absoluteQuantity == 0" data-bs-toggle="dropdown" aria-expanded="false" title="{{ 'global.action.validate'|trans }}" aria-label="{{ 'global.action.validate'|trans }}">✔️</button>
 								<ul class="dropdown-menu">
 									{% for i,child in form.paymentMethod.children -%}
 									<li>{{ form_widget(child, {
