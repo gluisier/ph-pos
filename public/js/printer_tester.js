@@ -3,15 +3,14 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
 	const retrieveData = () => {
-		const data = {};
 		document.querySelectorAll('[data-field-name]').forEach(element => {
-			data[element.dataset.fieldName] = element.dataset.fieldValue
+			printerConfig[element.dataset.fieldName] = element.dataset.fieldValue
 				|| element.options ? element.options[element.selectedIndex].innerText : null
 				|| element.innerText
 				|| element.value
 				|| 'None';
 		});
-		return data;
+		return printerConfig;
 	};
 	document.querySelectorAll('.printer-tester').forEach((button) => {
 		button.addEventListener('click', (e) => {
