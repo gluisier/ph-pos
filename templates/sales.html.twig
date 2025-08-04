@@ -22,7 +22,8 @@
 				{%- if is_granted('ROLE_USER') %}"
 				x-init="Object.assign($data, authenticatedSales);
 					$data.debounceBroadcast = Alpine.debounce($data.broadcast.bind($data), 400);
-					$data.printError = $data.printError.bind($data);"
+					$data.printError = $data.printError.bind($data);
+					$data.printSuccess = $data.printSuccess.bind($data);"
 				x-effect="order.quantity; debounceBroadcast('update', order)
 				{%- endif -%}
 {%- endblock -%}
@@ -304,46 +305,41 @@
 					.replace(/__date__/, this.order.date);
 				modal.querySelector('.modal-content').replaceChildren(...domParser.parseFromString(content, 'text/html').querySelectorAll('body>*'));
 			} else {
-				{%- if app.user.printer is not none ~%}
-				try {
-					if (!printerConfig.key1 || !printerConfig.key2 || !ticket_logo_epson_xml) {
-						print(ticket_epson_xml, this.order, this.printSuccess, this.printError);
-					} else {
-						print(ticket_logo_epson_xml, this.order, this.printSuccess, this.printError);
-					}
-				} catch (e) {
-					this.debounceBroadcast('status', 'error');
-					console.error(e);
-				}
-				{%- else ~%}
-				event.target.submit();
-				{%- endif ~%}
+				this.printTicket(event.target);
 			}
+		},
+		printTicket(submitter) {
+			{%- if app.user.printer is not none ~%}
+			this.debounceBroadcast('status', '🖨️');
+			try {
+				if (!printerConfig.key1 || !printerConfig.key2 || !ticket_logo_epson_xml) {
+					print(ticket_epson_xml, this.order, this.printSuccess, this.printError);
+				} else {
+					print(ticket_logo_epson_xml, this.order, this.printSuccess, this.printError);
+				}
+				submitter.classList.add('waiting', 'disabled');
+			} catch (e) {
+				submitter.classList.remove('waiting', 'disabled');
+				this.printError();
+			}
+			{%- else ~%}
+			this.printSuccess();
+			{%- endif ~%}
 		},
 		printSuccess() {
 			bootstrapModal.hide();
-			document.getElementById('Main').submit();
+			this.$refs.Form.submit();
+			this.debounceBroadcast('status', '✅');
 		},
 		printError(message) {
-			this.debounceBroadcast('status', 'error');
+			this.debounceBroadcast('status', '❗');
 			console.error(message);
 		},
 		orderSubmit(event) {
 			if (event.submitter.dataset.action === 'print') {
 				event.stopPropagation();
 				event.preventDefault();
-				try {
-					if (!printerConfig.key1 || !printerConfig.key2 || !ticket_logo_epson_xml) {
-						print(ticket_epson_xml, this.order, this.printSuccess, this.printError);
-					} else {
-						print(ticket_logo_epson_xml, this.order, this.printSuccess, this.printError);
-					}
-					event.submitter.classList.add('waiting', 'disabled');
-				} catch (e) {
-					event.submitter.classList.remove('waiting', 'disabled');
-					this.debounceBroadcast('status', 'error');
-					console.error(e);
-				}
+				this.printTicket(event.submitter);
 				return;
 			}
 		}
