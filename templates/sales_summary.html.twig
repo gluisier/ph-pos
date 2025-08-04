@@ -65,14 +65,18 @@
 			channel: new BroadcastChannel('{{ app.user.token }}'),
 			init() {
 				this.channel.addEventListener('message', (e) => {
-					this.order.lines = JSON.parse(e.data.order).lines;
-					for (const id in this.order.lines) {
-						Object.defineProperty(this.order.lines[id], 'amount', {
-							get() {
-								return this.quantity * this.price;
-							}
-						});
-					};
+					switch (e.data.type) {
+						case 'update':
+							this.order.lines = JSON.parse(e.data.data).lines;
+							for (const id in this.order.lines) {
+								Object.defineProperty(this.order.lines[id], 'amount', {
+									get() {
+										return this.quantity * this.price;
+									}
+								});
+							};
+							break;
+					}
 				})
 			},
 			quantityClass(item) {

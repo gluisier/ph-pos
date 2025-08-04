@@ -282,7 +282,7 @@
 	const authenticatedSales = {
 		channel: new BroadcastChannel('{{ app.user.token }}'),
 		broadcast(type, order) {
-			this.channel.postMessage({type, order: JSON.stringify(order)});
+			this.channel.postMessage({type, data: JSON.stringify(order)});
 		},
 		paymentMethodSelect(event) {
 			bootstrapModal.show();
