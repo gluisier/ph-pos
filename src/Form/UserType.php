@@ -17,7 +17,7 @@ class UserType extends AbstractType
             ->add('name', null, [
                 'label_format' => 'app.fields.user.%name%.label',
             ])
-            ->add('active', null, [
+            ->add('enabled', null, [
                 'label_format' => 'app.fields.user.%name%.label',
             ])
             ->add('printer', null, [

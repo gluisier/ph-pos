@@ -10,7 +10,7 @@
 			<thead>
 				<tr>
 					<th>{{ 'app.fields.user.name.label'|trans }}</th>
-					<th>{{ 'app.fields.user.active.label'|trans }}</th>
+					<th>{{ 'app.fields.user.enabled.label'|trans }}</th>
 					<th>{{ 'app.fields.user.roles.label'|trans }}</th>
 					<th>{{ 'app.fields.user.printer.label.long'|trans }}</th>
 					<th>{{ 'app.fields.user.createdAt.label'|trans }}</th>
@@ -21,7 +21,7 @@
 			{% for user in users %}
 				<tr>
 					<td>{{ user.name }}</td>
-					<td>{{ (user.active ? 'global.on' : 'global.off')|trans }}</td>
+					<td>{{ (user.enabled ? 'global.on' : 'global.off')|trans }}</td>
 					<td>{{ user.roles ? user.roles|join(', ') : '' }}</td>
 					<td>
 						{%- if user.printer -%}

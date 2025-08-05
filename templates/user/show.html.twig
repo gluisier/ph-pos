@@ -3,7 +3,7 @@
 {% block title %}{{ user.name }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-	<h2>{{ (user.active ? 'global.on' : 'global.off')|trans }}
+	<h2>{{ (user.enabled ? 'global.on' : 'global.off')|trans }}
 		{{ user.name }}</h2>
 
 	<div class="table-responsive">

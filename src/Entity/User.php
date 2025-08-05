@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    private ?bool $active = false;
+    private ?bool $enabled = false;
 
     #[ORM\Column]
     private array $roles = [];
@@ -67,14 +67,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isActive(): bool
+    public function isEnabled(): bool
     {
-        return $this->active;
+        return $this->enabled;
     }
 
-    public function setActive(bool $active): static
+    public function setEnabled(bool $enabled): static
     {
-        $this->active = $active;
+        $this->enabled = $enabled;
 
         return $this;
     }

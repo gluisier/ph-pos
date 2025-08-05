@@ -14,7 +14,7 @@
 			<tr>
 				{%- for printer in location.printers %}
 				{%- for user in printer.users %}
-				<th>{{ (user.active ? 'global.on' : 'global.off')|trans }}
+				<th>{{ (user.enabled ? 'global.on' : 'global.off')|trans }}
 					<a href="{{ path('user_show', {'name': user.name}) }}">{{ user.name }}</a></th>
 				<td><a href="{{ path('printer_show', {'id': printer.id}) }}">{{ user.printer.model }}</a>
 					{%- if loop.parent.loop.first %}
