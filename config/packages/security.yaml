@@ -18,8 +18,7 @@ security:
     all_users:
       chain:
         providers: ['database_users', 'memory_users']
-  hide_user_not_found: false
-  #expose_security_errors: 'account_status'
+  expose_security_errors: 'account_status'
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/

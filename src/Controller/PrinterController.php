@@ -88,8 +88,8 @@ final class PrinterController extends AbstractController
         Request $request,
         UserInterface $user,
         #[MapEntity]?Printer $printer = null,
-        #[Autowire(env: 'PRINTER_LOGO_KEY_1')] $printerLogoKey1,
-        #[Autowire(env: 'PRINTER_LOGO_KEY_2')] $printerLogoKey2
+        #[Autowire(env: 'PRINTER_LOGO_KEY_1')] ?string $printerLogoKey1 = null,
+        #[Autowire(env: 'PRINTER_LOGO_KEY_2')] ?string $printerLogoKey2 = null
     ): Response {
         if (!$printer && (!$user instanceof User || !($printer = $user->getPrinter()))) {
             throw $this->createNotFoundException();
