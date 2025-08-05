@@ -53,9 +53,7 @@ class SecurityController extends AbstractController
                 ],
                 'type' => \Symfony\Component\Form\Extension\Core\Type\PasswordType::class,
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'user.plain_password.blank',
-                    ]),
+                    new NotBlank(message: 'user.plain_password.blank'),
                 ],
             ]);
         $form = $formBuilder->getForm();
