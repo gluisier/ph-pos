@@ -6,6 +6,7 @@ window.Sales = () => ({
 		get quantity() {
 			let result = 0;
 			for (const id in this.lines) {
+				if (this.lines[id].isPack) continue;
 				result += this.lines[id].quantity;
 			}
 			return result;
@@ -13,6 +14,7 @@ window.Sales = () => ({
 		get absoluteQuantity() {
 			let result = 0;
 			for (const id in this.lines) {
+				if (this.lines[id].isPack) continue;
 				result += Math.abs(this.lines[id].quantity);
 			}
 			return result;
@@ -20,7 +22,7 @@ window.Sales = () => ({
 		get tickets() {
 			let result = 0;
 			for (const id in this.lines) {
-				if (!this.lines[id].ticket) continue;
+				if (!this.lines[id].ticket || this.lines[id].isPack) continue;
 				result += this.lines[id].quantity;
 			}
 			return result;
