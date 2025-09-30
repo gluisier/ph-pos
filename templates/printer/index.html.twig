@@ -30,6 +30,7 @@
 				<td>{{ printer.model }}</td>
 				<td>{{ printer.api.value|humanize }}</td>
 				<td>{% if not printer.status is same as(printer.status.STORED) -%}
+					<button class="btn btn-sm btn-outline-secondary" title="{{ 'app.printer.show.connect'|trans }}" aria-label="{{ 'app.printer.show.connect'|trans }}" data-bs-toggle="modal" data-bs-target="#Modal" data-qrcode-data="http://{{ printer.ip }}/">🔗</button>
 					{% if printer.location -%}
 					<abbr title="{{ printer.ip ~ ' | ' ~ printer.port }}">🌐</abbr> {{ printer.location.name }}
 					{%- else -%}
@@ -52,4 +53,35 @@
 		{% endfor %}
 		</tbody>
 	</table>
+{% endblock %}
+
+{% block javascripts %}
+		<script src="{{ assets_host }}/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script>/*<![CDATA[*/
+		document.addEventListener('DOMContentLoaded', () => {
+			document.addEventListener('show.bs.modal', async function(e) {
+				if (e.relatedTarget.localName == 'button' && e.relatedTarget.dataset.qrcodeData) {
+					e.target.querySelector('.modal-dialog.modal-xl').classList.remove('modal-xl');
+					const modalContent = document.querySelector('.modal-content');
+					while(modalContent.firstChild) modalContent.removeChild(modalContent.firstChild);
+					const codeContainer = document.createElement('div');
+					codeContainer.classList.add('modal-body', 'text-center');
+					modalContent.append(codeContainer);
+					const qrcode = new QRCode(codeContainer, {
+						useSVG: true
+					});
+					qrcode.makeCode(e.relatedTarget.dataset.qrcodeData);
+					codeContainer.querySelector('img').classList.add('mx-auto');
+				}
+			});
+
+			document.addEventListener('hidden.bs.modal', function(e) {
+				const target = e.target.querySelector('.modal-content');
+				target.innerHTML = target.dataset.emptyContent;
+				if (!e.target.querySelector('.modal-xl')) {
+					e.target.querySelector('.modal-dialog').classList.add('modal-xl');
+				}
+			});
+		});
+		/*]]*/</script>
 {% endblock %}

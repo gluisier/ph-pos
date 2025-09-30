@@ -21,6 +21,7 @@
 					<th>{{ 'app.fields.user.printer.label.long'|trans }}</th>
 					<td>
 						{%- if user.printer -%}
+							<button class="btn btn-sm btn-outline-secondary" title="{{ 'app.printer.show.connect'|trans }}" aria-label="{{ 'app.printer.show.connect'|trans }}" data-bs-toggle="modal" data-bs-target="#Modal" data-qrcode-data="http://{{ printer.ip }}/">🔗</button>
 							<a href="{{ path('printer_show', {'id': user.printer.id}) }}" title="
 									{{- user.printer.location ? (user.printer.location.name ~ ', ') -}}
 									{{- user.printer.ip }} | {{ user.printer.port -}}
