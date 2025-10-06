@@ -4,6 +4,39 @@
 
 {% block stylesheets %}{{ parent() }}
 		<style>
+		#ItemList {
+			container-type: inline-size;
+			container-name: ItemList;
+		}
+		#order_simple_lines[data-layout="deck"] {
+			display: grid;
+			--cols: 2;
+			grid-template-columns: repeat(var(--cols), 1fr);
+			transition: grid-template-columns 0.3s ease;
+		}
+		#order_simple_lines[data-layout="deck"] > * {
+  			transition: transform 0.3s ease, opacity 0.3s ease;
+		}
+		@container ItemList (min-width: 576px) {
+			#order_simple_lines[data-layout="deck"] {
+				--cols: 3;
+			}
+		}
+		@container ItemList (min-width:  768px) {
+			#order_simple_lines[data-layout="deck"] {
+				--cols: 4;
+			}
+		}
+		@container ItemList (min-width:  992px) {
+			#order_simple_lines[data-layout="deck"] {
+				--cols: 5;
+			}
+		}
+		@container ItemList (min-width:  1200px) {
+			#order_simple_lines[data-layout="deck"] {
+				--cols: 6;
+			}
+		}
 		.has-ticket {
 			position: relative;
 		}
@@ -35,7 +68,6 @@
 				<div class="item-root"
 						data-id="{{ item.id }}"
 						data-composed-of="{{ (item.isPack ? item.composedOf|map(i => i.id) : [item.id])|json_encode }}"
-						:class="{'col': layout.layout == 'deck'}"
 						x-show="order.lines[{{ item.id }}].show(category)"
 						@click="itemClick"
 					>
@@ -135,19 +167,18 @@
 						},
 						'attr': {
 							'class': 'categories',
-							'data-layout': 'table'
 						},
 						'help': '<hr class="row mt-3 mb-0" />',
 						'help_html': true,
 					}) }}
 					{{ form_widget(form.lines, {
-						'attr': {':class': "{
-							'row row-cols-2 g-2': layout.layout == 'deck',
-							'row-cols-sm-3': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 575.98,
-							'row-cols-md-4': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 767.98,
-							'row-cols-lg-5': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 991.98,
-							'row-cols-xl-6': layout.layout == 'deck' && (1 - layout.receiptDisplay) * window.screen.availWidth > 1399.98
-						}"|raw}
+						'attr': {
+							'data-layout': 'table',
+							':class': "{
+								'row g-2': layout.layout == 'deck'
+							}"|raw,
+							':data-layout': 'layout.layout'
+						}
 					}) ~}}
 				</div>
 				<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
