@@ -4,6 +4,23 @@
 
 {% block stylesheets %}{{ parent() }}
 		<style>
+		html, body {
+			height: 100dvh;
+			overflow: hidden;
+		}
+		body>*:first-child {
+			display: flex;
+			height: 100dvh;
+		}
+		#Main {
+			flex: 1;
+		}
+		#Receipt, #ItemList {
+			height: 100%;
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding-bottom: 4.5rem;
+		}
 		#ItemList {
 			container-type: inline-size;
 			container-name: ItemList;
@@ -162,14 +179,12 @@
 							':class': "{'btn-outline-light': this.getPreferredTheme() == 'dark', 'btn-outline-dark': this.getPreferredTheme() == 'light'}"
 						},
 						'row_attr': {
-							'class': 'sticky-top pt-3 mb-3',
+							'class': 'row sticky-top py-3 border-bottom',
 							'style': 'background-color: var(--bs-body-bg);',
 						},
 						'attr': {
 							'class': 'categories',
-						},
-						'help': '<hr class="row mt-3 mb-0" />',
-						'help_html': true,
+						}
 					}) }}
 					{{ form_widget(form.lines, {
 						'attr': {
@@ -181,8 +196,7 @@
 						}
 					}) ~}}
 				</div>
-				<div class="row sticky-bottom pb-3 mt-3" style="background-color: var(--bs-body-bg);">
-					<hr />
+				<div class="navbar fixed-bottom p-3 mt-3 border-top" style="background-color: var(--bs-body-bg);">
 					<div class="col-5">
 						<div class="btn-group" role="group">
 							<input type="radio" checked="checked" name="direction" id="Adder" class="btn-check" value="1" x-model.number="direction" /><label for="Adder" class="btn btn-outline-success">➕</label>
