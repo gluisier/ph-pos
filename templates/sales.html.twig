@@ -39,17 +39,17 @@
 				--cols: 3;
 			}
 		}
-		@container ItemList (min-width:  768px) {
+		@container ItemList (min-width: 768px) {
 			#order_simple_lines[data-layout="deck"] {
 				--cols: 4;
 			}
 		}
-		@container ItemList (min-width:  992px) {
+		@container ItemList (min-width: 992px) {
 			#order_simple_lines[data-layout="deck"] {
 				--cols: 5;
 			}
 		}
-		@container ItemList (min-width:  1200px) {
+		@container ItemList (min-width: 1200px) {
 			#order_simple_lines[data-layout="deck"] {
 				--cols: 6;
 			}
@@ -204,16 +204,19 @@
 							<div class="btn-group dropup" role="group">
 								<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">🎨</button>
 								<ul class="dropdown-menu">
-									<li class="d-none d-sm-block"><div class="dropdown-item px-0 btn-group">
+									<li class="dropdown-item">
 										<input type="checkbox" checked="checked" id="LabelToggler" form="DontReset" class="btn-check" :disabled="!layout.titleDisplay" @click="toggleLabel()" x-model.boolean="layout.labelDisplay" x-ref="LabelToggler" />
-										<label for="LabelToggler" class="btn btn-outline-primary">🏷️</label>
+										<label for="LabelToggler" class="btn btn-outline-secondary">🏷️</label>
 										<input type="checkbox" checked="checked" id="TitleToggler" form="DontReset" class="btn-check" :disabled="!layout.labelDisplay" @click="toggleTitle()" x-model.boolean="layout.titleDisplay" x-ref="TitleToggler" />
-										<label for="TitleToggler" class="btn btn-outline-primary">〰️</label>
+										<label for="TitleToggler" class="btn btn-outline-secondary">〰️</label>
 										<input type="checkbox" checked="checked" id="NumbersToggler" form="DontReset" class="btn-check" :disabled="layout.receiptDisplay == 0" @click="toggleNumbers()" x-model.boolean="layout.numbersDisplay" x-ref="NumbersToggler" />
-										<label for="NumbersToggler" class="btn btn-outline-primary">🔢</label>
-									</div></li>
-									<li><button type="button" class="dropdown-item" @click="toggleLayout(event)" x-ref="LayoutToggler" x-text="(layout.layout != 'deck') ? '▄▀' : '☰'"></button></li>
-									<li><button type="button" id="ThemeToggler" class="dropdown-item" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button></li>
+										<label for="NumbersToggler" class="btn btn-outline-secondary d-none d-md-inline-block">🔢</label>
+									</li>
+									<li class="dropdown-item">
+										<button type="button" class="btn btn-outline-secondary" @click="toggleLayout(event)" x-ref="LayoutToggler" x-text="(layout.layout != 'deck') ? '▄▀' : '☰'"></button>
+										<button type="button" id="FullscreenToggler" class="btn btn-outline-secondary" data-bs-toggle="button" :class="{'active': document.fullscreenElement || document.mozFullScreen || document.webkitFullScreen}" @click="toggleFullScreen('.container-fluid')">⛶</button>
+										<button type="button" id="ThemeToggler" class="btn btn-outline-secondary" data-content-possible="{&quot;light&quot;:&quot;🌙&quot;,&quot;dark&quot;:&quot;☀️&quot;}"></button>
+									</li>
 								</ul>
 							</div>
 							{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
@@ -275,6 +278,7 @@
 
 {% block javascripts %}
 	<script src="{{ asset('js/theme_handler.js') }}"></script>
+	<script src="{{ asset('js/fullscreen.js') }}"></script>
 	<script src="{{ asset('js/sales.alpine.js') }}" defer="defer" data-items="{{ form.lines.vars.data|map(l => l.item)|json_encode|e('html') }}"></script>
 	<script src="{{ assets_host }}/alpinejs/3.14.9/cdn.min.js" defer="defer" integrity="sha512-KSdieUYxSxr/laB3Bh5TP8GAng49b2qRfdcnFvh8OuPpPgksA189OQ9v1A3gIz5P9s3A4aXMe5uiHLMfla60Uw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	{% if is_granted('IS_AUTHENTICATED_FULLY') -%}
