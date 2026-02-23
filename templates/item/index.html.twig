@@ -2,6 +2,18 @@
 
 {% block title %}{{ 'app.item.index.title'|trans }} | {{ parent() }}{% endblock %}
 
+{% block stylesheets %}{{ parent() }}
+		<style>
+		@media print {
+			col:last-child,
+			th:last-child,
+			td:last-child {
+				display: none;
+			}
+		}
+		</style>
+{% endblock %}
+
 {% block body %}
 	<h2>{{ 'app.item.index.heading'|trans }}</h2>
 
