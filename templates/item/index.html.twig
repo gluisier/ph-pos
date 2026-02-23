@@ -12,6 +12,7 @@
 				<col class="col-xl-2 ps-0 ps-lg-2" />
 				<col />
 				<col class="col-1" />
+				<col class="col-1" />
 				<col class="col-2 col-md-1" />
 				<col class="col-2 col-md-1" />
 				<col class="col-1" />
@@ -22,6 +23,7 @@
 					<th>{{ 'app.fields.item.label.label.long'|trans }}</th>
 					<th>{{ 'app.fields.item.title.label'|trans }}</th>
 					<th><abbr id="AvailableLabel" title="{{ 'app.fields.item.available.label.long'|trans }}">{{ 'app.fields.item.available.label.short'|trans }}</abbr></th>
+					<th><abbr id="PublicLabel" title="{{ 'app.fields.item.public.label.long'|trans }}">{{ 'app.fields.item.public.label.short'|trans }}</abbr></th>
 					<th id="PriceLabel">{{ 'app.fields.item.price.label'|trans }}</th>
 					<th id="StockLabel">{{ 'app.fields.item.stock.label'|trans }}</th>
 					<th><a href="{{ path('item_new') }}" class="btn btn-success btn-sm" title="{{ 'global.action.new'|trans }}" aria-label="{{ 'global.action.new'|trans }}">➕</a></th>
@@ -42,6 +44,7 @@
 						{%- endif -%}
 						{%- endif %}</td>
 					<td{% if style %} style="{{ style }}"{% endif %}>{{ ('global.' ~ (item.available ? 'on' : 'off'))|trans }}</td>
+					<td{% if style %} style="{{ style }}"{% endif %}>{{ ('global.' ~ (item.available and item.public ? 'on' : 'off'))|trans }}</td>
 					<td class="text-end"{% if style %} style="{{ style }}"{% endif %}>{{ item.price|number_format(2, ',') }}</td>
 					<td class="text-end"{% if style %} style="{{ style }}"{% endif %}>{{ item.stock }}</td>
 					<td{% if style %} style="{{ style }}"{% endif %}>
