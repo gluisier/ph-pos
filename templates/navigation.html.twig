@@ -1,0 +1,70 @@
+<nav class="navbar navbar-toggleable-md navbar-expand-lg navbar-dark bg-dark d-print-none">
+	<div class="container">
+		<a class="navbar-brand" href="{{ path('home') }}">{{ 'global.site_name'|trans }}</a>
+		<button type="button" class="navbar-toggler navbar-toggler-right" data-bs-toggle="collapse" data-bs-target="#Menu" aria-controls="Menu" aria-expanded="false">
+			<span class="navbar-toggler-icon" title="{{ 'global.action.expand.menu'|trans }}" aria-hidden="true"></span><span class="visually-hidden-focusable">{{ 'global.action.expand.menu'|trans }}</span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="Menu">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link{% if 'prices' in app.current_route %} active{% endif %}" href="{{ path('prices') }}">{{ 'app.navigation.prices'|trans }}</a>
+				</li>
+				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle{%
+							if 'sales_index' == app.current_route
+								or 'production_index' in app.current_route
+						%} active{% endif %}" id="Operating" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.navigation.operating.heading'|trans }}</a>
+					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Operating">
+						<a class="dropdown-item{% if 'sales_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('sales_index') }}">{{ 'app.navigation.operating.sales'|trans }}</a>
+						<a class="dropdown-item{% if 'production_index' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('production_index') }}">{{ 'app.navigation.operating.production'|trans }}</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle{%
+							if 'item' in app.current_route
+								or 'category' in app.current_route
+						%} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.navigation.items.heading'|trans }}</a>
+					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Items">
+						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.navigation.items.list'|trans }}</a>
+						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.navigation.items.event'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'category_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('category_index') }}">{{ 'app.navigation.items.categories'|trans }}</a>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link{% if 'order' in app.current_route %} active{% endif %}" href="{{ path('order_index') }}">{{ 'app.navigation.orders.heading'|trans }}</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle{%
+							if 'user' in app.current_route
+								or 'printer' in app.current_route
+								or 'location' in app.current_route
+								or 'payment_method' in app.current_route
+						%} active{% endif %}" id="Admin" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.navigation.admin.heading'|trans }}</a>
+					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Admin">
+						<a class="dropdown-item{% if 'user' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('user_index') }}">{{ 'app.navigation.admin.users.heading'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'printer' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('printer_index') }}">{{ 'app.navigation.admin.printers.heading'|trans }}</a>
+						<a class="dropdown-item{% if 'location' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('location_index') }}">{{ 'app.navigation.admin.locations.heading'|trans }}</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item{% if 'payment_method' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('payment_method_index') }}">{{ 'app.navigation.admin.payment_methods.heading'|trans }}</a>
+					</div>
+				</li>
+				{% endif ~%}
+			</ul>
+			<ul class="navbar-nav d-flex">
+				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
+				<li class="nav-item">
+					<a href="{{ path('logout') }}" class="nav-link"><span class="text-danger" style="font-family: power_symbols">⏻</span> {{ 'app.navigation.logout'|trans }}</a>
+				</li>
+				{% else ~%}
+				<li class="nav-item">
+					<a href="{{ path('login') }}" class="nav-link">{{ 'app.navigation.login'|trans }}</a>
+				</li>
+				{% endif ~%}
+			</ul>
+		</div>
+	</div>
+</nav>

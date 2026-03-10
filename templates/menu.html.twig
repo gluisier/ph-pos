@@ -1,70 +1,99 @@
-<nav class="navbar navbar-toggleable-md navbar-expand-lg navbar-dark bg-dark d-print-none">
-	<div class="container">
-		<a class="navbar-brand" href="{{ path('home') }}">{{ 'global.site_name'|trans }}</a>
-		<button type="button" class="navbar-toggler navbar-toggler-right" data-bs-toggle="collapse" data-bs-target="#Menu" aria-controls="Menu" aria-expanded="false">
-			<span class="navbar-toggler-icon" title="{{ 'global.action.expand.menu'|trans }}" aria-hidden="true"></span><span class="visually-hidden-focusable">{{ 'global.action.expand.menu'|trans }}</span>
-		</button>
+{% extends 'base.html.twig' %}
 
-		<div class="collapse navbar-collapse" id="Menu">
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-				<li class="nav-item">
-					<a class="nav-link{% if 'item_prices' in app.current_route %} active{% endif %}" href="{{ path('item_prices') }}">{{ 'app.menu.prices'|trans }}</a>
-				</li>
-				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
-				<li class="nav-item dropdown">
-					<a href="#" class="nav-link dropdown-toggle{%
-							if 'sales_index' == app.current_route
-								or 'production_index' in app.current_route
-						%} active{% endif %}" id="Operating" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.operating.heading'|trans }}</a>
-					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Operating">
-						<a class="dropdown-item{% if 'sales_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('sales_index') }}">{{ 'app.menu.operating.sales'|trans }}</a>
-						<a class="dropdown-item{% if 'production_index' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('production_index') }}">{{ 'app.menu.operating.production'|trans }}</a>
-					</div>
-				</li>
-				<li class="nav-item dropdown">
-					<a href="#" class="nav-link dropdown-toggle{%
-							if 'item' in app.current_route
-								or 'category' in app.current_route
-						%} active{% endif %}" id="Items" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.items.heading'|trans }}</a>
-					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Items">
-						<a class="dropdown-item{% if 'item_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_index') }}">{{ 'app.menu.items.list'|trans }}</a>
-						<a class="dropdown-item{% if 'item_event' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('item_event') }}">{{ 'app.menu.items.event'|trans }}</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item{% if 'category_index' == app.current_route %} active" aria-current="page{% endif %}" href="{{ path('category_index') }}">{{ 'app.menu.items.categories'|trans }}</a>
-					</div>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link{% if 'order' in app.current_route %} active{% endif %}" href="{{ path('order_index') }}">{{ 'app.menu.orders.heading'|trans }}</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a href="#" class="nav-link dropdown-toggle{%
-							if 'user' in app.current_route
-								or 'printer' in app.current_route
-								or 'location' in app.current_route
-								or 'payment_method' in app.current_route
-						%} active{% endif %}" id="Admin" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'app.menu.admin.heading'|trans }}</a>
-					<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="Admin">
-						<a class="dropdown-item{% if 'user' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('user_index') }}">{{ 'app.menu.admin.users.heading'|trans }}</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item{% if 'printer' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('printer_index') }}">{{ 'app.menu.admin.printers.heading'|trans }}</a>
-						<a class="dropdown-item{% if 'location' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('location_index') }}">{{ 'app.menu.admin.locations.heading'|trans }}</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item{% if 'payment_method' in app.current_route %} active" aria-current="page{% endif %}" href="{{ path('payment_method_index') }}">{{ 'app.menu.admin.payment_methods.heading'|trans }}</a>
-					</div>
-				</li>
-				{% endif ~%}
-			</ul>
-			<ul class="navbar-nav d-flex">
-				{% if is_granted('IS_AUTHENTICATED_FULLY') ~%}
-				<li class="nav-item">
-					<a href="{{ path('logout') }}" class="nav-link"><span class="text-danger" style="font-family: power_symbols">⏻</span> {{ 'app.menu.logout'|trans }}</a>
-				</li>
-				{% else ~%}
-				<li class="nav-item">
-					<a href="{{ path('login') }}" class="nav-link">{{ 'app.menu.login'|trans }}</a>
-				</li>
-				{% endif ~%}
-			</ul>
-		</div>
-	</div>
-</nav>
+{% block title %}{{ 'app.menu.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+		<style media="all">
+		caption {
+			caption-side: top;
+		}
+		</style>
+		<style media="print">
+		table {
+			page-break-inside: avoid;
+		}
+		</style>
+{% endblock %}
+
+{% block body %}
+	<h2 class="d-print-none">{{ 'app.menu.heading'|trans }}</h2>
+
+	<h3 class="h1 text-center">{{ 'app.menu.payment_methods'|trans({'methods': paymentMethods|length}) }}</h3>
+	<ul class="list-unstyled row">
+		{%- for paymentMethod in paymentMethods %}
+		<li class="col-6 h3 text-center">{{ paymentMethod.label }} {{ paymentMethod.title }}</li>
+		{%- endfor %}
+	</ul>
+
+	<table class="table table-borderless">
+		{%- set previousItem = {'id': null, 'price': null, 'category': {'id': null}, 'variantOf': {'id': null}} -%}
+		{%- for item in items -%}
+			{%- if (item.category and previousItem.category and (item.category.id != previousItem.category.id))
+				or	(item.category is none and previousItem.category is not none)
+				or	(item.category is not none and previousItem.category is none) %}
+				{% if not loop.first %}
+		</tbody>
+	</table>
+	<table class="table table-borderless">
+				{% endif %}
+				{%- if item.category %}
+		<caption class="h1 text-center">{{ item.category.title }}</caption>
+				{%~ endif %}
+		<colgroup>
+			<col class="col-1" />
+			<col />
+			<col class="col-1" />
+		</colgroup>
+		<tbody>
+			{%- endif -%}
+			{%- if item.variants.count == 1 and not item.separatelySellable -%}
+				{%- set item = item.variants.first -%}
+			{%- endif %}
+			<tr>
+			{% if item.areVariantsPriceImmutable -%}
+				<td colspan="2">{{ item.title }}</td>
+				<td class="text-end">{{ item.price|number_format(2, ',') }}</td>
+			{% else -%}
+				<td colspan="3">{{ item.title }}</td>
+			{% endif -%}
+			</tr>
+			{% for i,attribute in item.attributes %}
+			<tr>
+				{% if attribute.items.count == 1 %}
+					{% if attribute.items.first.price == item.price %}
+				<td colspan="3" class="fst-italic pt-0">(
+					{{- attribute.items.first.title -}}
+				)</td>
+					{% endif %}
+				{% elseif attribute.items.count > 1 %}
+					{% if attribute.areItemsPriceImmutable %}
+				<td colspan="3" class="fst-italic pt-0">(
+						{%- for variator in attribute.items -%}
+							{{- variator.title }}{% if not loop.last %}, {% endif -%}
+						{% endfor -%}
+				)</td>
+					{% else %}
+						{%- for variator in attribute.items -%}
+							{% if not loop.first %}
+			</tr>
+			<tr>
+							{% endif %}
+						<td class="pt-0"></td>
+						<td class="pt-0">{{ 'app.menu.with'|trans({'variator': variator.title|lower }) }}</td>
+						<td class="text-end pt-0">{{ (item.price + variator.price)|number_format(2, ',') }}</td>
+						{% endfor -%}
+					{% endif %}
+				{% endif %}
+			</tr>
+			{% endfor %}
+			{% if loop.last -%}
+		</tbody>
+			{%- endif %}
+			{% set previousItem = item %}
+		{% else %}
+		<tr>
+			<td colspan="2">{{ 'app.menu.none'|trans }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

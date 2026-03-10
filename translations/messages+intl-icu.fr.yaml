@@ -207,7 +207,7 @@ app:
     heading: *title
     success: Votre compte est enregistré. Contactez le responsable pour le faire activer et ainsi pouvoir vous connecter et avoir accès à toutes les fonctionnalités
 
-  menu:
+  navigation:
     prices: &prices Liste de prix
     operating:
       heading: Exploitation
@@ -235,12 +235,23 @@ app:
     register: Enregistrement
     logout: Déconnexion
 
+  menu:
+    title: &title Liste des prix
+    heading: *title
+    none: &product_none Pas de produit renseigné
+    with: 'avec {variator}'
+    payment_methods: >-
+      {methods, plural,
+        one   {Unique moyen de paiement accepté}
+        other {Seuls moyens de paiement acceptés}
+      }
+
   item:
     not_sold: Non vendu
     index:
       title: &title *items_heading
       heading: *title
-      none: &product_none Pas de produit renseigné
+      none: *product_none
     _form:
       labeliser: Etiquette depuis les composants
       blender: Couleur depuis les composants
@@ -252,11 +263,6 @@ app:
       title: Evénement
       heading: Préparation d’un événement
       none: *product_none
-    print:
-      title: &title Liste des prix
-      heading: *title
-      none: *product_none
-      with: 'avec {variator}'
 
   category:
     index:

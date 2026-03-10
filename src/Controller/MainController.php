@@ -8,6 +8,7 @@ use App\Entity\OrderLine;
 use App\Form\OrderSimpleType;
 use App\Repository\ItemRepository;
 use App\Repository\OrderLineRepository;
+use App\Repository\PaymentMethodRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class MainController extends AbstractController
 {
+    #[Route('/prices', name: 'prices', methods: ["GET"])]
+    public function prices(Request $request, ItemRepository $itemRepository, PaymentMethodRepository $paymentMethodRepository)
+    {
+        return $this->render('menu.html.twig', [
+            'items' => $itemRepository->findForPrices(),
+            'paymentMethods' => $paymentMethodRepository->findBy(['public' => true ,'available' => true])
+        ]);
+    }
+
     #[Route('/sales', name: 'sales_index', methods: ['GET', 'POST'])]
     public function sales(Request $request, EntityManagerInterface $entityManager, ?UserInterface $user): Response
     {
