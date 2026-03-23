@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Category;
 use App\Entity\Item;
 use App\Repository\CategoryRepository;
+use App\Repository\ItemRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -54,8 +55,14 @@ class ItemType extends CategoryType
                 'label_format' => 'app.fields.item.%name%.label.long',
             ])
             ->add('variantOf', null, [
+                'query_builder' => function (ItemRepository $repo) {
+                    $qb = $repo->createQueryBuilder('a');
+                    $qb ->innerJoin('a.attributes', 'at');
+
+                    return $qb;
+                },
                 'choice_label' => function (Item $item): string {
-                    return $item->getTitle() . ' ' . $item->getLabel() . ' ' . ($item->isAvailable() ? number_format($item->getPrice(), 2, ',') : '(non vendu)');
+                    return $item->getTitle() . ' ' . $item->getLabel() . ' ' . ($item->isAvailable() ? number_format($item->getPrice(), 2, ',') : '❌');
                 },
                 'choice_attr' => function (Item $item): array {
                     return [
@@ -87,7 +94,7 @@ class ItemType extends CategoryType
                 'entry_options' => [
                     'class' => Item::class,
                     'choice_label' => function (Item $item): string {
-                        return $item->getTitle() . ' ' . $item->getLabel() . ' ' . ($item->isAvailable() ? number_format($item->getPrice(), 2, ',') : '(non vendu)');
+                        return $item->getTitle() . ' ' . $item->getLabel() . ' ' . ($item->isAvailable() ? number_format($item->getPrice(), 2, ',') : '❌');
                     },
                     'label' => false,
                     'choice_attr' => function (Item $item): array {

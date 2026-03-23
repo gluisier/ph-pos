@@ -23,7 +23,7 @@ class OrderLineType extends AbstractType
                 'class' => Item::class,
                 'mapped' => false,
                 'choice_label' => function(Item $item): string {
-                    return $item->getTitle() . ' ' . ($item->getPrice() ? number_format($item->getPrice(), 2, ',') : '(non vendu)');
+                    return $item->getTitle() . ' ' . ($item->getPrice() ? number_format($item->getPrice(), 2, ',') : '❌');
                 },
                 'label_format' => 'app.fields.order_line.%name%.label',
             ])
