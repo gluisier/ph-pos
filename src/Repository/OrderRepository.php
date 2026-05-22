@@ -71,7 +71,7 @@ class OrderRepository extends ServiceEntityRepository
         }
 
         foreach ($orderBy as $field => $direction) {
-            $qb->addOrderBy($this->sanitizeField($field), $direction);
+            $qb->addOrderBy($this->sanitizeField($field), (strtolower($direction) === 'desc') ? 'desc' : 'asc');
         }
 
         if (null != $limit) {
@@ -89,15 +89,13 @@ class OrderRepository extends ServiceEntityRepository
     private function sanitizeField($field)
     {
         switch ($field) {
-            case 'id':
-                $field = 'o.id';
-                break;
             case 'externalId':
                 $field = 'o.externalId';
                 break;
             case 'paymentMethod':
                 $field = 'pm.id';
             default:
+                $field = 'o.id';
                 break;
         }
 
