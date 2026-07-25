@@ -65,6 +65,7 @@ security:
     - { path: ^/payment-method/, roles: ROLE_ADMIN }
     - { path: ^/order/, roles: ROLE_ADMIN }
     - { path: ^/user/, roles: ROLE_ADMIN }
+    - { path: ^/printer/config$, roles: ROLE_USER }
     - { path: ^/printer/, roles: ROLE_ADMIN }
     - { path: ^/location/, roles: ROLE_ADMIN }
     - { path: ^/, roles: ROLE_USER }
